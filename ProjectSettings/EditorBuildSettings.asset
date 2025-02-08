@@ -6,6 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
-  m_configObjects: {}
+    path: Assets/IndieMarc/PlatformerDemo/PlatformerDemo.unity
+    guid: 230ee21eea18d46e48f6038641c438b7
+  - enabled: 1
+    path: Assets/IndieMarc/TopDownDemo/TopDownDemo.unity
+    guid: 35fa846952ea23b41a9dca4d21464be1
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: f4393cd6f45346c43aa69f1eb8a1532b,
+      type: 2}
