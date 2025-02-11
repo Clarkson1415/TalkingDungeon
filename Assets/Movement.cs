@@ -29,26 +29,7 @@ public class Movement : MonoBehaviour
     private void FixedUpdate()
     {
         this.rb.velocity = direction * movementSpeed;
-    }
-
-
-    /// <summary>
-    /// triggered when Attack/Fire Button clicked. 
-    /// Unity Events are fired 3 times, Started, Performed, Cancelled.
-    /// </summary>
-    /// <param name="context"></param>
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-            this.animator.SetTrigger("AttackButtonHit");
-        }
-        else if (context.performed)
-        {
-        }
-        else if (context.canceled)
-        {
-        }
+        FlipSprite(this.direction.x);
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -58,7 +39,6 @@ public class Movement : MonoBehaviour
         if (context.started)
         {
             this.animator.SetBool("Running", true);
-            FlipSprite(this.direction.x);
         }
         else if (context.performed)
             Debug.Log("OnMove was performed");
