@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,7 +10,6 @@ public class Movement : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
     private Vector2 direction;
-    private Transform transform;
 
     [SerializeField]
     private float movementSpeed = 1f;
@@ -18,7 +18,6 @@ public class Movement : MonoBehaviour
     {
         this.animator = GetComponent<Animator>();
         this.rb = GetComponent<Rigidbody2D>();
-        this.transform = GetComponent<Transform>();
     }
 
     // Start is called before the first frame update
