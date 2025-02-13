@@ -10,6 +10,7 @@ public class Movement : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
     private Vector2 direction;
+    private BoxCollider2D boxCollider;
 
     [SerializeField]
     private float movementSpeed = 1f;
@@ -18,6 +19,7 @@ public class Movement : MonoBehaviour
     {
         this.animator = GetComponent<Animator>();
         this.rb = GetComponent<Rigidbody2D>();
+        this.boxCollider = GetComponent<BoxCollider2D>();
     }
 
     // Start is called before the first frame update
@@ -28,25 +30,25 @@ public class Movement : MonoBehaviour
     private void FixedUpdate()
     {
         this.rb.velocity = direction * movementSpeed;
-        FlipSprite(this.direction.x);
+        FlipSprite(this.direction.x); 
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         this.direction = context.ReadValue<Vector2>();
-
+        
         if (context.started)
         {
             this.animator.SetBool("Running", true);
         }
         else if (context.performed)
-            Debug.Log("OnMove was performed");
+        {
+
+        }
         else if (context.canceled)
         {
-            Debug.Log("OnMove was cancelled");
             this.animator.SetBool("Running", false);
         }
-
     }
 
     void FlipSprite(float xDirection)
