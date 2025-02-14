@@ -6,6 +6,5 @@ public interface IHasDialogue
 {
     public string[] GetDialogue();
 
-    public string[,] GetDialogueOptions();
-    
+    public string[][] GetDialogueOptions();  
 }

@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NPC : MonoBehaviour, IHasDialogue
 {
     private string[] dialogue;
-    private string[,] dialogueOptions;
+    private string[][] dialogueOptions;
 
     public string[] GetDialogue()
     {
         return this.dialogue;
     }
 
-    public string[,] GetDialogueOptions()
+    public string[][] GetDialogueOptions()
     {
         return this.dialogueOptions;
     }
@@ -21,7 +19,10 @@ public class NPC : MonoBehaviour, IHasDialogue
     void Start()
     {
         dialogue = new string[1] { "HEY" };
-        dialogueOptions = new string[1, 1] { { "sup" } };
+        dialogueOptions = new string[][]
+        {
+            new string[] {"bye", "what?"},
+        };
     }
 
     // Update is called once per frame
