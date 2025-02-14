@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -11,12 +12,17 @@ public class DialogueTextBox : MonoBehaviour
 {
     private IHasDialogue? NPCPlayerIsSpeakingTo;
     private TMP_Text TMPTextBox;
-    private string? currentTextDialogue;
     [SerializeField] private float textspeed = 0.1f;
-    public bool HasShownLastSlide;
-    private DialogueBoxState state = DialogueBoxState.invisibleInactive;
+    private DialogueSlide? currentSlide;
+    public BoxState State { get; private set; } = BoxState.invisibleInactive;
+    public bool PlayerInteractFlagSet;
 
-    private enum DialogueBoxState
+    public void NewInteractionBegan(DialogueSlide firstSlide)
+    {
+        currentSlide = firstSlide;
+    }
+
+    public enum BoxState
     {
         invisibleInactive,
         writing,
@@ -26,90 +32,93 @@ public class DialogueTextBox : MonoBehaviour
     private void Awake()
     {
         TMPTextBox = this.GetComponentInChildren<TMP_Text>();
-
     }
 
     private void Update()
     {
-        //switch (state)
-        //{
-        //    case DialogueBoxState.invisibleInactive:
-        //        break;
-        //    case DialogueBoxState.writing:
+        switch (State)
+        {
+            case BoxState.invisibleInactive:
+                if (this.PlayerInteractFlagSet)
+                {
+                    this.PlayerInteractFlagSet = false;
+                    State = BoxState.writing;
+                }
+                break;
+            case BoxState.writing:
+                if (this.PlayerInteractFlagSet)
+                {
+                    this.PlayerInteractFlagSet = false;
+                    this.SkipToEnd();
+                    this.State = BoxState.waitingOnSlide;
+                }
+                break;
+            case BoxState.waitingOnSlide:
+                if (this.PlayerInteractFlagSet)
+                {
+                    this.PlayerInteractFlagSet = false;
+                    if (this.currentSlide.lastSlideInSequence)
+                    {
+                        this.currentSlide = null;
+                        this.State = BoxState.invisibleInactive;
+                    }
+                    else 
+                    {
+                        if (this.currentSlide.options != null)
+                        {
+                            var selected = this.currentSlide.options.First(x => x.isSelected);
+                            this.currentSlide = selected.nextDialogueSlide;
+                        }
+                        else
+                        {
+                            this.currentSlide = this.currentSlide.nextSlide;
+                        }
 
-        //}
-
-        
-
-        // if knight.interact fired:
-        // update to new speaker
-        // state = writing.
-
-    }
-
-    public void OnNewSpeaker(IHasDialogue newSpeaker)
-    {
-        this.NPCPlayerIsSpeakingTo = newSpeaker;
-        StartCoroutine(BeginNewDialogue(newSpeaker.GetDialogue(), newSpeaker.GetDialogueOptions()));
-    }
-
-    public void OnConversationFinished()
-    {
-        this.NPCPlayerIsSpeakingTo = null;
+                        StartCoroutine(WriteSlideOverTime());
+                        this.State = BoxState.writing;
+                    }
+                }
+                break;
+            default:
+                State = BoxState.invisibleInactive;
+                break;
+        }
     }
 
     public void SkipToEnd()
     {
-        // TODO: not string here ew
         Debug.Log("skip to end");
         StopAllCoroutines();
-        this.TMPTextBox.text = this.currentTextDialogue;
-
-        this.HasShownLastSlide = true;
+        this.TMPTextBox.text = this.currentSlide.dialogue;
     }
 
-    IEnumerator BeginNewDialogue(string[] dialogueSlides, string[][] options)
+    IEnumerator WriteSlideOverTime()
     {
-        string phrase = "many many test words wow you have a lot to say girl damn.";
-        currentTextDialogue = phrase;
-
-        for (int i = 0; i < phrase.Length ; i++)
+        for (int i = 0; i < this.currentSlide.dialogue.Length ; i++)
         {
             if (i == 0)
             {
-                this.TMPTextBox.SetText(phrase[0].ToString());
+                this.TMPTextBox.SetText(this.currentSlide.dialogue[0].ToString());
                 continue;
             }
 
-            this.TMPTextBox.text += phrase[i];
+            this.TMPTextBox.text += this.currentSlide.dialogue[i];
             yield return new WaitForSeconds(textspeed);
         }
 
-        this.HasShownLastSlide = true;
+        if (this.currentSlide.options != null || this.currentSlide.options?.Count == 0)
+        {
+            this.TMPTextBox.text += "\n";
 
-        //bool hasOptions = false;
+            foreach (var option in this.currentSlide.options)
+            {
+                foreach(var character in option.optionText)
+                {
+                    this.TMPTextBox.text += character;
+                }
 
-        //// test single first slide.
-        //int i = 0;
-        //if (options[i].Length > 0)
-        //{
-        //    hasOptions = true;
-        //}
-
-        //foreach (var letter in dialogueSlides[i])
-        //{
-        //    this.TMPTextBox.text += letter;
-        //    yield return new WaitForSeconds(0.5f);
-        //}
-
-        //if (hasOptions)
-        //{
-        //    this.TMPTextBox.text += "\n";
-
-        //    foreach (var option in options[i])
-        //    {
-        //        this.TMPTextBox.text += option;
-        //    }
-        //}
+                this.TMPTextBox.text += "\n";
+            }
+        }
     }
 }

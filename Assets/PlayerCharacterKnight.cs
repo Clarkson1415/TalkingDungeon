@@ -11,10 +11,16 @@ public class PlayerCharacterKnight : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
     private Vector2 direction;
-    protected bool movementDisabled;
 
-    [SerializeField]
-    private float movementSpeed = 1f;
+    [SerializeField] private float movementSpeed = 1f;
+    private knightState state = knightState.FREEMOVEMENT;
+    private bool InteractFlagSet;
+
+    private enum knightState
+    {
+        INTERACTING,
+        FREEMOVEMENT,
+    }
 
     void Awake()
     {
@@ -30,22 +36,43 @@ public class PlayerCharacterKnight : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // TODO: state machine, this.state == IDLE 
-        if (this.movementDisabled)
+        switch (this.state)
         {
-            this.rb.velocity = Vector2.zero;
-            return;
-        }
-        else
-        {
-            this.rb.velocity = direction * movementSpeed;
-            FlipSprite(this.direction.x);
+            case knightState.FREEMOVEMENT:
+                if (this.InteractFlagSet)
+                {
+                    dialogueBox.PlayerInteractFlagSet = true;
+                    this.InteractFlagSet = false;
+                    if(this.interactableInRange is IHasDialogue interactableWithDialogue)
+                    {
+                        this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
+                    }
+                    this.state = knightState.INTERACTING;
+                }
+                this.rb.velocity = direction * movementSpeed;
+                FlipSprite(this.direction.x);
+                break;
+            case knightState.INTERACTING:
+                if (this.InteractFlagSet)
+                {
+                    dialogueBox.PlayerInteractFlagSet = true;
+                    this.InteractFlagSet = false;
+                }
+                if (this.dialogueBox.State == DialogueTextBox.BoxState.invisibleInactive)
+                {
+                    this.state = knightState.FREEMOVEMENT;
+                }
+                break;
+            default:
+                this.state = knightState.FREEMOVEMENT;
+                break;
         }
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         this.direction = context.ReadValue<Vector2>();
+        this.triedToMove = true;
 
         if (context.started)
         {
@@ -60,6 +87,8 @@ public class PlayerCharacterKnight : MonoBehaviour
             this.animator.SetBool("Running", false);
         }
     }
+
+    private bool triedToMove;
 
     void FlipSprite(float xDirection)
     {
@@ -97,39 +126,7 @@ public class PlayerCharacterKnight : MonoBehaviour
             return;
         }
 
-        // TODO: disable movement until finished interaction? yes, put knight in IDLE_INTERACTING state. instead
-        this.movementDisabled = true;
-
-        // TODO: DialogueBox state machine setup instead of this shit here and instead just fires event in dialogue box if knight interacts with object. reguardless if it's the first time or not.
-        if (this.interactableInRange is IHasDialogue interactableWithDialogue)
-        {
-
-            if (isDialogueSlidePrinting && dialogueBox.HasShownLastSlide)
-            {
-                this.movementDisabled = false;
-                return;
-            }
-
-            if (hasSkippedDialogue)
-            {
-                dialogueBox.gameObject.SetActive(false);
-                return;
-            }
-
-            if (isDialogueSlidePrinting)
-            {
-                Debug.Log("pressed space another time.");
-                dialogueBox.SkipToEnd();
-                hasSkippedDialogue = true;
-                return;
-            }
-
-            // TODO: if Dialogue finished when press space should clear last slide.
-            Debug.Log("speaking");
-            isDialogueSlidePrinting = true;
-            dialogueBox.gameObject.SetActive(true);
-            dialogueBox.OnNewSpeaker(interactableWithDialogue);
-        }
+        this.InteractFlagSet = true;
     }
 
     private void OnTriggerExit2D(Collider2D collision)

@@ -4,7 +4,5 @@ using UnityEngine;
 
 public interface IHasDialogue
 {
-    public string[] GetDialogue();
-
-    public string[][] GetDialogueOptions();  
+    public DialogueSlide GetFirstDialogueSlide();
 }

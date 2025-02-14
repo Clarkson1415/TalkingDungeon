@@ -1,28 +1,22 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class NPC : MonoBehaviour, IHasDialogue
+/// <summary>
+/// Abstract class do not add to unity component
+/// </summary>
+public abstract class NPC : MonoBehaviour, IHasDialogue
 {
-    private string[] dialogue;
-    private string[][] dialogueOptions;
+    protected List<DialogueSlide> dialogueSlides;
 
-    public string[] GetDialogue()
+    public DialogueSlide GetFirstDialogueSlide()
     {
-        return this.dialogue;
-    }
-
-    public string[][] GetDialogueOptions()
-    {
-        return this.dialogueOptions;
+        return this.dialogueSlides[0];
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        dialogue = new string[1] { "HEY" };
-        dialogueOptions = new string[][]
-        {
-            new string[] {"bye", "what?"},
-        };
+
     }
 
     // Update is called once per frame
