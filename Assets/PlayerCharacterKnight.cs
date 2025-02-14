@@ -28,8 +28,6 @@ public class PlayerCharacterKnight : MonoBehaviour
 
     }
 
-
-
     private void FixedUpdate()
     {
         // TODO: state machine, this.state == IDLE 
@@ -106,7 +104,7 @@ public class PlayerCharacterKnight : MonoBehaviour
         if (this.interactableInRange is IHasDialogue interactableWithDialogue)
         {
 
-            if(isDialogueSlidePrinting && dialogueBox.HasShownLastSlide)
+            if (isDialogueSlidePrinting && dialogueBox.HasShownLastSlide)
             {
                 this.movementDisabled = false;
                 return;
