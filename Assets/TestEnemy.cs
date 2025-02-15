@@ -11,7 +11,7 @@ public class TestEnemy : NPC, IHasDialogue
         var Slide2_lastSlide = new DialogueSlide("k bye", true);
         var Slide1Option1 = new DialogueOption("what?", Slide2_lastSlide);
         var Slide1Option2 = new DialogueOption("Fuck you", Slide2_lastSlide);
-        var Slide1 = new DialogueSlide("HI", new List<DialogueOption>() 
+        var Slide1 = new DialogueSlide("HI or something longer to test the dialogue printing.", new List<DialogueOption>() 
         { Slide1Option1, Slide1Option2});
 
         // HI

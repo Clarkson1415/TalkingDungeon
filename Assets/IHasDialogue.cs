@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IHasDialogue
+public interface IHasDialogue : IInteracble
 {
     public DialogueSlide GetFirstDialogueSlide();
 }

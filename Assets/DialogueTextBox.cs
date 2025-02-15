@@ -5,7 +5,9 @@ using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 #nullable enable
 
 public class DialogueTextBox : MonoBehaviour
@@ -16,11 +18,19 @@ public class DialogueTextBox : MonoBehaviour
     private DialogueSlide? currentSlide;
     public BoxState State { get; private set; } = BoxState.invisibleInactive;
     public bool PlayerInteractFlagSet;
+    [SerializeField] GameObject prefabButton;
+    [SerializeField] EventSystem UIEventSystem;
+    List<GameObject> buttons = new List<GameObject>();
+    [SerializeField] float buttonSpacing = 170;
+    [SerializeField] private GameObject firstButtonLocationObject;
 
     public void NewInteractionBegan(DialogueSlide firstSlide)
     {
         currentSlide = firstSlide;
+        this.newInteractionSetup = true;
     }
+
+    private bool newInteractionSetup;
 
     public enum BoxState
     {
@@ -34,14 +44,19 @@ public class DialogueTextBox : MonoBehaviour
         TMPTextBox = this.GetComponentInChildren<TMP_Text>();
     }
 
+    private bool FinishedWritingSlideOverTime;
+
     private void Update()
     {
         switch (State)
         {
             case BoxState.invisibleInactive:
-                if (this.PlayerInteractFlagSet)
+                if (this.PlayerInteractFlagSet && this.newInteractionSetup)
                 {
+                    this.newInteractionSetup = false;
                     this.PlayerInteractFlagSet = false;
+                    SetupButtons();
+                    StartCoroutine(WriteSlideOverTime());
                     State = BoxState.writing;
                 }
                 break;
@@ -52,6 +67,11 @@ public class DialogueTextBox : MonoBehaviour
                     this.SkipToEnd();
                     this.State = BoxState.waitingOnSlide;
                 }
+                if (this.FinishedWritingSlideOverTime)
+                {
+                    this.FinishedWritingSlideOverTime = false;
+                    this.State = BoxState.waitingOnSlide;
+                }
                 break;
             case BoxState.waitingOnSlide:
                 if (this.PlayerInteractFlagSet)
@@ -60,9 +80,10 @@ public class DialogueTextBox : MonoBehaviour
                     if (this.currentSlide.lastSlideInSequence)
                     {
                         this.currentSlide = null;
+                        this.gameObject.SetActive(false);
                         this.State = BoxState.invisibleInactive;
                     }
-                    else 
+                    else
                     {
                         if (this.currentSlide.options != null)
                         {
@@ -74,6 +95,7 @@ public class DialogueTextBox : MonoBehaviour
                             this.currentSlide = this.currentSlide.nextSlide;
                         }
 
+                        SetupButtons();
                         StartCoroutine(WriteSlideOverTime());
                         this.State = BoxState.writing;
                     }
@@ -92,9 +114,39 @@ public class DialogueTextBox : MonoBehaviour
         this.TMPTextBox.text = this.currentSlide.dialogue;
     }
 
+    private void SetupButtons()
+    {
+        this.buttons.Clear();
+
+        if (this.currentSlide.options != null || this.currentSlide.options.Count > 0)
+        {
+            Vector3 positionVector = new Vector3(0, 0, 0);
+
+            for (int i = 0; i < this.currentSlide.options.Count; i++)
+            {
+                // Instantiate new button with that gameobject as parent.
+                var buttonGameObj = Instantiate(this.prefabButton, this.firstButtonLocationObject.transform);
+                // calculate positon offset. 
+                positionVector = this.firstButtonLocationObject.transform.position;
+                positionVector.x += buttonSpacing * i;
+                // set position of button correctly.
+                buttonGameObj.transform.SetPositionAndRotation(positionVector, Quaternion.identity);
+
+                // set button Dialogue Option to the Dialogue Option.
+                // REMEBER THIS IS NOT THE SAME OBJECT AS IN THE CURRENT SLIDE.OPTIONS
+                buttonGameObj.GetComponent<DialogueOption>().SetValues(this.currentSlide.options[i]);
+
+                // TODO: not sure if this will add the correct button to the list?
+                this.buttons.Add(buttonGameObj);
+            }
+
+            // UIEventSystem.firstSelectedGameObject = this.buttons[0];
+        }
+    }
+
     IEnumerator WriteSlideOverTime()
     {
-        for (int i = 0; i < this.currentSlide.dialogue.Length ; i++)
+        for (int i = 0; i < this.currentSlide.dialogue.Length; i++)
         {
             if (i == 0)
             {
@@ -106,19 +158,15 @@ public class DialogueTextBox : MonoBehaviour
             yield return new WaitForSeconds(textspeed);
         }
 
-        if (this.currentSlide.options != null || this.currentSlide.options?.Count == 0)
+        // draw options
+        if (this.buttons.Count > 0)
         {
-            this.TMPTextBox.text += "\n";
-
-            foreach (var option in this.currentSlide.options)
+            foreach (var button in this.buttons)
             {
-                foreach(var character in option.optionText)
-                {
-                    this.TMPTextBox.text += character;
-                }
-
-                this.TMPTextBox.text += "\n";
+                button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOption>().optionText;
             }
         }
+
+        this.FinishedWritingSlideOverTime = true;
     }
 }

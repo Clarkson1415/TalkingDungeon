@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 #nullable enable
@@ -31,7 +32,7 @@ public class PlayerCharacterKnight : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        this.state = knightState.FREEMOVEMENT;
     }
 
     private void FixedUpdate()
@@ -41,10 +42,13 @@ public class PlayerCharacterKnight : MonoBehaviour
             case knightState.FREEMOVEMENT:
                 if (this.InteractFlagSet)
                 {
+                    Debug.Log("interact flag set in FREEMOVEMENT");
+                    this.dialogueBox.gameObject.SetActive(true);
                     dialogueBox.PlayerInteractFlagSet = true;
                     this.InteractFlagSet = false;
                     if(this.interactableInRange is IHasDialogue interactableWithDialogue)
                     {
+                        Debug.Log("Dialogue Box");
                         this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
                     }
                     this.state = knightState.INTERACTING;
@@ -60,19 +64,21 @@ public class PlayerCharacterKnight : MonoBehaviour
                 }
                 if (this.dialogueBox.State == DialogueTextBox.BoxState.invisibleInactive)
                 {
+                    Debug.Log("Freemovement from interacting");
                     this.state = knightState.FREEMOVEMENT;
                 }
                 break;
             default:
                 this.state = knightState.FREEMOVEMENT;
+                Debug.Log("Freemovement from default");
                 break;
         }
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        Debug.Log("On move fired");
         this.direction = context.ReadValue<Vector2>();
-        this.triedToMove = true;
 
         if (context.started)
         {
@@ -87,8 +93,6 @@ public class PlayerCharacterKnight : MonoBehaviour
             this.animator.SetBool("Running", false);
         }
     }
-
-    private bool triedToMove;
 
     void FlipSprite(float xDirection)
     {
@@ -126,6 +130,7 @@ public class PlayerCharacterKnight : MonoBehaviour
             return;
         }
 
+        Debug.Log("Interact flag set");
         this.InteractFlagSet = true;
     }
 
