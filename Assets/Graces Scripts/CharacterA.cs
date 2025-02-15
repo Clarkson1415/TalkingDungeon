@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class TestEnemy : NPC, IHasDialogue
+public class CharacterA : NPC, IHasDialogue
 {
     // Start is called before the first frame update
     void Start()

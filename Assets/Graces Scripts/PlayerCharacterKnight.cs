@@ -42,9 +42,6 @@ public class PlayerCharacterKnight : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // check raycast in direction of rb.velocity
-        // TODO: maybe something else this might be expenny?
-
         switch (this.state)
         {
             case knightState.MOVING:

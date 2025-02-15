@@ -137,7 +137,7 @@ public class DialogueTextBox : MonoBehaviour
                 var buttonGameObj = Instantiate(this.prefabButton, this.firstButtonLocationObject.transform);
                 // calculate positon offset. 
                 positionVector = this.firstButtonLocationObject.transform.position;
-                positionVector.x += buttonSpacing * i;
+                positionVector.y -= buttonSpacing * i;
                 // set position of button correctly.
                 buttonGameObj.transform.SetPositionAndRotation(positionVector, Quaternion.identity);
 
