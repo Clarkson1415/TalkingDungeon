@@ -55,9 +55,10 @@ public class DialogueTextBox : MonoBehaviour
                 {
                     this.newInteractionSetup = false;
                     this.PlayerInteractFlagSet = false;
-                    SetupButtons();
                     StartCoroutine(WriteSlideOverTime());
+                    this.FinishedWritingSlideOverTime = false;
                     State = BoxState.writing;
+                    Debug.Log("state writing");
                 }
                 break;
             case BoxState.writing:
@@ -66,11 +67,13 @@ public class DialogueTextBox : MonoBehaviour
                     this.PlayerInteractFlagSet = false;
                     this.SkipToEnd();
                     this.State = BoxState.waitingOnSlide;
+                    Debug.Log("state writing");
                 }
                 if (this.FinishedWritingSlideOverTime)
                 {
                     this.FinishedWritingSlideOverTime = false;
                     this.State = BoxState.waitingOnSlide;
+                    Debug.Log("state waitingOnSlide");
                 }
                 break;
             case BoxState.waitingOnSlide:
@@ -81,27 +84,29 @@ public class DialogueTextBox : MonoBehaviour
                     {
                         this.currentSlide = null;
                         this.gameObject.SetActive(false);
+                        Debug.Log("state INVIS INACTIVE");
                         this.State = BoxState.invisibleInactive;
                     }
                     else
                     {
-                        if (this.currentSlide.options != null)
-                        {
-                            var selected = this.currentSlide.options.First(x => x.isSelected);
-                            this.currentSlide = selected.nextDialogueSlide;
-                        }
-                        else
+                        if (this.currentSlide.options == null || this.currentSlide.options.Count == 0)
                         {
                             this.currentSlide = this.currentSlide.nextSlide;
                         }
+                        else
+                        {
+                            var selected = this.buttons.First(x => x.GetComponent<DialogueOption>().isSelected);
+                            this.currentSlide = selected.GetComponent<DialogueOption>().nextDialogueSlide;
+                        }
 
-                        SetupButtons();
                         StartCoroutine(WriteSlideOverTime());
+                        Debug.Log("state writing after waiting");
                         this.State = BoxState.writing;
                     }
                 }
                 break;
             default:
+                Debug.Log("default set invis inactive");
                 State = BoxState.invisibleInactive;
                 break;
         }
@@ -111,14 +116,18 @@ public class DialogueTextBox : MonoBehaviour
     {
         Debug.Log("skip to end");
         StopAllCoroutines();
+        DrawButtons();
         this.TMPTextBox.text = this.currentSlide.dialogue;
     }
 
-    private void SetupButtons()
+    private void DrawButtons()
     {
-        this.buttons.Clear();
+        if(this.currentSlide?.options == null)
+        {
+            return;
+        }
 
-        if (this.currentSlide.options != null || this.currentSlide.options.Count > 0)
+        if (this.currentSlide.options.Count > 0)
         {
             Vector3 positionVector = new Vector3(0, 0, 0);
 
@@ -140,12 +149,25 @@ public class DialogueTextBox : MonoBehaviour
                 this.buttons.Add(buttonGameObj);
             }
 
-            // UIEventSystem.firstSelectedGameObject = this.buttons[0];
+            this.UIEventSystem.SetSelectedGameObject(this.buttons[0]);
+        }
+
+        // draw options
+        if (this.buttons.Count > 0)
+        {
+            foreach (var button in this.buttons)
+            {
+                button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOption>().optionText;
+            }
         }
     }
 
     IEnumerator WriteSlideOverTime()
     {
+        // remove old buttons 
+        this.buttons.ForEach(x => Destroy(x));
+        this.buttons.Clear();
+
         for (int i = 0; i < this.currentSlide.dialogue.Length; i++)
         {
             if (i == 0)
@@ -158,14 +180,7 @@ public class DialogueTextBox : MonoBehaviour
             yield return new WaitForSeconds(textspeed);
         }
 
-        // draw options
-        if (this.buttons.Count > 0)
-        {
-            foreach (var button in this.buttons)
-            {
-                button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOption>().optionText;
-            }
-        }
+        DrawButtons();
 
         this.FinishedWritingSlideOverTime = true;
     }

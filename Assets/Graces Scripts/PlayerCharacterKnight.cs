@@ -14,13 +14,14 @@ public class PlayerCharacterKnight : MonoBehaviour
     private Vector2 direction;
 
     [SerializeField] private float movementSpeed = 1f;
-    private knightState state = knightState.FREEMOVEMENT;
+    private float storedMovementSpeed;
+    private knightState state = knightState.MOVING;
     private bool InteractFlagSet;
 
     private enum knightState
     {
         INTERACTING,
-        FREEMOVEMENT,
+        MOVING,
     }
 
     void Awake()
@@ -32,46 +33,66 @@ public class PlayerCharacterKnight : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.state = knightState.FREEMOVEMENT;
+        this.state = knightState.MOVING;
     }
+
+    private bool moveFlagSet;
+    private bool idleFlagSet;
+    [SerializeField] private float obstaclePadding = 1f;
 
     private void FixedUpdate()
     {
+        // check raycast in direction of rb.velocity
+        // TODO: maybe something else this might be expenny?
+
         switch (this.state)
         {
-            case knightState.FREEMOVEMENT:
+            case knightState.MOVING:
                 if (this.InteractFlagSet)
                 {
-                    Debug.Log("interact flag set in FREEMOVEMENT");
-                    this.dialogueBox.gameObject.SetActive(true);
-                    dialogueBox.PlayerInteractFlagSet = true;
                     this.InteractFlagSet = false;
-                    if(this.interactableInRange is IHasDialogue interactableWithDialogue)
+                    Debug.Log("interact flag set in MOVING");
+                    if (this.interactableInRange is IHasDialogue interactableWithDialogue)
                     {
                         Debug.Log("Dialogue Box");
+                        dialogueBox.PlayerInteractFlagSet = true;
+                        this.dialogueBox.gameObject.SetActive(true);
                         this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
+                        this.state = knightState.INTERACTING;
                     }
-                    this.state = knightState.INTERACTING;
                 }
-                this.rb.velocity = direction * movementSpeed;
-                FlipSprite(this.direction.x);
+                else
+                {
+                    this.rb.velocity = direction * movementSpeed;
+                    FlipSprite(this.direction.x);
+                }
                 break;
             case knightState.INTERACTING:
+                this.rb.velocity = Vector2.zero;
                 if (this.InteractFlagSet)
                 {
                     dialogueBox.PlayerInteractFlagSet = true;
                     this.InteractFlagSet = false;
                 }
-                if (this.dialogueBox.State == DialogueTextBox.BoxState.invisibleInactive)
+                else if (this.dialogueBox.State == DialogueTextBox.BoxState.invisibleInactive)
                 {
                     Debug.Log("Freemovement from interacting");
-                    this.state = knightState.FREEMOVEMENT;
+                    this.state = knightState.MOVING;
                 }
                 break;
             default:
-                this.state = knightState.FREEMOVEMENT;
+                this.state = knightState.MOVING;
                 Debug.Log("Freemovement from default");
                 break;
+        }
+
+        if (this.rb.velocity.x != 0 || this.rb.velocity.y != 0)
+        {
+            this.animator.SetBool("Running", true);
+        }
+        else
+        {
+            this.animator.SetBool("Running", false);
         }
     }
 
@@ -82,7 +103,6 @@ public class PlayerCharacterKnight : MonoBehaviour
 
         if (context.started)
         {
-            this.animator.SetBool("Running", true);
         }
         else if (context.performed)
         {
@@ -90,7 +110,6 @@ public class PlayerCharacterKnight : MonoBehaviour
         }
         else if (context.canceled)
         {
-            this.animator.SetBool("Running", false);
         }
     }
 
