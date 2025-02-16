@@ -175,8 +175,8 @@ public class DialogueTextBox : MonoBehaviour
         this.buttons.ForEach(x => Destroy(x));
         this.buttons.Clear();
 
-        //MyGuard.IsNotNull(this.currentSlide);
-        //MyGuard.IsNotNull(this.currentSlide.dialogue);
+        MyGuard.IsNotNull(this.currentSlide);
+        MyGuard.IsNotNull(this.currentSlide.dialogue);
         for (int i = 0; i < this.currentSlide.dialogue.Length; i++)
         {
             if (i == 0) // set first letter.

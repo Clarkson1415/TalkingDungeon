@@ -9,6 +9,6 @@ public class MyGuard
             return;
         }
 
-        throw new ArgumentNullException(nameof(value));
+        throw new ArgumentException();
     }
 }
