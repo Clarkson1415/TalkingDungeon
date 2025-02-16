@@ -18,8 +18,8 @@ public class DialogueTextBox : MonoBehaviour
     [SerializeField] EventSystem UIEventSystem;
     List<GameObject> buttons = new List<GameObject>();
     [SerializeField] int buttonSpacing = 48;
-    [SerializeField] private GameObject firstButtonLocationObject;
     private char pauseCharacterToNotPrint = '_';
+    [SerializeField] List<GameObject> buttonPositionsTopToBottom;
 
     public void NewInteractionBegan(DialogueSlide firstSlide)
     {
@@ -141,19 +141,12 @@ public class DialogueTextBox : MonoBehaviour
             for (int i = 0; i < this.currentSlide.options.Count; i++)
             {
                 // Instantiate new button with that gameobject as parent.
-                var buttonGameObj = Instantiate(this.prefabButton, this.firstButtonLocationObject.transform);
-                // calculate positon offset. 
-                positionVector = this.firstButtonLocationObject.transform.position;
-                positionVector.y -= buttonSpacing * i;
-
-                // set position of button correctly.
-                buttonGameObj.transform.SetPositionAndRotation(positionVector, Quaternion.identity);
+                var buttonGameObj = Instantiate(this.prefabButton, this.buttonPositionsTopToBottom[i].transform);
 
                 // set button Dialogue Option to the Dialogue Option.
                 // REMEBER THIS IS NOT THE SAME OBJECT AS IN THE CURRENT SLIDE.OPTIONS
                 buttonGameObj.GetComponent<DialogueOptionButton>().SetValues(this.currentSlide.options[i]);
 
-                // TODO: not sure if this will add the correct button to the list?
                 this.buttons.Add(buttonGameObj);
             }
 
