@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +12,16 @@ public class DialogueTextBox : MonoBehaviour
     private IHasDialogue? NPCPlayerIsSpeakingTo;
     private TMP_Text TMPTextBox;
     [SerializeField] private float textspeed = 0.1f;
-    private DialogueSlide? currentSlide;
+    private OLDDialogueSlide? currentSlide;
     public BoxState State { get; private set; } = BoxState.invisibleInactive;
     public bool PlayerInteractFlagSet;
     [SerializeField] GameObject prefabButton;
     [SerializeField] EventSystem UIEventSystem;
     List<GameObject> buttons = new List<GameObject>();
-    [SerializeField] int buttonSpacing = 48;
     private char pauseCharacterToNotPrint = '_';
     [SerializeField] List<GameObject> buttonPositionsTopToBottom;
 
-    public void NewInteractionBegan(DialogueSlide firstSlide)
+    public void NewInteractionBegan(OLDDialogueSlide firstSlide)
     {
         currentSlide = firstSlide;
         this.newInteractionSetup = true;
@@ -78,7 +78,8 @@ public class DialogueTextBox : MonoBehaviour
                 if (this.PlayerInteractFlagSet)
                 {
                     this.PlayerInteractFlagSet = false;
-                    if (this.currentSlide.lastSlideInSequence)
+                    MyGuard.IsNotNull(this.currentSlide);
+                    if (this.currentSlide.islastSlideInSequence)
                     {
                         this.currentSlide = null;
                         Debug.Log("state INVIS INACTIVE");
@@ -116,6 +117,9 @@ public class DialogueTextBox : MonoBehaviour
         StopAllCoroutines();
         DrawButtons();
         string parsedString = "";
+
+        MyGuard.IsNotNull(currentSlide);
+        MyGuard.IsNotNull(currentSlide.dialogue);
         foreach (var item in currentSlide.dialogue)
         {
             if (item != pauseCharacterToNotPrint)
@@ -146,7 +150,6 @@ public class DialogueTextBox : MonoBehaviour
                 // set button Dialogue Option to the Dialogue Option.
                 // REMEBER THIS IS NOT THE SAME OBJECT AS IN THE CURRENT SLIDE.OPTIONS
                 buttonGameObj.GetComponent<DialogueOptionButton>().SetValues(this.currentSlide.options[i]);
-
                 this.buttons.Add(buttonGameObj);
             }
 
@@ -169,6 +172,8 @@ public class DialogueTextBox : MonoBehaviour
         this.buttons.ForEach(x => Destroy(x));
         this.buttons.Clear();
 
+        MyGuard.IsNotNull(this.currentSlide);
+        MyGuard.IsNotNull(this.currentSlide.dialogue);
         for (int i = 0; i < this.currentSlide.dialogue.Length; i++)
         {
             if (i == 0) // set first letter.

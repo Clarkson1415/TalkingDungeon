@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IHasDialogue : IInteracble
 {
-    public DialogueSlide GetFirstDialogueSlide();
+    public OLDDialogueSlide GetFirstDialogueSlide();
 }

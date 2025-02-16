@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class mildlyInterestingRock : MonoBehaviour, IHasDialogue
 {
-    protected DialogueSlide dialogueSlide;
+    protected OLDDialogueSlide dialogueSlide;
 
-    public DialogueSlide GetFirstDialogueSlide()
+    public OLDDialogueSlide GetFirstDialogueSlide()
     {
         return dialogueSlide;
     }
@@ -14,11 +14,11 @@ public class mildlyInterestingRock : MonoBehaviour, IHasDialogue
     // Start is called before the first frame update
     void Start()
     {
-        var Slide1Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option1_NextSlide.SetValues("*CLANG* ___ OW! fuck off.", true, null, null);
+        var Slide1Option1_NextSlide = gameObject.AddComponent<OLDDialogueSlide>();
+        Slide1Option1_NextSlide.SetValues("*CLANG* ___ OW! fuck off.");
 
-        var Slide1Option2_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option2_NextSlide.SetValues("no", true, null, null);
+        var Slide1Option2_NextSlide = gameObject.AddComponent<OLDDialogueSlide>();
+        Slide1Option2_NextSlide.SetValues("no");
 
         var Slide1Option1 = gameObject.AddComponent<DialogueOptionButton>();
         Slide1Option1.SetValues("open up! *strike the rock with your sword*", Slide1Option1_NextSlide);
@@ -26,8 +26,8 @@ public class mildlyInterestingRock : MonoBehaviour, IHasDialogue
         var Slide1Option2 = gameObject.AddComponent<DialogueOptionButton>();
         Slide1Option2.SetValues("May I please Look Underneath", Slide1Option2_NextSlide);
 
-        var Slide1 = gameObject.AddComponent<DialogueSlide>();
-        Slide1.SetValues("... ___ugh...___what?", false, new List<DialogueOptionButton>() { Slide1Option1, Slide1Option2 }, null);
+        var Slide1 = gameObject.AddComponent<OLDDialogueSlide>();
+        Slide1.SetValues("... ___ugh...___what?", new List<DialogueOptionButton>() { Slide1Option1, Slide1Option2 });
 
         this.dialogueSlide = Slide1;
     }

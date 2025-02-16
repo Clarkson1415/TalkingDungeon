@@ -4,11 +4,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using TMPro;
 using UnityEngine;
+[System.Serializable]
 
 public class DialogueOptionButton : MonoBehaviour
 {
-    public DialogueSlide nextDialogueSlide { get; private set; }
-    public string optionText { get; private set; }
+    public OLDDialogueSlide nextDialogueSlide { get; set; }
+    public string optionText { get; set; }
 
     public bool isSelected;
 
@@ -29,7 +30,7 @@ public class DialogueOptionButton : MonoBehaviour
         this.isSelected = option.isSelected;
     }
 
-    public void SetValues(string optionText, DialogueSlide nextDSlide, bool isSelected = false)
+    public void SetValues(string optionText, OLDDialogueSlide nextDSlide, bool isSelected = false)
     {
         this.optionText = optionText;
         this.nextDialogueSlide = nextDSlide;
@@ -40,7 +41,7 @@ public class DialogueOptionButton : MonoBehaviour
     {
     }
 
-    public DialogueOptionButton(string optionText, DialogueSlide nextslide)
+    public DialogueOptionButton(string optionText, OLDDialogueSlide nextslide)
     {
         this.optionText = optionText;
         this.nextDialogueSlide = nextslide;

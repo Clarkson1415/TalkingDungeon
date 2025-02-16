@@ -1,22 +1,22 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
-#nullable enable
 
 public class PlayerCharacterKnight : MonoBehaviour
 {
     [SerializeField] DialogueTextBox dialogueBox;
     private bool isDialogueSlidePrinting;
-    private IInteracble? interactableInRange = null;
+    private IInteracble interactableInRange = null;
     private bool inDialogue;
     private Animator animator;
     private Rigidbody2D rb;
     private Vector2 direction;
-
     [SerializeField] private float movementSpeed = 1f;
     private float storedMovementSpeed;
     private knightState state = knightState.MOVING;
     private bool InteractFlagSet;
+    private bool moveFlagSet;
+    private bool idleFlagSet;
 
     private enum knightState
     {
@@ -35,11 +35,6 @@ public class PlayerCharacterKnight : MonoBehaviour
     {
         this.state = knightState.MOVING;
     }
-
-    private bool moveFlagSet;
-    private bool idleFlagSet;
-    [SerializeField] private float obstaclePadding = 1f;
-
     private void FixedUpdate()
     {
         switch (this.state)
