@@ -1,4 +1,3 @@
-using CommunityToolkit.Diagnostics;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,7 +38,6 @@ public class OLDDialogueSlide : MonoBehaviour
         }
 
         //Guard.ArgumentNotNull(options);
-
         this.dialogue = dialogue;
         this.options = options;
     }
@@ -51,7 +49,7 @@ public class OLDDialogueSlide : MonoBehaviour
             throw new ArgumentOutOfRangeException("cant ave more than 120 chars in current font size.");
         }
 
-        Guard.IsNotNull(nextSlide);
+        MyGuard.IsNotNull(nextSlide);
         this.islastSlideInSequence = (nextSlide == null);
         this.dialogue = dialogue;
         this.nextSlide = nextSlide;
@@ -64,6 +62,7 @@ public class OLDDialogueSlide : MonoBehaviour
             throw new ArgumentOutOfRangeException("cant ave more than 120 chars in current font size.");
         }
 
+        this.dialogue = dialogue;
         this.islastSlideInSequence = true;
     }
 }

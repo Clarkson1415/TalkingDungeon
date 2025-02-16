@@ -62,7 +62,7 @@ public class DialogueTextBox : MonoBehaviour
             case BoxState.writing:
                 if (this.PlayerInteractFlagSet)
                 {
-                     this.PlayerInteractFlagSet = false;
+                    this.PlayerInteractFlagSet = false;
                     this.SkipToEnd();
                     this.State = BoxState.waitingOnSlide;
                     Debug.Log("state writing");
@@ -95,6 +95,11 @@ public class DialogueTextBox : MonoBehaviour
                         else
                         {
                             var selected = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
+                            if(selected.GetComponent<DialogueOptionButton>().nextDialogueSlide == null)
+                            {
+                                Debug.Log("next dialogue slide null");
+                            }
+
                             this.currentSlide = selected.GetComponent<DialogueOptionButton>().nextDialogueSlide;
                         }
 
@@ -118,8 +123,6 @@ public class DialogueTextBox : MonoBehaviour
         DrawButtons();
         string parsedString = "";
 
-        MyGuard.IsNotNull(currentSlide);
-        MyGuard.IsNotNull(currentSlide.dialogue);
         foreach (var item in currentSlide.dialogue)
         {
             if (item != pauseCharacterToNotPrint)
@@ -172,8 +175,8 @@ public class DialogueTextBox : MonoBehaviour
         this.buttons.ForEach(x => Destroy(x));
         this.buttons.Clear();
 
-        MyGuard.IsNotNull(this.currentSlide);
-        MyGuard.IsNotNull(this.currentSlide.dialogue);
+        //MyGuard.IsNotNull(this.currentSlide);
+        //MyGuard.IsNotNull(this.currentSlide.dialogue);
         for (int i = 0; i < this.currentSlide.dialogue.Length; i++)
         {
             if (i == 0) // set first letter.
