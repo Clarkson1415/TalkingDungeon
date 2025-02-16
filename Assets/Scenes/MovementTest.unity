@@ -193,7 +193,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!4 &63873786
 Transform:
   m_ObjectHideFlags: 0
@@ -268,10 +268,10 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.011920929, y: -2.797789}
+  m_Offset: {x: -0.0007209778, y: -0.5989597}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.49583188, y: 0.1369537}
     oldSize: {x: 5, y: 7}
     newSize: {x: 0.8, y: 1.12}
     adaptiveTilingThreshold: 0.5
@@ -279,7 +279,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.3486214, y: 1.171277}
+  m_Size: {x: 1.540535, y: 1.0486026}
   m_EdgeRadius: 0
 --- !u!1 &116938331
 GameObject:
@@ -486,7 +486,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &301804469
 RectTransform:
   m_ObjectHideFlags: 0
@@ -528,7 +528,6 @@ MonoBehaviour:
   prefabButton: {fileID: 2022398923937881920, guid: 5569c1daa2aad6a4aa678bfa05b15345,
     type: 3}
   UIEventSystem: {fileID: 543593687}
-  buttonSpacing: 48
   buttonPositionsTopToBottom:
   - {fileID: 1482139817}
   - {fileID: 1354588753}
@@ -816,7 +815,7 @@ SpriteRenderer:
   m_SortingLayerID: 1107779803
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: fcb7801386e8b4e49a54361250d3cacb, type: 3}
+  m_Sprite: {fileID: 1381758728, guid: 1bee6fcadd6be5f419d512dc3a02b620, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -900,7 +899,7 @@ BoxCollider2D:
   m_Offset: {x: 0.1052711, y: 0.07206881}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0.3}
     oldSize: {x: 4, y: 4}
     newSize: {x: 0.64, y: 0.64}
     adaptiveTilingThreshold: 0.5
@@ -31495,7 +31494,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.06352162, y: -0.8759499}
+  m_Offset: {x: 0.06352162, y: -0.19141215}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -31506,7 +31505,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.3025374, y: 0.8597909}
+  m_Size: {x: 1.3025374, y: 0.7396964}
   m_EdgeRadius: 0
 --- !u!50 &1028459195
 Rigidbody2D:
@@ -32410,7 +32409,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.1762222, y: -0.6003167}
+  m_Offset: {x: -0.1762222, y: -0.7791601}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -32421,7 +32420,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.151489, y: 0.83242023}
+  m_Size: {x: 1.151489, y: 0.6976503}
   m_EdgeRadius: 0
 --- !u!50 &1860419652
 Rigidbody2D:
@@ -32464,7 +32463,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueBox: {fileID: 301804470}
   movementSpeed: 5
-  obstaclePadding: 1
 --- !u!1 &1931951309
 GameObject:
   m_ObjectHideFlags: 0

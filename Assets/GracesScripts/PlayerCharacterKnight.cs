@@ -146,9 +146,10 @@ public class PlayerCharacterKnight : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<NPC>() as IHasDialogue == this.interactableInRange)
+        if (this.interactableInRange != null)
         {
-            interactableInRange = null;
+            Debug.Log("remove" + collision.name);
+            this.interactableInRange = null;
         }
     }
 }
