@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Assembly-CSharp-Knight90sTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+511dcabeee6a7a24dc0048a4519fb00a29060447")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5348a6409682166921c1c9434153781bb8534e21")]
 [assembly: System.Reflection.AssemblyProductAttribute("Assembly-CSharp-Knight90sTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Assembly-CSharp-Knight90sTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

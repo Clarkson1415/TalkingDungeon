@@ -122,7 +122,8 @@ public class DialogueTextBox : MonoBehaviour
         StopAllCoroutines();
         DrawButtons();
         string parsedString = "";
-
+        MyGuard.IsNotNull(currentSlide);
+        MyGuard.IsNotNull(currentSlide.dialogue);
         foreach (var item in currentSlide.dialogue)
         {
             if (item != pauseCharacterToNotPrint)
