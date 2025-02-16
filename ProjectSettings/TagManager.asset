@@ -8,7 +8,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - PlayerCharacter
+  - Characters
   - Water
   - UI
   - Obstacle
@@ -50,11 +50,8 @@ TagManager:
   - name: Ground
     uniqueID: 3933657365
     locked: 0
-  - name: Characters
+  - name: Characters&Trees
     uniqueID: 1107779803
-    locked: 0
-  - name: TreeBelow
-    uniqueID: 4040688619
     locked: 0
   - name: UI
     uniqueID: 1238706651

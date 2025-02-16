@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using TMPro;
 using UnityEngine;
 
-public class DialogueOption : MonoBehaviour
+public class DialogueOptionButton : MonoBehaviour
 {
     public DialogueSlide nextDialogueSlide { get; private set; }
     public string optionText { get; private set; }
@@ -13,7 +14,7 @@ public class DialogueOption : MonoBehaviour
 
     public void ButtonClicked()
     {
-        Debug.Log("buttoncliecked");
+        Debug.Log("button clicked");
         isSelected = true;
     }
 
@@ -21,18 +22,25 @@ public class DialogueOption : MonoBehaviour
     /// Set all values in a dialogue option to the option passed in.
     /// </summary>
     /// <param name="option"></param>
-    public void SetValues(DialogueOption option)
+    public void SetValues(DialogueOptionButton option)
     {
         this.optionText = option.optionText;
         this.nextDialogueSlide = option.nextDialogueSlide;
         this.isSelected = option.isSelected;
     }
 
+    public void SetValues(string optionText, DialogueSlide nextDSlide, bool isSelected = false)
+    {
+        this.optionText = optionText;
+        this.nextDialogueSlide = nextDSlide;
+        this.isSelected = isSelected;
+    }
+
     void Start()
     {
     }
 
-    public DialogueOption(string optionText, DialogueSlide nextslide)
+    public DialogueOptionButton(string optionText, DialogueSlide nextslide)
     {
         this.optionText = optionText;
         this.nextDialogueSlide = nextslide;

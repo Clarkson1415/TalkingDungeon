@@ -1,0 +1,522 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp-Knight90sTests\\Assembly-CSharp-Knight90sTests.csproj": {}
+  },
+  "projects": {
+    "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp-Knight90sTests\\Assembly-CSharp-Knight90sTests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp-Knight90sTests\\Assembly-CSharp-Knight90sTests.csproj",
+        "projectName": "Assembly-CSharp-Knight90sTests",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp-Knight90sTests\\Assembly-CSharp-Knight90sTests.csproj",
+        "packagesPath": "C:\\Users\\georg\\.nuget\\packages\\",
+        "outputPath": "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp-Knight90sTests\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\georg\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.14.0, )"
+            },
+            "NUnit.Analyzers": {
+              "target": "Package",
+              "version": "[3.9.0, )"
+            },
+            "NUnit3TestAdapter": {
+              "target": "Package",
+              "version": "[4.5.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp.csproj",
+        "projectName": "Assembly-CSharp",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Assembly-CSharp.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\PPv2URPConverters.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\PPv2URPConverters.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.2D.Sprite.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.2D.Sprite.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.2D.Tilemap.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.2D.Tilemap.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipeline.Universal.ShaderLibrary.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipeline.Universal.ShaderLibrary.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.ShaderLibrary.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.ShaderLibrary.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Shaders.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Shaders.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\PPv2URPConverters.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\PPv2URPConverters.csproj",
+        "projectName": "PPv2URPConverters",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\PPv2URPConverters.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.2D.Sprite.Editor.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.2D.Sprite.Editor.csproj",
+        "projectName": "Unity.2D.Sprite.Editor",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.2D.Sprite.Editor.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.2D.Tilemap.Editor.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.2D.Tilemap.Editor.csproj",
+        "projectName": "Unity.2D.Tilemap.Editor",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.2D.Tilemap.Editor.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipeline.Universal.ShaderLibrary.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipeline.Universal.ShaderLibrary.csproj",
+        "projectName": "Unity.RenderPipeline.Universal.ShaderLibrary",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipeline.Universal.ShaderLibrary.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj",
+        "projectName": "Unity.RenderPipelines.Core.Editor",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj",
+        "projectName": "Unity.RenderPipelines.Core.Runtime",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.ShaderLibrary.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.ShaderLibrary.csproj",
+        "projectName": "Unity.RenderPipelines.Core.ShaderLibrary",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.ShaderLibrary.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj",
+        "projectName": "Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Editor.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Editor.csproj",
+        "projectName": "Unity.RenderPipelines.Universal.Editor",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Editor.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Runtime.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Runtime.csproj",
+        "projectName": "Unity.RenderPipelines.Universal.Runtime",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Runtime.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipeline.Universal.ShaderLibrary.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipeline.Universal.ShaderLibrary.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Shaders.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Shaders.csproj",
+        "projectName": "Unity.RenderPipelines.Universal.Shaders",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Universal.Shaders.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Editor.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Editor.csproj",
+        "projectName": "Unity.ShaderGraph.Editor",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Editor.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Editor.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.RenderPipelines.Core.Runtime.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Utilities.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Utilities.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Utilities.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Utilities.csproj",
+        "projectName": "Unity.ShaderGraph.Utilities",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\Unity.ShaderGraph.Utilities.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj"
+              },
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj",
+        "projectName": "UnityEditor.UI",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEditor.UI.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {
+              "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+                "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    },
+    "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj",
+        "projectName": "UnityEngine.UI",
+        "projectPath": "D:\\Github\\Knight-in-the-90s\\UnityEngine.UI.csproj",
+        "frameworks": {
+          "net471": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net471": {}
+      }
+    }
+  }
+}

@@ -48,10 +48,8 @@ public class PlayerCharacterKnight : MonoBehaviour
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
-                    Debug.Log("interact flag set in MOVING");
                     if (this.interactableInRange is IHasDialogue interactableWithDialogue)
                     {
-                        Debug.Log("Dialogue Box");
                         dialogueBox.PlayerInteractFlagSet = true;
                         this.dialogueBox.gameObject.SetActive(true);
                         this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
@@ -125,10 +123,11 @@ public class PlayerCharacterKnight : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<NPC>() is IHasDialogue speaker)
+        var dialogueObject = collision.GetComponent<IHasDialogue>();
+        if (dialogueObject != null)
         {
             Debug.Log("can interact with" + collision.name);
-            this.interactableInRange = speaker as IInteracble;
+            this.interactableInRange = dialogueObject;
         }
     }
 

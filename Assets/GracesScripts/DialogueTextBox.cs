@@ -1,13 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.PlayerLoop;
-using UnityEngine.UI;
 #nullable enable
 
 public class DialogueTextBox : MonoBehaviour
@@ -21,8 +17,9 @@ public class DialogueTextBox : MonoBehaviour
     [SerializeField] GameObject prefabButton;
     [SerializeField] EventSystem UIEventSystem;
     List<GameObject> buttons = new List<GameObject>();
-    [SerializeField] float buttonSpacing = 170;
+    [SerializeField] int buttonSpacing = 48;
     [SerializeField] private GameObject firstButtonLocationObject;
+    private char pauseCharacterToNotPrint = '_';
 
     public void NewInteractionBegan(DialogueSlide firstSlide)
     {
@@ -48,6 +45,7 @@ public class DialogueTextBox : MonoBehaviour
 
     private void Update()
     {
+
         switch (State)
         {
             case BoxState.invisibleInactive:
@@ -64,7 +62,7 @@ public class DialogueTextBox : MonoBehaviour
             case BoxState.writing:
                 if (this.PlayerInteractFlagSet)
                 {
-                    this.PlayerInteractFlagSet = false;
+                     this.PlayerInteractFlagSet = false;
                     this.SkipToEnd();
                     this.State = BoxState.waitingOnSlide;
                     Debug.Log("state writing");
@@ -83,9 +81,9 @@ public class DialogueTextBox : MonoBehaviour
                     if (this.currentSlide.lastSlideInSequence)
                     {
                         this.currentSlide = null;
-                        this.gameObject.SetActive(false);
                         Debug.Log("state INVIS INACTIVE");
                         this.State = BoxState.invisibleInactive;
+                        this.gameObject.SetActive(false);
                     }
                     else
                     {
@@ -95,8 +93,8 @@ public class DialogueTextBox : MonoBehaviour
                         }
                         else
                         {
-                            var selected = this.buttons.First(x => x.GetComponent<DialogueOption>().isSelected);
-                            this.currentSlide = selected.GetComponent<DialogueOption>().nextDialogueSlide;
+                            var selected = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
+                            this.currentSlide = selected.GetComponent<DialogueOptionButton>().nextDialogueSlide;
                         }
 
                         StartCoroutine(WriteSlideOverTime());
@@ -117,12 +115,21 @@ public class DialogueTextBox : MonoBehaviour
         Debug.Log("skip to end");
         StopAllCoroutines();
         DrawButtons();
-        this.TMPTextBox.text = this.currentSlide.dialogue;
+        string parsedString = "";
+        foreach (var item in currentSlide.dialogue)
+        {
+            if (item != pauseCharacterToNotPrint)
+            {
+                parsedString += item;
+            }
+        }
+
+        this.TMPTextBox.text = parsedString;
     }
 
     private void DrawButtons()
     {
-        if(this.currentSlide?.options == null)
+        if (this.currentSlide?.options == null)
         {
             return;
         }
@@ -138,12 +145,13 @@ public class DialogueTextBox : MonoBehaviour
                 // calculate positon offset. 
                 positionVector = this.firstButtonLocationObject.transform.position;
                 positionVector.y -= buttonSpacing * i;
+
                 // set position of button correctly.
                 buttonGameObj.transform.SetPositionAndRotation(positionVector, Quaternion.identity);
 
                 // set button Dialogue Option to the Dialogue Option.
                 // REMEBER THIS IS NOT THE SAME OBJECT AS IN THE CURRENT SLIDE.OPTIONS
-                buttonGameObj.GetComponent<DialogueOption>().SetValues(this.currentSlide.options[i]);
+                buttonGameObj.GetComponent<DialogueOptionButton>().SetValues(this.currentSlide.options[i]);
 
                 // TODO: not sure if this will add the correct button to the list?
                 this.buttons.Add(buttonGameObj);
@@ -157,7 +165,7 @@ public class DialogueTextBox : MonoBehaviour
         {
             foreach (var button in this.buttons)
             {
-                button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOption>().optionText;
+                button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOptionButton>().optionText;
             }
         }
     }
@@ -170,18 +178,20 @@ public class DialogueTextBox : MonoBehaviour
 
         for (int i = 0; i < this.currentSlide.dialogue.Length; i++)
         {
-            if (i == 0)
+            if (i == 0) // set first letter.
             {
                 this.TMPTextBox.SetText(this.currentSlide.dialogue[0].ToString());
                 continue;
             }
 
-            this.TMPTextBox.text += this.currentSlide.dialogue[i];
             yield return new WaitForSeconds(textspeed);
+            if (this.currentSlide.dialogue[i] != pauseCharacterToNotPrint)
+            {
+                this.TMPTextBox.text += this.currentSlide.dialogue[i];
+            }
         }
 
         DrawButtons();
-
         this.FinishedWritingSlideOverTime = true;
     }
 }
