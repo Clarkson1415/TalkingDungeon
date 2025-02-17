@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class DialogueOptionButton : MonoBehaviour
 {
-    public OLDDialogueSlide nextDialogueSlide { get; set; }
+    public DialogueSlide nextDialogueSlide { get; set; }
     public string optionText { get; set; }
 
     public bool isSelected;
@@ -30,7 +30,7 @@ public class DialogueOptionButton : MonoBehaviour
         this.isSelected = option.isSelected;
     }
 
-    public void SetValues(string optionText, OLDDialogueSlide nextDSlide, bool isSelected = false)
+    public void SetValues(string optionText, DialogueSlide nextDSlide, bool isSelected = false)
     {
         this.optionText = optionText;
         this.nextDialogueSlide = nextDSlide;
@@ -41,7 +41,7 @@ public class DialogueOptionButton : MonoBehaviour
     {
     }
 
-    public DialogueOptionButton(string optionText, OLDDialogueSlide nextslide)
+    public DialogueOptionButton(string optionText, DialogueSlide nextslide)
     {
         this.optionText = optionText;
         this.nextDialogueSlide = nextslide;

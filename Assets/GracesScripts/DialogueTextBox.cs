@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,31 +8,32 @@ using UnityEngine.EventSystems;
 
 public class DialogueTextBox : MonoBehaviour
 {
-    private IHasDialogue? NPCPlayerIsSpeakingTo;
     private TMP_Text TMPTextBox;
     [SerializeField] private float textspeed = 0.1f;
-    private OLDDialogueSlide? currentSlide;
-    public BoxState State { get; private set; } = BoxState.invisibleInactive;
+    private DialogueSlide? currentSlide;
+    public BoxState State { get; private set; } = BoxState.WAITINGFORINTERACTION;
     public bool PlayerInteractFlagSet;
     [SerializeField] GameObject prefabButton;
     [SerializeField] EventSystem UIEventSystem;
-    List<GameObject> buttons = new List<GameObject>();
+    readonly List<GameObject> buttons = new();
     private char pauseCharacterToNotPrint = '_';
     [SerializeField] List<GameObject> buttonPositionsTopToBottom;
+    private Coroutine? writeSlidesOverTimeCoroutine = null;
+    private bool newInteractionSetup;
+    private bool FinishedWritingSlideOverTime;
 
-    public void NewInteractionBegan(OLDDialogueSlide firstSlide)
+
+    public void NewInteractionBegan(DialogueSlide firstSlide)
     {
         currentSlide = firstSlide;
         this.newInteractionSetup = true;
     }
 
-    private bool newInteractionSetup;
-
     public enum BoxState
     {
-        invisibleInactive,
-        writing,
-        waitingOnSlide,
+        WAITINGFORINTERACTION,
+        WRITINGSLIDE,
+        WAITINGONSLIDE,
     }
 
     private void Awake()
@@ -41,40 +41,37 @@ public class DialogueTextBox : MonoBehaviour
         TMPTextBox = this.GetComponentInChildren<TMP_Text>();
     }
 
-    private bool FinishedWritingSlideOverTime;
-
     private void Update()
     {
-
         switch (State)
         {
-            case BoxState.invisibleInactive:
+            case BoxState.WAITINGFORINTERACTION:
                 if (this.PlayerInteractFlagSet && this.newInteractionSetup)
                 {
                     this.newInteractionSetup = false;
                     this.PlayerInteractFlagSet = false;
-                    StartCoroutine(WriteSlideOverTime());
+                    this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
                     this.FinishedWritingSlideOverTime = false;
-                    State = BoxState.writing;
+                    State = BoxState.WRITINGSLIDE;
                     Debug.Log("state writing");
                 }
                 break;
-            case BoxState.writing:
+            case BoxState.WRITINGSLIDE:
                 if (this.PlayerInteractFlagSet)
                 {
                     this.PlayerInteractFlagSet = false;
                     this.SkipToEnd();
-                    this.State = BoxState.waitingOnSlide;
+                    this.State = BoxState.WAITINGONSLIDE;
                     Debug.Log("state writing");
                 }
                 if (this.FinishedWritingSlideOverTime)
                 {
                     this.FinishedWritingSlideOverTime = false;
-                    this.State = BoxState.waitingOnSlide;
+                    this.State = BoxState.WAITINGONSLIDE;
                     Debug.Log("state waitingOnSlide");
                 }
                 break;
-            case BoxState.waitingOnSlide:
+            case BoxState.WAITINGONSLIDE:
                 if (this.PlayerInteractFlagSet)
                 {
                     this.PlayerInteractFlagSet = false;
@@ -83,7 +80,7 @@ public class DialogueTextBox : MonoBehaviour
                     {
                         this.currentSlide = null;
                         Debug.Log("state INVIS INACTIVE");
-                        this.State = BoxState.invisibleInactive;
+                        this.State = BoxState.WAITINGFORINTERACTION;
                         this.gameObject.SetActive(false);
                     }
                     else
@@ -95,7 +92,7 @@ public class DialogueTextBox : MonoBehaviour
                         else
                         {
                             var selected = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
-                            if(selected.GetComponent<DialogueOptionButton>().nextDialogueSlide == null)
+                            if (selected.GetComponent<DialogueOptionButton>().nextDialogueSlide == null)
                             {
                                 Debug.Log("next dialogue slide null");
                             }
@@ -103,23 +100,22 @@ public class DialogueTextBox : MonoBehaviour
                             this.currentSlide = selected.GetComponent<DialogueOptionButton>().nextDialogueSlide;
                         }
 
-                        StartCoroutine(WriteSlideOverTime());
+                        this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
                         Debug.Log("state writing after waiting");
-                        this.State = BoxState.writing;
+                        this.State = BoxState.WRITINGSLIDE;
                     }
                 }
                 break;
             default:
-                Debug.Log("default set invis inactive");
-                State = BoxState.invisibleInactive;
+                State = BoxState.WAITINGFORINTERACTION;
                 break;
         }
     }
 
-    public void SkipToEnd()
+    private void SkipToEnd()
     {
-        Debug.Log("skip to end");
-        StopAllCoroutines();
+        // In more recent versions of Unity (at least 5.3 onwards) you can keep a reference to the IEnumerator or returned Coroutine object and start and stop that directly, rather than use the method name. These are preferred over using the method name as they are type safe and more performant. See the StopCoroutine docs for details https://docs.unity3d.com/ScriptReference/MonoBehaviour.StopCoroutine.html
+        StopCoroutine(writeSlidesOverTimeCoroutine);
         DrawButtons();
         string parsedString = "";
         MyGuard.IsNotNull(currentSlide);
@@ -170,7 +166,7 @@ public class DialogueTextBox : MonoBehaviour
         }
     }
 
-    IEnumerator WriteSlideOverTime()
+    private IEnumerator WriteSlideOverTime()
     {
         // remove old buttons 
         this.buttons.ForEach(x => Destroy(x));

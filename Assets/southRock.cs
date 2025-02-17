@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class southRock : MonoBehaviour, IHasDialogue
 {
-    protected OLDDialogueSlide firstDialogue { get; private set; }
+    protected DialogueSlide firstDialogue { get; private set; }
 
-    public OLDDialogueSlide GetFirstDialogueSlide()
+    public DialogueSlide GetFirstDialogueSlide()
     {
         return this.firstDialogue;
     }
@@ -14,10 +14,10 @@ public class southRock : MonoBehaviour, IHasDialogue
     // Start is called before the first frame update
     void Start()
     {
-        var Slide1Option1_NextSlide = gameObject.AddComponent<OLDDialogueSlide>();
+        var Slide1Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
         Slide1Option1_NextSlide.SetValues("k bye");
 
-        var Slide1Option2_NextSlide = gameObject.AddComponent<OLDDialogueSlide>();
+        var Slide1Option2_NextSlide = gameObject.AddComponent<DialogueSlide>();
         Slide1Option2_NextSlide.SetValues("fuck you too bitch");
 
         var Slide1Option1 = gameObject.AddComponent<DialogueOptionButton>();
@@ -26,7 +26,7 @@ public class southRock : MonoBehaviour, IHasDialogue
         var Slide1Option2 = gameObject.AddComponent<DialogueOptionButton>();
         Slide1Option2.SetValues("FuckYou", Slide1Option2_NextSlide);
 
-        var Slide1 = gameObject.AddComponent<OLDDialogueSlide>();
+        var Slide1 = gameObject.AddComponent<DialogueSlide>();
         Slide1.SetValues("Hey girlll, ____what is this, ___like Undertale Text?", new List<DialogueOptionButton>() { Slide1Option1, Slide1Option2 });
 
         this.firstDialogue = Slide1;

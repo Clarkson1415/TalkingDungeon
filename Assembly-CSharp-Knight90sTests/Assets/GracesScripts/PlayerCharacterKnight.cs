@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace Assembly_CSharp_Knight90sTests.Assets.GracesScripts
 {
-    internal class TestTest
+    internal class PlayerCharacterKnight
     {
+        [SetUp]
+        public void Setup()
+        {
+
+        }
+
+        [Test]
 
     }
 }

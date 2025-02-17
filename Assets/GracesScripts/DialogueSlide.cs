@@ -5,11 +5,11 @@ using UnityEngine;
 #nullable enable
 [System.Serializable]
 
-public class OLDDialogueSlide : MonoBehaviour
+public class DialogueSlide : MonoBehaviour
 {
     [SerializeField] public string? dialogue { get; set; }
     [SerializeField] public List<DialogueOptionButton>? options { get; set; }
-    [SerializeField] public OLDDialogueSlide? nextSlide { get; set; }
+    [SerializeField] public DialogueSlide? nextSlide { get; set; }
     public bool islastSlideInSequence { get; private set; } = false;
 
     /// <summary>
@@ -42,7 +42,7 @@ public class OLDDialogueSlide : MonoBehaviour
         this.options = options;
     }
 
-    public void SetValues(string dialogue, OLDDialogueSlide nextSlide)
+    public void SetValues(string dialogue, DialogueSlide nextSlide)
     {
         if (dialogue.Length > MaxChars)
         {

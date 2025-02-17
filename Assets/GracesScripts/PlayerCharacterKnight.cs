@@ -1,55 +1,56 @@
-using System.Runtime.CompilerServices;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerCharacterKnight : MonoBehaviour
 {
     [SerializeField] DialogueTextBox dialogueBox;
-    private bool isDialogueSlidePrinting;
     private IInteracble interactableInRange = null;
-    private bool inDialogue;
     private Animator animator;
     private Rigidbody2D rb;
     private Vector2 direction;
     [SerializeField] private float movementSpeed = 1f;
-    private float storedMovementSpeed;
-    private knightState state = knightState.MOVING;
+    private KnightState state = KnightState.MOVING;
     private bool InteractFlagSet;
-    private bool moveFlagSet;
-    private bool idleFlagSet;
 
-    private enum knightState
+    private enum KnightState
     {
         INTERACTING,
         MOVING,
     }
 
-    void Awake()
+    private void Awake()
     {
         this.animator = this.GetComponent<Animator>();
         this.rb = GetComponent<Rigidbody2D>();
     }
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        this.state = knightState.MOVING;
+        this.state = KnightState.MOVING;
     }
+
     private void FixedUpdate()
     {
         switch (this.state)
         {
-            case knightState.MOVING:
+            case KnightState.MOVING:
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
                     if (this.interactableInRange is IHasDialogue interactableWithDialogue)
                     {
-                        dialogueBox.PlayerInteractFlagSet = true;
                         this.dialogueBox.gameObject.SetActive(true);
+                        dialogueBox.PlayerInteractFlagSet = true;
                         this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
-                        this.state = knightState.INTERACTING;
                     }
+
+                    // TODO: add more interactable features if I need
+                }
+                else if(this.dialogueBox.State == DialogueTextBox.BoxState.WRITINGSLIDE || this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGONSLIDE)
+                {
+                    this.state = KnightState.INTERACTING;
                 }
                 else
                 {
@@ -57,34 +58,28 @@ public class PlayerCharacterKnight : MonoBehaviour
                     FlipSprite(this.direction.x);
                 }
                 break;
-            case knightState.INTERACTING:
+            case KnightState.INTERACTING:
                 this.rb.velocity = Vector2.zero;
                 if (this.InteractFlagSet)
                 {
                     dialogueBox.PlayerInteractFlagSet = true;
                     this.InteractFlagSet = false;
                 }
-                else if (this.dialogueBox.State == DialogueTextBox.BoxState.invisibleInactive)
+                else if ((this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGFORINTERACTION))
                 {
-                    Debug.Log("Freemovement from interacting");
-                    this.state = knightState.MOVING;
+                    this.state = KnightState.MOVING;
                 }
                 break;
             default:
-                this.state = knightState.MOVING;
+                this.state = KnightState.MOVING;
                 Debug.Log("Freemovement from default");
                 break;
         }
 
-        if (this.rb.velocity.x != 0 || this.rb.velocity.y != 0)
-        {
-            this.animator.SetBool("Running", true);
-        }
-        else
-        {
-            this.animator.SetBool("Running", false);
-        }
+        bool isMoving = this.rb.velocity.x != 0 || this.rb.velocity.y != 0;
+        this.animator.SetBool("Running", isMoving);
     }
+
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -103,14 +98,14 @@ public class PlayerCharacterKnight : MonoBehaviour
         }
     }
 
-    void FlipSprite(float xDirection)
+    private void FlipSprite(float xDirection)
     {
         // if going left and facing right flip
         if (xDirection < 0 && this.transform.localScale.x > 0)
         {
             this.transform.localScale = new Vector3(this.transform.localScale.x * -1, this.transform.localScale.y, this.transform.localScale.z);
         }
-        else if (xDirection > 0 && this.transform.localScale.x < 0) // going right and facing left flip
+        else if (xDirection > 0 && this.transform.localScale.x < 0)
         {
             this.transform.localScale = new Vector3(this.transform.localScale.x * -1, this.transform.localScale.y, this.transform.localScale.z);
         }

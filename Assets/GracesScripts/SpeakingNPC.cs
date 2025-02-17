@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class SpeakingNPC : NPC, IHasDialogue
 {
-    public OLDDialogueSlide dialogueSlide;
+    public DialogueSlide dialogueSlide;
 
-    public OLDDialogueSlide GetFirstDialogueSlide()
+    public DialogueSlide GetFirstDialogueSlide()
     {
         return dialogueSlide;
     }
