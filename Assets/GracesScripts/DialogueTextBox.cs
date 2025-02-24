@@ -1,5 +1,7 @@
+using Assets.GracesScripts;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -8,19 +10,21 @@ using UnityEngine.EventSystems;
 
 public class DialogueTextBox : MonoBehaviour
 {
-    private TMP_Text TMPTextBox;
-    [SerializeField] private float textspeed = 0.1f;
-    private DialogueSlide? currentSlide;
-    public BoxState State { get; private set; } = BoxState.WAITINGFORINTERACTION;
-    public bool PlayerInteractFlagSet;
-    [SerializeField] GameObject prefabButton;
-    [SerializeField] EventSystem UIEventSystem;
-    readonly List<GameObject> buttons = new();
-    private char pauseCharacterToNotPrint = '_';
-    [SerializeField] List<GameObject> buttonPositionsTopToBottom;
     private Coroutine? writeSlidesOverTimeCoroutine = null;
     private bool newInteractionSetup;
     private bool FinishedWritingSlideOverTime;
+    private const char pauseCharacterToNotPrint = '_';
+    private TMP_Text TMPTextBox;
+    private DialogueSlide? currentSlide;
+
+    public BoxState State { get; private set; } = BoxState.WAITINGFORINTERACTION;
+    public bool PlayerInteractFlagSet;
+    readonly List<GameObject> buttons = new();
+    [SerializeField] private float textspeed = 0.1f;
+    [SerializeField] GameObject prefabButton;
+    [SerializeField] EventSystem UIEventSystem;
+    [SerializeField] AudioSource dialogueSoundEffectAudioSource;
+    [SerializeField] List<GameObject> buttonPositionsTopToBottom;
 
 
     public void NewInteractionBegan(DialogueSlide firstSlide)
@@ -39,6 +43,7 @@ public class DialogueTextBox : MonoBehaviour
     private void Awake()
     {
         TMPTextBox = this.GetComponentInChildren<TMP_Text>();
+        this.dialogueSoundEffectAudioSource.loop = false;
     }
 
     private void Update()
@@ -53,7 +58,7 @@ public class DialogueTextBox : MonoBehaviour
                     this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
                     this.FinishedWritingSlideOverTime = false;
                     State = BoxState.WRITINGSLIDE;
-                    Debug.Log("state writing");
+                    Log.Print("writing Slide");
                 }
                 break;
             case BoxState.WRITINGSLIDE:
@@ -62,13 +67,13 @@ public class DialogueTextBox : MonoBehaviour
                     this.PlayerInteractFlagSet = false;
                     this.SkipToEnd();
                     this.State = BoxState.WAITINGONSLIDE;
-                    Debug.Log("state writing");
+                    Log.Print("state writing");
                 }
                 if (this.FinishedWritingSlideOverTime)
                 {
                     this.FinishedWritingSlideOverTime = false;
                     this.State = BoxState.WAITINGONSLIDE;
-                    Debug.Log("state waitingOnSlide");
+                    Log.Print("state waitingOnSlide");
                 }
                 break;
             case BoxState.WAITINGONSLIDE:
@@ -79,7 +84,7 @@ public class DialogueTextBox : MonoBehaviour
                     if (this.currentSlide.islastSlideInSequence)
                     {
                         this.currentSlide = null;
-                        Debug.Log("state INVIS INACTIVE");
+                        Log.Print("state INVIS INACTIVE");
                         this.State = BoxState.WAITINGFORINTERACTION;
                         this.gameObject.SetActive(false);
                     }
@@ -92,16 +97,16 @@ public class DialogueTextBox : MonoBehaviour
                         else
                         {
                             var selected = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
-                            if (selected.GetComponent<DialogueOptionButton>().nextDialogueSlide == null)
+                            if (selected.GetComponent<DialogueOptionButton>().NextDialogueSlide == null)
                             {
-                                Debug.Log("next dialogue slide null");
+                                Log.Print("next dialogue slide null");
                             }
 
-                            this.currentSlide = selected.GetComponent<DialogueOptionButton>().nextDialogueSlide;
+                            this.currentSlide = selected.GetComponent<DialogueOptionButton>().NextDialogueSlide;
                         }
 
                         this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
-                        Debug.Log("state writing after waiting");
+                        Log.Print("state writing after waiting");
                         this.State = BoxState.WRITINGSLIDE;
                     }
                 }
@@ -161,7 +166,7 @@ public class DialogueTextBox : MonoBehaviour
         {
             foreach (var button in this.buttons)
             {
-                button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOptionButton>().optionText;
+                button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOptionButton>().OptionText;
             }
         }
     }
@@ -176,17 +181,21 @@ public class DialogueTextBox : MonoBehaviour
         MyGuard.IsNotNull(this.currentSlide.dialogue);
         for (int i = 0; i < this.currentSlide.dialogue.Length; i++)
         {
-            if (i == 0) // set first letter.
+            if (this.currentSlide.dialogue[i] != pauseCharacterToNotPrint)
             {
-                this.TMPTextBox.SetText(this.currentSlide.dialogue[0].ToString());
-                continue;
+                // play dialogue text sound effect
+                this.dialogueSoundEffectAudioSource.Play();
+
+                if (i == 0) // set first letter.
+                {
+                    this.TMPTextBox.SetText(this.currentSlide.dialogue[0].ToString());
+                    continue;
+                }
+
+                this.TMPTextBox.text += this.currentSlide.dialogue[i];
             }
 
             yield return new WaitForSeconds(textspeed);
-            if (this.currentSlide.dialogue[i] != pauseCharacterToNotPrint)
-            {
-                this.TMPTextBox.text += this.currentSlide.dialogue[i];
-            }
         }
 
         DrawButtons();

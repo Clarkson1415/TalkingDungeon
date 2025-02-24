@@ -1,3 +1,4 @@
+using Assets.GracesScripts;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -72,7 +73,7 @@ public class PlayerCharacterKnight : MonoBehaviour
                 break;
             default:
                 this.state = KnightState.MOVING;
-                Debug.Log("Freemovement from default");
+                Log.Print("Freemovement from default");
                 break;
         }
 
@@ -83,7 +84,7 @@ public class PlayerCharacterKnight : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        Debug.Log("On move fired");
+        Log.Print("On move fired");
         this.direction = context.ReadValue<Vector2>();
 
         if (context.started)
@@ -116,12 +117,10 @@ public class PlayerCharacterKnight : MonoBehaviour
         var dialogueObject = collision.GetComponent<IHasDialogue>();
         if (dialogueObject != null)
         {
-            Debug.Log("can interact with" + collision.name);
+            Log.Print("can interact with" + collision.name);
             this.interactableInRange = dialogueObject;
         }
     }
-
-    private bool hasSkippedDialogue;
 
     public void OnInteract(InputAction.CallbackContext context)
     {
@@ -135,7 +134,7 @@ public class PlayerCharacterKnight : MonoBehaviour
             return;
         }
 
-        Debug.Log("Interact flag set");
+        Log.Print("Interact flag set");
         this.InteractFlagSet = true;
     }
 
@@ -143,7 +142,7 @@ public class PlayerCharacterKnight : MonoBehaviour
     {
         if (this.interactableInRange != null)
         {
-            Debug.Log("remove" + collision.name);
+            Log.Print("remove" + collision.name);
             this.interactableInRange = null;
         }
     }

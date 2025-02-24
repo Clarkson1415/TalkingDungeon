@@ -1,3 +1,4 @@
+using Assets.GracesScripts;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -8,14 +9,14 @@ using UnityEngine;
 
 public class DialogueOptionButton : MonoBehaviour
 {
-    public DialogueSlide nextDialogueSlide { get; set; }
-    public string optionText { get; set; }
+    public DialogueSlide NextDialogueSlide { get; set; }
+    public string OptionText { get; set; }
 
     public bool isSelected;
 
     public void ButtonClicked()
     {
-        Debug.Log("button clicked");
+        Log.Print("button clicked");
         isSelected = true;
     }
 
@@ -25,15 +26,15 @@ public class DialogueOptionButton : MonoBehaviour
     /// <param name="option"></param>
     public void SetValues(DialogueOptionButton option)
     {
-        this.optionText = option.optionText;
-        this.nextDialogueSlide = option.nextDialogueSlide;
+        this.OptionText = option.OptionText;
+        this.NextDialogueSlide = option.NextDialogueSlide;
         this.isSelected = option.isSelected;
     }
 
     public void SetValues(string optionText, DialogueSlide nextDSlide, bool isSelected = false)
     {
-        this.optionText = optionText;
-        this.nextDialogueSlide = nextDSlide;
+        this.OptionText = optionText;
+        this.NextDialogueSlide = nextDSlide;
         this.isSelected = isSelected;
     }
 
@@ -43,7 +44,7 @@ public class DialogueOptionButton : MonoBehaviour
 
     public DialogueOptionButton(string optionText, DialogueSlide nextslide)
     {
-        this.optionText = optionText;
-        this.nextDialogueSlide = nextslide;
+        this.OptionText = optionText;
+        this.NextDialogueSlide = nextslide;
     }
 }
