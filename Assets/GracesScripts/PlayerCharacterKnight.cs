@@ -73,7 +73,7 @@ public class PlayerCharacterKnight : MonoBehaviour
                 break;
             default:
                 this.state = KnightState.MOVING;
-                Log.Print("Freemovement from default");
+                //Log.Print("Freemovement from default");
                 break;
         }
 
@@ -84,7 +84,6 @@ public class PlayerCharacterKnight : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        Log.Print("On move fired");
         this.direction = context.ReadValue<Vector2>();
 
         if (context.started)
@@ -114,8 +113,7 @@ public class PlayerCharacterKnight : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        var dialogueObject = collision.GetComponent<IHasDialogue>();
-        if (dialogueObject != null)
+        if (collision.TryGetComponent<IHasDialogue>(out var dialogueObject))
         {
             Log.Print("can interact with" + collision.name);
             this.interactableInRange = dialogueObject;
@@ -136,14 +134,5 @@ public class PlayerCharacterKnight : MonoBehaviour
 
         Log.Print("Interact flag set");
         this.InteractFlagSet = true;
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (this.interactableInRange != null)
-        {
-            Log.Print("remove" + collision.name);
-            this.interactableInRange = null;
-        }
     }
 }

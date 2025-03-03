@@ -10,7 +10,9 @@ public class DialogueSlide : MonoBehaviour
     [SerializeField] public string? dialogue { get; set; }
     [SerializeField] public List<DialogueOptionButton>? options { get; set; }
     [SerializeField] public DialogueSlide? nextSlide { get; set; }
+    public Sprite? SpeakerPic { get; set; }
     public bool islastSlideInSequence { get; private set; } = false;
+    
 
     /// <summary>
     /// TODO: font size setting, and this based on font size setting.
@@ -27,10 +29,8 @@ public class DialogueSlide : MonoBehaviour
     /// TODO: make other a few, more restrictive  SetValue functions to restrict me putting in the wrong values.
     /// </summary>
     /// <param name="dialogue"></param>
-    /// <param name="isLastSlide"></param>
     /// <param name="options"></param>
-    /// <param name="nextSlide"></param>
-    public void SetValues(string dialogue, List<DialogueOptionButton> options)
+    public void SetValues(Sprite speakerPicture,string dialogue, List<DialogueOptionButton> options)
     {
         if (dialogue.Length > MaxChars)
         {
@@ -38,11 +38,12 @@ public class DialogueSlide : MonoBehaviour
         }
 
         //Guard.ArgumentNotNull(options);
+        this.SpeakerPic = speakerPicture;
         this.dialogue = dialogue;
         this.options = options;
     }
 
-    public void SetValues(string dialogue, DialogueSlide nextSlide)
+    public void SetValues(Sprite speakerPicture, string dialogue, DialogueSlide nextSlide)
     {
         if (dialogue.Length > MaxChars)
         {
@@ -50,18 +51,20 @@ public class DialogueSlide : MonoBehaviour
         }
 
         MyGuard.IsNotNull(nextSlide);
+        this.SpeakerPic = speakerPicture;
         this.islastSlideInSequence = (nextSlide == null);
         this.dialogue = dialogue;
         this.nextSlide = nextSlide;
     }
 
-    public void SetValues(string dialogue)
+    public void SetValues(Sprite speakerPicture, string dialogue)
     {
         if (dialogue.Length > MaxChars)
         {
             throw new ArgumentOutOfRangeException("cant ave more than 120 chars in current font size.");
         }
 
+        this.SpeakerPic = speakerPicture;
         this.dialogue = dialogue;
         this.islastSlideInSequence = true;
     }

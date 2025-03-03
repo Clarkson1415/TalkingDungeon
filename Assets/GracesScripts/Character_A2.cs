@@ -1,12 +1,12 @@
+using Assets.GracesScripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character_A : NPC, IHasDialogue
+public class Character_A2 : NPC, IHasDialogue
 {
-    ProfilePics pics;
-
     protected DialogueSlide firstDialogue { get; private set; }
+    ProfilePics pics;
 
     public DialogueSlide GetFirstDialogueSlide()
     {
@@ -22,13 +22,15 @@ public class Character_A : NPC, IHasDialogue
     void Start()
     {
         var Slide1Option2_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option2_NextSlide.SetValues(this.pics.characterA, "bye");
+        Slide1Option2_NextSlide.SetValues(this.pics.characterB, "new year new me.");
 
-        var Slide1Option2 = gameObject.AddComponent<DialogueOptionButton>();
-        Slide1Option2.SetValues("Hi", Slide1Option2_NextSlide);
+        var SlideAfter2 = gameObject.AddComponent<DialogueSlide>();
+        SlideAfter2.SetValues(this.pics.characterA, "but you're scared of horses", Slide1Option2_NextSlide);
 
         var Slide1 = gameObject.AddComponent<DialogueSlide>();
-        Slide1.SetValues(this.pics.characterA, "started conversaion with A.", new List<DialogueOptionButton>() { Slide1Option2});
+        Slide1.SetValues(this.pics.characterB, "ooo a jousting competition I'm gonna sign up", SlideAfter2);
+
+        this.firstDialogue = Slide1;
 
         this.firstDialogue = Slide1;
     }
@@ -36,6 +38,6 @@ public class Character_A : NPC, IHasDialogue
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
