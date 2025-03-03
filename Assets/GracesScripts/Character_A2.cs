@@ -21,11 +21,14 @@ public class Character_A2 : NPC, IHasDialogue
     // Start is called before the first frame update
     void Start()
     {
-        var Slide1Option2_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option2_NextSlide.SetValues(this.pics.characterB, "new year new me.");
+        var slide4 = gameObject.AddComponent<DialogueSlide>();
+        slide4.SetValues(this.pics.characterA, "It's July...");
+
+        var slide3 = gameObject.AddComponent<DialogueSlide>();
+        slide3.SetValues(this.pics.characterB, "new year new me.", slide4);
 
         var SlideAfter2 = gameObject.AddComponent<DialogueSlide>();
-        SlideAfter2.SetValues(this.pics.characterA, "but you're scared of horses", Slide1Option2_NextSlide);
+        SlideAfter2.SetValues(this.pics.characterA, "but you're scared of horses", slide3);
 
         var Slide1 = gameObject.AddComponent<DialogueSlide>();
         Slide1.SetValues(this.pics.characterB, "ooo a jousting competition I'm gonna sign up", SlideAfter2);
