@@ -11,4 +11,5 @@ public class ProfilePics : MonoBehaviour
 
     [SerializeField] public Sprite characterB;
     [SerializeField] public Sprite Rock1;
+    [SerializeField] public Sprite Rogue;
 }

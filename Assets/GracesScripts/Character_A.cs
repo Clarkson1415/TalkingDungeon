@@ -21,14 +21,58 @@ public class Character_A : NPC, IHasDialogue
     // Start is called before the first frame update
     void Start()
     {
+        // Slide1Option1_NextSlide_Option1_NextSlide
+        var Slide1Option1_NextSlide_Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
+        Slide1Option1_NextSlide_Option1_NextSlide.SetValues(this.pics.characterA, "ookkkayyyyy... maybe we need to go to the medical tent");
+
+        //Slide1Option1_NextSlide options
+        var Slide1Option1_NextSlideOption1 = gameObject.AddComponent<DialogueOptionButton>();
+        Slide1Option1_NextSlideOption1.SetValues("Larping?", Slide1Option1_NextSlide_Option1_NextSlide);
+
+        //Slide1Option1_NextSlide
+        var Slide1Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
+        Slide1Option1_NextSlide.SetValues(this.pics.characterA, "you alright there bud? Hit your head larping?", new List<DialogueOptionButton>() { Slide1Option1_NextSlideOption1 });
+
+        // Slide1Option2_NextSlide_Option2_NextSlide Options
+        var Slide1Option2_NextSlide_Option2_NextSlide_Option1 = gameObject.AddComponent<DialogueOptionButton>();
+        Slide1Option2_NextSlide_Option2_NextSlide_Option1.SetValues("Where Am I?", Slide1Option1_NextSlide_Option1_NextSlide);
+
+        // Slide1Option2_NextSlide_Option2_NextSlide
+        var Slide1Option2_NextSlide_Option2_NextSlide = gameObject.AddComponent<DialogueSlide>();
+        Slide1Option2_NextSlide_Option2_NextSlide.SetValues(this.pics.characterA, "ha___.____.____. ha___.____.____. ha.", new List<DialogueOptionButton> { Slide1Option2_NextSlide_Option2_NextSlide_Option1 });
+
+        // Slide1Option2_NextSlide_Option1_NextSlide Options
+        var Slide1Option2_NextSlide_Option1_NextSlide_Option1 = gameObject.AddComponent<DialogueOptionButton>();
+        Slide1Option2_NextSlide_Option1_NextSlide_Option1.SetValues("Where Am I?", Slide1Option1_NextSlide_Option1_NextSlide);
+
+        // Slide1Option2_NextSlide_Option1_NextSlide
+        var Slide1Option2_NextSlide_Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
+        Slide1Option2_NextSlide_Option1_NextSlide.SetValues(this.pics.characterA, "ha ok.", new List<DialogueOptionButton> { Slide1Option2_NextSlide_Option1_NextSlide_Option1 });
+
+        // Slide1Option2_NextSlide Options
+        var Slide1Option2_NextSlide_Option2 = gameObject.AddComponent<DialogueOptionButton>();
+        Slide1Option2_NextSlide_Option2.SetValues("It was my father's I took it after I killed him.", Slide1Option2_NextSlide_Option2_NextSlide);
+
+        var Slide1Option2_NextSlide_Option1 = gameObject.AddComponent<DialogueOptionButton>();
+        Slide1Option2_NextSlide_Option1.SetValues("yeah, I took if from ur mums house after last night.", Slide1Option2_NextSlide_Option1_NextSlide);
+
+        // Slide1Option2_NextSlide
         var Slide1Option2_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option2_NextSlide.SetValues(this.pics.characterA, "bye");
+        Slide1Option2_NextSlide.SetValues(this.pics.characterA, "oh cool, family heirloom?", new List<DialogueOptionButton>() { Slide1Option2_NextSlide_Option1, Slide1Option2_NextSlide_Option2 });
+
+        // Slide 1 Options
+        var Slide1Option1 = gameObject.AddComponent<DialogueOptionButton>();
+        Slide1Option1.SetValues("*stay silent*", Slide1Option1_NextSlide);
 
         var Slide1Option2 = gameObject.AddComponent<DialogueOptionButton>();
-        Slide1Option2.SetValues("Hi", Slide1Option2_NextSlide);
+        Slide1Option2.SetValues("it is", Slide1Option2_NextSlide);
 
+        var Slide1Option3 = gameObject.AddComponent<DialogueOptionButton>();
+        Slide1Option3.SetValues("Whats going on here?", Slide1Option1_NextSlide);
+
+        // Slide 1
         var Slide1 = gameObject.AddComponent<DialogueSlide>();
-        Slide1.SetValues(this.pics.characterA, "started conversaion with A.", new List<DialogueOptionButton>() { Slide1Option2});
+        Slide1.SetValues(this.pics.characterA, "Hey nice suit of armour, looks real!", new List<DialogueOptionButton>() { Slide1Option1, Slide1Option2, Slide1Option3});
 
         this.firstDialogue = Slide1;
     }
