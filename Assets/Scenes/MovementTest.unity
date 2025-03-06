@@ -20931,7 +20931,8 @@ GameObject:
   - component: {fileID: 732394777}
   - component: {fileID: 732394778}
   m_Layer: 0
-  m_Name: Dog
+  m_Name: Dog-TODO runspeed and anim speed faster and that theyre matching to look
+    good
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20971,8 +20972,8 @@ MonoBehaviour:
   - {fileID: 291068413}
   - {fileID: 1933154408}
   - {fileID: 1816876640}
-  runVelocity: 6
-  runTime: 2
+  runVelocity: 4
+  runTime: 4
 --- !u!50 &732394776
 Rigidbody2D:
   serializedVersion: 4
