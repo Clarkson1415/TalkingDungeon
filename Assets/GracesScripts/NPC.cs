@@ -6,7 +6,9 @@ using UnityEngine;
 /// </summary>
 public abstract class NPC : MonoBehaviour
 {
-    protected Sprite facePortrait;
+    [SerializeField]
+    protected Sprite profilePic;
+    public Sprite ProfilePic { get => this.profilePic; set => profilePic = value; }
 
     // Start is called before the first frame update
     void Start()

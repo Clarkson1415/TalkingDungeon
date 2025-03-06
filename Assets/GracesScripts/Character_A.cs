@@ -4,18 +4,11 @@ using UnityEngine;
 
 public class Character_A : NPC, IHasDialogue
 {
-    ProfilePics pics;
-
-    protected DialogueSlide firstDialogue { get; private set; }
+    protected DialogueSlide FirstDialogue { get; private set; }
 
     public DialogueSlide GetFirstDialogueSlide()
     {
-        return this.firstDialogue;
-    }
-
-    private void Awake()
-    {
-        this.pics = FindObjectOfType<ProfilePics>();
+        return this.FirstDialogue;
     }
 
     // Start is called before the first frame update
@@ -23,7 +16,7 @@ public class Character_A : NPC, IHasDialogue
     {
         // Slide1Option1_NextSlide_Option1_NextSlide
         var Slide1Option1_NextSlide_Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option1_NextSlide_Option1_NextSlide.SetValues(this.pics.characterA, "ookkkayyyyy... maybe we need to go to the medical tent");
+        Slide1Option1_NextSlide_Option1_NextSlide.SetValues(this.profilePic, "ookkkayyyyy... maybe we need to go to the medical tent");
 
         //Slide1Option1_NextSlide options
         var Slide1Option1_NextSlideOption1 = gameObject.AddComponent<DialogueOptionButton>();
@@ -31,7 +24,7 @@ public class Character_A : NPC, IHasDialogue
 
         //Slide1Option1_NextSlide
         var Slide1Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option1_NextSlide.SetValues(this.pics.characterA, "you alright there bud? Hit your head larping?", new List<DialogueOptionButton>() { Slide1Option1_NextSlideOption1 });
+        Slide1Option1_NextSlide.SetValues(this.profilePic, "you alright there bud? Hit your head larping?", new List<DialogueOptionButton>() { Slide1Option1_NextSlideOption1 });
 
         // Slide1Option2_NextSlide_Option2_NextSlide Options
         var Slide1Option2_NextSlide_Option2_NextSlide_Option1 = gameObject.AddComponent<DialogueOptionButton>();
@@ -39,7 +32,7 @@ public class Character_A : NPC, IHasDialogue
 
         // Slide1Option2_NextSlide_Option2_NextSlide
         var Slide1Option2_NextSlide_Option2_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option2_NextSlide_Option2_NextSlide.SetValues(this.pics.characterA, "ha___.____.____. ha___.____.____. ha.", new List<DialogueOptionButton> { Slide1Option2_NextSlide_Option2_NextSlide_Option1 });
+        Slide1Option2_NextSlide_Option2_NextSlide.SetValues(this.profilePic, "ha___.____.____. ha___.____.____. ha.", new List<DialogueOptionButton> { Slide1Option2_NextSlide_Option2_NextSlide_Option1 });
 
         // Slide1Option2_NextSlide_Option1_NextSlide Options
         var Slide1Option2_NextSlide_Option1_NextSlide_Option1 = gameObject.AddComponent<DialogueOptionButton>();
@@ -47,7 +40,7 @@ public class Character_A : NPC, IHasDialogue
 
         // Slide1Option2_NextSlide_Option1_NextSlide
         var Slide1Option2_NextSlide_Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option2_NextSlide_Option1_NextSlide.SetValues(this.pics.characterA, "ha ok.", new List<DialogueOptionButton> { Slide1Option2_NextSlide_Option1_NextSlide_Option1 });
+        Slide1Option2_NextSlide_Option1_NextSlide.SetValues(this.profilePic, "ha ok.", new List<DialogueOptionButton> { Slide1Option2_NextSlide_Option1_NextSlide_Option1 });
 
         // Slide1Option2_NextSlide Options
         var Slide1Option2_NextSlide_Option2 = gameObject.AddComponent<DialogueOptionButton>();
@@ -58,7 +51,7 @@ public class Character_A : NPC, IHasDialogue
 
         // Slide1Option2_NextSlide
         var Slide1Option2_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option2_NextSlide.SetValues(this.pics.characterA, "oh cool, family heirloom?", new List<DialogueOptionButton>() { Slide1Option2_NextSlide_Option1, Slide1Option2_NextSlide_Option2 });
+        Slide1Option2_NextSlide.SetValues(this.profilePic, "oh cool, family heirloom?", new List<DialogueOptionButton>() { Slide1Option2_NextSlide_Option1, Slide1Option2_NextSlide_Option2 });
 
         // Slide 1 Options
         var Slide1Option1 = gameObject.AddComponent<DialogueOptionButton>();
@@ -72,9 +65,9 @@ public class Character_A : NPC, IHasDialogue
 
         // Slide 1
         var Slide1 = gameObject.AddComponent<DialogueSlide>();
-        Slide1.SetValues(this.pics.characterA, "Hey nice suit of armour, looks real!", new List<DialogueOptionButton>() { Slide1Option1, Slide1Option2, Slide1Option3});
+        Slide1.SetValues(this.profilePic, "Hey nice suit of armour, looks real!", new List<DialogueOptionButton>() { Slide1Option1, Slide1Option2, Slide1Option3});
 
-        this.firstDialogue = Slide1;
+        this.FirstDialogue = Slide1;
     }
 
     // Update is called once per frame

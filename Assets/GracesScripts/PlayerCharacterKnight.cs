@@ -1,4 +1,5 @@
 using Assets.GracesScripts;
+using Cinemachine;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,13 +12,13 @@ public class PlayerCharacterKnight : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 direction;
     [SerializeField] private float movementSpeed = 1f;
-    private KnightState state = KnightState.MOVING;
+    private KnightState state = KnightState.PLAYERCONTROL;
     private bool InteractFlagSet;
 
     private enum KnightState
     {
         INTERACTING,
-        MOVING,
+        PLAYERCONTROL,
     }
 
     private void Awake()
@@ -29,14 +30,14 @@ public class PlayerCharacterKnight : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        this.state = KnightState.MOVING;
+        this.state = KnightState.PLAYERCONTROL;
     }
 
     private void FixedUpdate()
     {
         switch (this.state)
         {
-            case KnightState.MOVING:
+            case KnightState.PLAYERCONTROL:
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
@@ -68,11 +69,11 @@ public class PlayerCharacterKnight : MonoBehaviour
                 }
                 else if ((this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGFORINTERACTION))
                 {
-                    this.state = KnightState.MOVING;
+                    this.state = KnightState.PLAYERCONTROL;
                 }
                 break;
             default:
-                this.state = KnightState.MOVING;
+                this.state = KnightState.PLAYERCONTROL;
                 //Log.Print("Freemovement from default");
                 break;
         }
@@ -80,7 +81,6 @@ public class PlayerCharacterKnight : MonoBehaviour
         bool isMoving = this.rb.velocity.x != 0 || this.rb.velocity.y != 0;
         this.animator.SetBool("Running", isMoving);
     }
-
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -117,6 +117,15 @@ public class PlayerCharacterKnight : MonoBehaviour
         {
             Log.Print("can interact with" + collision.name);
             this.interactableInRange = dialogueObject;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent<IHasDialogue>(out var dialogueObject) && (dialogueObject == this.interactableInRange))
+        {
+            // empty interactable so cant be retriggered when out of range.
+            this.interactableInRange = null;
         }
     }
 
