@@ -46,16 +46,18 @@ public class DialogueTextBox : MonoBehaviour
         this.dialogueSoundEffectAudioSource.loop = false;
     }
 
-    private void UpdateCurrentSlide(DialogueSlide newSlide)
+    private void UpdateCurrentSlide(DialogueSlide? newSlide)
     {
-        this.currentSlide = newSlide;
-        this.speakersPicRenderer.sprite = newSlide.SpeakerPic;
-    }
-
-    private void EmptyCurrentSlide()
-    {
-        this.currentSlide = null;
-        this.speakersPicRenderer.sprite = null;
+        if (newSlide == null)
+        {
+            this.currentSlide = null;
+            this.speakersPicRenderer.sprite = null;
+        }
+        else
+        {
+            this.currentSlide = newSlide;
+            this.speakersPicRenderer.sprite = newSlide.SpeakerPic;
+        }
     }
 
     private void Update()
@@ -95,7 +97,7 @@ public class DialogueTextBox : MonoBehaviour
                     MyGuard.IsNotNull(this.currentSlide);
                     if (this.currentSlide.islastSlideInSequence)
                     {
-                        EmptyCurrentSlide();
+                        UpdateCurrentSlide(null);
                         //Log.Print("state INVIS INACTIVE");
                         this.speakersPicRenderer.sprite = null;
                         this.State = BoxState.WAITINGFORINTERACTION;

@@ -1,6 +1,8 @@
 using Assets.GracesScripts;
 using Cinemachine;
+using System;
 using System.Collections;
+using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,13 +14,13 @@ public class PlayerCharacterKnight : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 direction;
     [SerializeField] private float movementSpeed = 1f;
-    private KnightState state = KnightState.PLAYERCONTROL;
+    private KnightState state = KnightState.PLAYERCANMOVE;
     private bool InteractFlagSet;
 
     private enum KnightState
     {
         INTERACTING,
-        PLAYERCONTROL,
+        PLAYERCANMOVE,
     }
 
     private void Awake()
@@ -30,25 +32,36 @@ public class PlayerCharacterKnight : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        this.state = KnightState.PLAYERCONTROL;
+        this.state = KnightState.PLAYERCANMOVE;
     }
 
     private void FixedUpdate()
     {
         switch (this.state)
         {
-            case KnightState.PLAYERCONTROL:
+            case KnightState.PLAYERCANMOVE:
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
                     if (this.interactableInRange is IHasDialogue interactableWithDialogue)
                     {
+                        // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
+                        try
+                        {
+                            var movingNPC = (WalkingBackAndForthNPC)this.interactableInRange;
+                            movingNPC.IsInDialogue = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            // not talking to a moving interacable
+                        }
+
                         this.dialogueBox.gameObject.SetActive(true);
                         dialogueBox.PlayerInteractFlagSet = true;
                         this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
                     }
 
-                    // TODO: add more interactable features if I need
+                    // TODO: add more interactable features if I need e.g. if IInteractble could be a moving lever or something. that does not have Dialogue.
                 }
                 else if(this.dialogueBox.State == DialogueTextBox.BoxState.WRITINGSLIDE || this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGONSLIDE)
                 {
@@ -69,11 +82,22 @@ public class PlayerCharacterKnight : MonoBehaviour
                 }
                 else if ((this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGFORINTERACTION))
                 {
-                    this.state = KnightState.PLAYERCONTROL;
+                    this.state = KnightState.PLAYERCANMOVE;
+                   
+                    // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
+                    try
+                    {
+                        var movingNPC = (WalkingBackAndForthNPC)this.interactableInRange;
+                        movingNPC.IsInDialogue = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        // not talking to a moving interacable
+                    }
                 }
                 break;
             default:
-                this.state = KnightState.PLAYERCONTROL;
+                this.state = KnightState.PLAYERCANMOVE;
                 //Log.Print("Freemovement from default");
                 break;
         }
@@ -113,16 +137,16 @@ public class PlayerCharacterKnight : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent<IHasDialogue>(out var dialogueObject))
+        if (collision.TryGetComponent<IInteracble>(out var NPCWithDialogue))
         {
             Log.Print("can interact with" + collision.name);
-            this.interactableInRange = dialogueObject;
+            this.interactableInRange = NPCWithDialogue;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.TryGetComponent<IHasDialogue>(out var dialogueObject) && (dialogueObject == this.interactableInRange))
+        if (collision.TryGetComponent<IInteracble>(out var NPCWithDialogue) && (NPCWithDialogue == this.interactableInRange))
         {
             // empty interactable so cant be retriggered when out of range.
             this.interactableInRange = null;
