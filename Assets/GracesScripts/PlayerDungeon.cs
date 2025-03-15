@@ -10,7 +10,8 @@ public class PlayerDungeon : MonoBehaviour
 {
     [SerializeField] DialogueTextBox dialogueBox;
     private IInteracble interactableInRange = null;
-    private Animator animator;
+    // private Animator animator;
+    private AnimatedLayers animatedLayers;
     private Rigidbody2D rb;
     private Vector2 direction;
     private Vector2 lastMovingDirection;
@@ -26,7 +27,7 @@ public class PlayerDungeon : MonoBehaviour
 
     private void Awake()
     {
-        this.animator = this.GetComponent<Animator>();
+        this.animatedLayers = GetComponent<AnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
     }
 
@@ -111,11 +112,11 @@ public class PlayerDungeon : MonoBehaviour
         // TODO for an Running as well. need to add an IsRunning boolean triggered in the OnRun function. do I want the player to have to be running first? then press sprint?
         
         if (context.started)
-        {   
+        {
             Log.Print("on move started");
             Log.Print($"dir: {this.direction.x}, {this.direction.y}");
-            this.animator.SetFloat("LastX", this.direction.x);
-            this.animator.SetFloat("LastY", this.direction.y);
+            this.animatedLayers.SetFloats("LastX", this.direction.x);
+            this.animatedLayers.SetFloats("LastY", this.direction.y);
         }
         else if (context.performed)
         {
@@ -126,12 +127,12 @@ public class PlayerDungeon : MonoBehaviour
             Log.Print("on move cancelled");
         }
 
-        this.animator.SetFloat("YVel", this.direction.y);
-        this.animator.SetFloat("XVel", this.direction.x);
+        this.animatedLayers.SetFloats("YVel", this.direction.y);
+        this.animatedLayers.SetFloats("XVel", this.direction.x);
 
         // true when started and in performed state, false on cancel (finish or relase key)
         Log.Print($"context: {!context.canceled}");
-        this.animator.SetBool("Moving", !context.canceled);
+        this.animatedLayers.SetBools("Moving", !context.canceled);
     }
 
     public void OnRunKey(InputAction.CallbackContext context)
@@ -152,7 +153,7 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         // true when started and in performed state, false on cancel (finish or relase key)
-        this.animator.SetBool("Running", !context.canceled);
+        this.animatedLayers.SetBools("Running", !context.canceled);
     }
 
     private void FlipSprite(float xDirection)
