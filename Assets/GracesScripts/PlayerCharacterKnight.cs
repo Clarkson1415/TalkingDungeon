@@ -72,15 +72,7 @@ public class PlayerCharacterKnight : MonoBehaviour
                     // regular movement logic stuff
                     this.rb.velocity = direction * movementSpeed;
 
-                    // TODO animation states bools
-
-                    // set to true if y has positive velocity, false if it's 0 or less than 0
-                    this.animator.SetBool("RunningUp", this.rb.velocity.y > 0);
-
-                    // set running left right to be true if x velocity is 0
-                    this.animator.SetBool("RunningLeftRight", this.rb.velocity.x != 0);
-
-                    FlipSprite(this.direction.x);
+                    
                 }
                 break;
             case KnightState.INTERACTING:
@@ -111,6 +103,16 @@ public class PlayerCharacterKnight : MonoBehaviour
                 //Log.Print("Freemovement from default");
                 break;
         }
+
+        // TODO animation states bools
+
+        // set to true if y has positive velocity, false if it's 0 or less than 0
+        this.animator.SetBool("RunningUp", this.rb.velocity.y > 0);
+
+        // set running left right to be true if x velocity is 0
+        this.animator.SetBool("RunningLeftRight", this.rb.velocity.x != 0);
+
+        FlipSprite(this.direction.x);
 
         bool isMoving = this.rb.velocity.x != 0 || this.rb.velocity.y != 0;
         this.animator.SetBool("Running", isMoving);
