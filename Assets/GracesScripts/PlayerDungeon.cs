@@ -13,6 +13,7 @@ public class PlayerDungeon : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
     private Vector2 direction;
+    private Vector2 lastMovingDirection;
     [SerializeField] private float movementSpeed = 1f;
     private KnightState state = KnightState.PLAYERCANMOVE;
     private bool InteractFlagSet;
@@ -71,8 +72,6 @@ public class PlayerDungeon : MonoBehaviour
                 {
                     // regular movement logic stuff
                     this.rb.velocity = direction * movementSpeed;
-
-                    
                 }
                 break;
             case KnightState.INTERACTING:
@@ -110,12 +109,13 @@ public class PlayerDungeon : MonoBehaviour
         this.direction = context.ReadValue<Vector2>();
 
         // TODO for an Running as well. need to add an IsRunning boolean triggered in the OnRun function. do I want the player to have to be running first? then press sprint?
-        this.animator.SetFloat("YVel", this.direction.y);
-        this.animator.SetFloat("XVel", this.direction.x);
-
+        
         if (context.started)
-        {
-            Log.Print("on move started");            
+        {   
+            Log.Print("on move started");
+            Log.Print($"dir: {this.direction.x}, {this.direction.y}");
+            this.animator.SetFloat("LastX", this.direction.x);
+            this.animator.SetFloat("LastY", this.direction.y);
         }
         else if (context.performed)
         {
@@ -125,6 +125,9 @@ public class PlayerDungeon : MonoBehaviour
         {
             Log.Print("on move cancelled");
         }
+
+        this.animator.SetFloat("YVel", this.direction.y);
+        this.animator.SetFloat("XVel", this.direction.x);
 
         // true when started and in performed state, false on cancel (finish or relase key)
         Log.Print($"context: {!context.canceled}");
