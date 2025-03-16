@@ -51,10 +51,8 @@ public class PlayerDungeon : MonoBehaviour
 
             this.dialogueBox.gameObject.SetActive(true);
             dialogueBox.PlayerInteractFlagSet = true;
-            this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
+            this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
 
-            // TODO: not sure if I maybe should disable move all the time on interaction
-            this.GetComponent<PlayerInput>().actions.FindAction("Move").Disable();
         }
 
         // TODO: add more interactable features if I need e.g.
@@ -62,6 +60,16 @@ public class PlayerDungeon : MonoBehaviour
         // e.g.
         // if (this.interactableInRange is IHasLever)
         // { than the lever is an IINteractable object and will do lever stuff. and then set the this.state
+
+        // Stop animations
+        this.animatedLayers.SetFloats("YVel", 0);
+        this.animatedLayers.SetFloats("XVel", 0);
+        this.animatedLayers.SetBools("Moving", false);
+
+        // stop movement
+        this.rb.velocity = Vector2.zero;
+        this.direction = Vector2.zero;
+        this.state = KnightState.INTERACTING;
     }
 
 
@@ -70,17 +78,13 @@ public class PlayerDungeon : MonoBehaviour
         switch (this.state)
         {
             case KnightState.PLAYERCANMOVE:
-                // regular movement logic stuff
                 this.rb.velocity = direction * movementSpeed;
-
                 if (this.InteractFlagSet)
                 {
                     StartInteraction();
-                    this.state = KnightState.INTERACTING; 
                 }
                 break;
             case KnightState.INTERACTING:
-                this.rb.velocity = Vector2.zero;
                 if (this.InteractFlagSet)
                 {
                     dialogueBox.PlayerInteractFlagSet = true;
@@ -88,28 +92,36 @@ public class PlayerDungeon : MonoBehaviour
                 }
                 else if ((this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGFORINTERACTION))
                 {
-                    this.GetComponent<PlayerInput>().actions.FindAction("Move").Enable();
-                    this.state = KnightState.PLAYERCANMOVE;
-
-                    // TODO: What does this comment and the next two lines of code mean? i dont remember
-                    // something to do with if its a moving npc like the DOG, if you move it out of range.
-                    // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
-                    // this is to allow it to go back to moving state again.
-                    if (this.interactableInRange is WalkingBackAndForthNPC movingNPC)
-                    {
-                        movingNPC.IsStationary = false;
-                    }
+                    EndInteraction();
                 }
                 break;
             default:
                 this.state = KnightState.PLAYERCANMOVE;
-                //Log.Print("Freemovement from default");
                 break;
         }
     }
 
+    private void EndInteraction()
+    {
+        // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
+        // this is to allow it to go back to moving state again.
+        if (this.interactableInRange is WalkingBackAndForthNPC movingNPC)
+        {
+            movingNPC.IsStationary = false;
+        }
+
+        this.state = KnightState.PLAYERCANMOVE;
+    }
+
     public void OnMove(InputAction.CallbackContext context)
     {
+        // if in interactin dont update and Return early this stops animation from playing when you're in dialogue
+        // another option is to diable and enable the PLayer Move action map and re enable.
+        if (this.state == KnightState.INTERACTING)
+        {
+            return;
+        }
+
         this.direction = context.ReadValue<Vector2>();
 
         // TODO for an Running as well. need to add an IsRunning boolean triggered in the OnRun function. do I want the player to have to be running first? then press sprint?
@@ -118,8 +130,8 @@ public class PlayerDungeon : MonoBehaviour
         {
             Log.Print("on move started");
             Log.Print($"dir: {this.direction.x}, {this.direction.y}");
-            this.animatedLayers.SetFloats("LastX", this.direction.x);
-            this.animatedLayers.SetFloats("LastY", this.direction.y);
+            this.animatedLayers.SetFloats("LastXDir", this.direction.x);
+            this.animatedLayers.SetFloats("LastYDir", this.direction.y);
         }
         else if (context.performed)
         {
@@ -130,16 +142,28 @@ public class PlayerDungeon : MonoBehaviour
             Log.Print("on move cancelled");
         }
 
-        this.animatedLayers.SetFloats("YVel", this.direction.y);
-        this.animatedLayers.SetFloats("XVel", this.direction.x);
+        UpdateAnimationFloats();
 
         // true when started and in performed state, false on cancel (finish or relase key)
         Log.Print($"context: {!context.canceled}");
         this.animatedLayers.SetBools("Moving", !context.canceled);
     }
 
+    private void UpdateAnimationFloats()
+    {
+        this.animatedLayers.SetFloats("YDir", direction.y);
+        this.animatedLayers.SetFloats("XDir", direction.x);
+    }
+
     public void OnRunKey(InputAction.CallbackContext context)
     {
+        // if in interactin dont update and Return early this stops animation from playing when you're in dialogue
+        // another option is to diable and enable the PLayer Move action map and re enable.
+        if (this.state == KnightState.INTERACTING)
+        {
+            return;
+        }
+
         this.direction = context.ReadValue<Vector2>();
 
         if (context.started)
@@ -157,19 +181,6 @@ public class PlayerDungeon : MonoBehaviour
 
         // true when started and in performed state, false on cancel (finish or relase key)
         this.animatedLayers.SetBools("Running", !context.canceled);
-    }
-
-    private void FlipSprite(float xDirection)
-    {
-        // if going left and facing right flip
-        if (xDirection < 0 && this.transform.localScale.x > 0)
-        {
-            this.transform.localScale = new Vector3(this.transform.localScale.x * -1, this.transform.localScale.y, this.transform.localScale.z);
-        }
-        else if (xDirection > 0 && this.transform.localScale.x < 0)
-        {
-            this.transform.localScale = new Vector3(this.transform.localScale.x * -1, this.transform.localScale.y, this.transform.localScale.z);
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

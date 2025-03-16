@@ -27,7 +27,7 @@ public class DialogueTextBox : MonoBehaviour
     [SerializeField] List<GameObject> buttonPositionsTopToBottom;
     [SerializeField] Image speakersPicRenderer;
 
-    public void NewInteractionBegan(DialogueSlide firstSlide)
+    public void BeginDialogue(DialogueSlide firstSlide)
     {
         this.newInteractionSetup = true;
         this.UpdateCurrentSlide(firstSlide);
@@ -101,6 +101,7 @@ public class DialogueTextBox : MonoBehaviour
                         //Log.Print("state INVIS INACTIVE");
                         this.speakersPicRenderer.sprite = null;
                         this.State = BoxState.WAITINGFORINTERACTION;
+                        Debug.Log("Box in Set to waiting for interaction");
                         this.gameObject.SetActive(false);
                     }
                     else

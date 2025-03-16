@@ -68,8 +68,8 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: YVel
     m_Mirror: 0
-  m_BlendParameter: LastX
-  m_BlendParameterY: LastY
+  m_BlendParameter: LastXDir
+  m_BlendParameterY: LastYDir
   m_MinThreshold: 0
   m_MaxThreshold: 1
   m_UseAutomaticThresholds: 1
@@ -285,25 +285,25 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: YVel
+  - m_Name: YDir
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: XVel
+  - m_Name: XDir
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: LastX
+  - m_Name: LastXDir
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: LastY
+  - m_Name: LastYDir
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -553,8 +553,8 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: YVel
     m_Mirror: 0
-  m_BlendParameter: XVel
-  m_BlendParameterY: YVel
+  m_BlendParameter: XDir
+  m_BlendParameterY: YDir
   m_MinThreshold: 0
   m_MaxThreshold: 0.6666667
   m_UseAutomaticThresholds: 1

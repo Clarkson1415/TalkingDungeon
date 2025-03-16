@@ -58,7 +58,7 @@ public class PlayerCharacterKnight : MonoBehaviour
 
                         this.dialogueBox.gameObject.SetActive(true);
                         dialogueBox.PlayerInteractFlagSet = true;
-                        this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
+                        this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
                     }
 
                     // TODO: add more interactable features if I need e.g. if IInteractble could be a moving lever or something. that does not have Dialogue.
