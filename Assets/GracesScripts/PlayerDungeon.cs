@@ -1,8 +1,4 @@
 using Assets.GracesScripts;
-using Cinemachine;
-using System;
-using System.Collections;
-using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,6 +13,10 @@ public class PlayerDungeon : MonoBehaviour
     private Vector2 lastMovingDirection;
     [SerializeField] private float movementSpeed = 1f;
     private KnightState state = KnightState.PLAYERCANMOVE;
+
+    /// <summary>
+    /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
+    /// </summary>
     private bool InteractFlagSet;
 
     private enum KnightState
@@ -37,42 +37,46 @@ public class PlayerDungeon : MonoBehaviour
         this.state = KnightState.PLAYERCANMOVE;
     }
 
+    private void StartInteraction()
+    {
+        this.InteractFlagSet = false;
+        if (this.interactableInRange is IHasDialogue interactableWithDialogue)
+        {
+            // if the object you start talking to is moving it can move out of range and causes on trigger exit player wont be able to spacebar out of dialogue.
+            // stop moving on start interaction and finish on end interaction
+            if (this.interactableInRange is WalkingBackAndForthNPC movingNPC)
+            {
+                movingNPC.IsStationary = true;
+            }
+
+            this.dialogueBox.gameObject.SetActive(true);
+            dialogueBox.PlayerInteractFlagSet = true;
+            this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
+
+            // TODO: not sure if I maybe should disable move all the time on interaction
+            this.GetComponent<PlayerInput>().actions.FindAction("Move").Disable();
+        }
+
+        // TODO: add more interactable features if I need e.g.
+        // if IInteractble could be a moving lever or something. that does not have Dialogue.
+        // e.g.
+        // if (this.interactableInRange is IHasLever)
+        // { than the lever is an IINteractable object and will do lever stuff. and then set the this.state
+    }
+
+
     private void FixedUpdate()
     {
         switch (this.state)
         {
             case KnightState.PLAYERCANMOVE:
+                // regular movement logic stuff
+                this.rb.velocity = direction * movementSpeed;
+
                 if (this.InteractFlagSet)
                 {
-                    this.InteractFlagSet = false;
-                    if (this.interactableInRange is IHasDialogue interactableWithDialogue)
-                    {
-                        // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
-                        try
-                        {
-                            var movingNPC = (WalkingBackAndForthNPC)this.interactableInRange;
-                            movingNPC.IsInDialogue = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            // not talking to a moving interacable
-                        }
-
-                        this.dialogueBox.gameObject.SetActive(true);
-                        dialogueBox.PlayerInteractFlagSet = true;
-                        this.dialogueBox.NewInteractionBegan(interactableWithDialogue.GetFirstDialogueSlide());
-                    }
-
-                    // TODO: add more interactable features if I need e.g. if IInteractble could be a moving lever or something. that does not have Dialogue.
-                }
-                else if(this.dialogueBox.State == DialogueTextBox.BoxState.WRITINGSLIDE || this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGONSLIDE)
-                {
-                    this.state = KnightState.INTERACTING;
-                }
-                else
-                {
-                    // regular movement logic stuff
-                    this.rb.velocity = direction * movementSpeed;
+                    StartInteraction();
+                    this.state = KnightState.INTERACTING; 
                 }
                 break;
             case KnightState.INTERACTING:
@@ -84,17 +88,16 @@ public class PlayerDungeon : MonoBehaviour
                 }
                 else if ((this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGFORINTERACTION))
                 {
+                    this.GetComponent<PlayerInput>().actions.FindAction("Move").Enable();
                     this.state = KnightState.PLAYERCANMOVE;
-                   
+
+                    // TODO: What does this comment and the next two lines of code mean? i dont remember
+                    // something to do with if its a moving npc like the DOG, if you move it out of range.
                     // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
-                    try
+                    // this is to allow it to go back to moving state again.
+                    if (this.interactableInRange is WalkingBackAndForthNPC movingNPC)
                     {
-                        var movingNPC = (WalkingBackAndForthNPC)this.interactableInRange;
-                        movingNPC.IsInDialogue = false;
-                    }
-                    catch (Exception ex)
-                    {
-                        // not talking to a moving interacable
+                        movingNPC.IsStationary = false;
                     }
                 }
                 break;
@@ -110,7 +113,7 @@ public class PlayerDungeon : MonoBehaviour
         this.direction = context.ReadValue<Vector2>();
 
         // TODO for an Running as well. need to add an IsRunning boolean triggered in the OnRun function. do I want the player to have to be running first? then press sprint?
-        
+
         if (context.started)
         {
             Log.Print("on move started");

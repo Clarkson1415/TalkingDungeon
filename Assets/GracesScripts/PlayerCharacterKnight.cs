@@ -49,7 +49,7 @@ public class PlayerCharacterKnight : MonoBehaviour
                         try
                         {
                             var movingNPC = (WalkingBackAndForthNPC)this.interactableInRange;
-                            movingNPC.IsInDialogue = true;
+                            movingNPC.IsStationary = true;
                         }
                         catch (Exception ex)
                         {
@@ -90,7 +90,7 @@ public class PlayerCharacterKnight : MonoBehaviour
                     try
                     {
                         var movingNPC = (WalkingBackAndForthNPC)this.interactableInRange;
-                        movingNPC.IsInDialogue = false;
+                        movingNPC.IsStationary = false;
                     }
                     catch (Exception ex)
                     {

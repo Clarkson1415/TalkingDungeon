@@ -17,7 +17,7 @@ public abstract class WalkingBackAndForthNPC : NPC
     private Coroutine currentRoutine;
     private Vector2 velocity = new(1, 0);
     MovingDialogueNPCState state;
-    public bool IsInDialogue { get; set; } = false;
+    public bool IsStationary { get; set; } = false;
     private int isStationary;
 
     private enum MovingDialogueNPCState
@@ -65,7 +65,7 @@ public abstract class WalkingBackAndForthNPC : NPC
         switch (state)
         {
             case MovingDialogueNPCState.STATIONARY:
-                if (!IsInDialogue)
+                if (!IsStationary)
                 {
                     this.state = MovingDialogueNPCState.MOVING;
                     currentRoutine = StartCoroutine(RunLoop());
@@ -73,7 +73,7 @@ public abstract class WalkingBackAndForthNPC : NPC
                 }
                 break;
             case MovingDialogueNPCState.MOVING:
-                if (IsInDialogue)
+                if (IsStationary)
                 {
                     StopAllCoroutines();
                     isStationary = 0;
