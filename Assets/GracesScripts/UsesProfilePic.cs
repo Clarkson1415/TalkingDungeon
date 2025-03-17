@@ -4,10 +4,9 @@ using UnityEngine;
 /// <summary>
 /// Abstract class do not add to unity component
 /// </summary>
-public abstract class NPC : MonoBehaviour
+public class UsesProfilePic : MonoBehaviour
 {
-    [SerializeField]
-    protected Sprite profilePic;
+    [SerializeField] protected Sprite profilePic;
     public Sprite ProfilePic { get => this.profilePic; set => profilePic = value; }
 
     // Start is called before the first frame update

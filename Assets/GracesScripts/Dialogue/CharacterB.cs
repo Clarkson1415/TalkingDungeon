@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterB : NPC, IHasDialogue
+public class CharacterB : UsesProfilePic, IHasDialogue
 {
     protected DialogueSlide firstDialogue { get; private set; }
 

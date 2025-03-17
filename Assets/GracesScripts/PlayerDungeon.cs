@@ -2,18 +2,21 @@ using Assets.GracesScripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Player guy
+/// </summary>
+[RequireComponent(typeof(UseAnimatedLayers))]
 public class PlayerDungeon : MonoBehaviour
 {
     [SerializeField] DialogueTextBox dialogueBox;
     private IInteracble interactableInRange = null;
-    // private Animator animator;
-    private AnimatedLayers animatedLayers;
     private Rigidbody2D rb;
     private Vector2 direction;
     private Vector2 lastMovingDirection;
     [SerializeField] private float movementSpeed = 1f;
     private KnightState state = KnightState.PLAYERCANMOVE;
     private AudioSource footstepsSound;
+    private UseAnimatedLayers animatedLayers;
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
@@ -28,7 +31,7 @@ public class PlayerDungeon : MonoBehaviour
 
     private void Awake()
     {
-        this.animatedLayers = GetComponent<AnimatedLayers>();
+        animatedLayers = GetComponent<UseAnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
         footstepsSound = GetComponentInChildren<AudioSource>();
     }
@@ -46,9 +49,9 @@ public class PlayerDungeon : MonoBehaviour
         {
             // if the object you start talking to is moving it can move out of range and causes on trigger exit player wont be able to spacebar out of dialogue.
             // stop moving on start interaction and finish on end interaction
-            if (this.interactableInRange is WalkingBackAndForthNPC movingNPC)
+            if (this.interactableInRange is WalkingBackAndForth movingNPC)
             {
-                movingNPC.IsStationary = true;
+                movingNPC.IsInDialogue = true;
             }
 
             this.dialogueBox.gameObject.SetActive(true);
@@ -107,9 +110,9 @@ public class PlayerDungeon : MonoBehaviour
     {
         // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
         // this is to allow it to go back to moving state again.
-        if (this.interactableInRange is WalkingBackAndForthNPC movingNPC)
+        if (this.interactableInRange is WalkingBackAndForth movingNPC)
         {
-            movingNPC.IsStationary = false;
+            movingNPC.IsInDialogue = false;
         }
 
         this.state = KnightState.PLAYERCANMOVE;

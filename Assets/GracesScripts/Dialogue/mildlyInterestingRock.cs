@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MildlyInterestingRock : NPC, IHasDialogue
+public class MildlyInterestingRock : UsesProfilePic, IHasDialogue
 {
     protected DialogueSlide dialogueSlide;
 

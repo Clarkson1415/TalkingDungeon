@@ -8,20 +8,15 @@ using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// For Game object with layers of animation to line up.
+/// attach to Game object with layers of animation to line up. Kinda like an interface but cant do getComponent in Awake in abstract classes or interfaces.
 /// </summary>
-public class AnimatedLayers : MonoBehaviour
+public class UseAnimatedLayers : MonoBehaviour
 {
     private List<Animator> animators = new();
 
     private void Awake()
     {
         animators.AddRange(this.GetComponentsInChildren<Animator>().ToList()); // this also gets the Player Animator IDK how but it does.
-        
-        // TODO: MAKE SURE THIS IS GETTING ALL THE ANIMTORS INCLUDING in the CHILDRENS. i.e. clothing and hair etc.
-        Log.Print(animators.Count.ToString());
-
-        // then wrap the function that change the animator in a function from this class, to change all of them together.
     }
 
     public void SetBools(string paramName, bool value)

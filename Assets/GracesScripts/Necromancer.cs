@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Necromancer : NPC, IHasDialogue
+public class Necromancer : UsesProfilePic, IHasDialogue
 {
     protected DialogueSlide FirstDialogue { get; private set; }
     public DialogueSlide GetFirstDialogueSlide()

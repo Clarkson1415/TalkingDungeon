@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rogue : NPC, IHasDialogue
+public class Rogue : UsesProfilePic, IHasDialogue
 {
     protected DialogueSlide firstDialogue { get; private set; }
 

@@ -3,58 +3,57 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 /// <summary>
 /// See Dog for how to use. sets objects animations to true when velocity high, and filps sprite, "Running" is the animator parameter set. Only for left and right movement at the moment.
-/// TODO: could be split into 2 components, 1 for layered animaterions in just idle, and one for movement with layered animations as an extension of that
+/// Works with animated layers component also now? or should it be separate? idk
+/// ALSO: uses bools specific for the animation layer: the bool string is "Running"
 /// </summary>
-public abstract class WalkingBackAndForthNPC : NPC
+[RequireComponent(typeof(UseAnimatedLayers))]
+public abstract class WalkingBackAndForth : MonoBehaviour
 {
-    [SerializeField] List<Animator> OverlayingAnimations;
     [SerializeField] int runSpeed = 6;
     [SerializeField] int runTime = 3;
+    [SerializeField] int idleWaitTime = 2;
     private Coroutine currentRoutine;
     private Vector2 velocity = new(1, 0);
     MovingDialogueNPCState state;
-    public bool IsStationary { get; set; } = false;
-    private int isStationary;
+    public bool IsInDialogue { get; set; } = false;
+    private Rigidbody2D rb;
+    private UseAnimatedLayers animatedLayers;
+    private float runStartTime;
+    private float idleStartTime;
+    [SerializeField] int leftBound = -36;
+    [SerializeField] int rightBound = -22;
 
     private enum MovingDialogueNPCState
     {
-        STATIONARY,
+        INTERACTING,
         MOVING,
+        IDLEING,
+    }
+
+    private void Awake()
+    {
+        animatedLayers = GetComponent<UseAnimatedLayers>();
+        this.rb = GetComponent<Rigidbody2D>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         state = MovingDialogueNPCState.MOVING;
+        this.animatedLayers.SetBools("Running", true);
         Log.Print("dog moving initial");
+        runStartTime = Time.time;
     }
-
-    [SerializeField] int leftBound = -36;
-    [SerializeField] int rightBound = -22;
-
-    private IEnumerator RunLoop()
-    {
-        while (true)
-        {
-            isStationary = 1;
-            ChangeAnimation();
-            yield return new WaitForSeconds(runTime);
-
-            // IDLE
-            isStationary = 0;
-            ChangeAnimation();
-            yield return new WaitForSeconds(1);
-        }
-    }
+    
 
     // Update is called once per frame
     void Update()
     {
-        this.gameObject.GetComponent<Rigidbody2D>().velocity = isStationary * runSpeed * velocity;
         FlipSprite(this.velocity.x);
 
         if (!IsInBounds())
@@ -64,22 +63,46 @@ public abstract class WalkingBackAndForthNPC : NPC
 
         switch (state)
         {
-            case MovingDialogueNPCState.STATIONARY:
-                if (!IsStationary)
+            case MovingDialogueNPCState.INTERACTING:
+                this.rb.velocity = Vector2.zero;
+                if (!IsInDialogue)
                 {
+                    velocity = new Vector2(1, 0);
+                    this.animatedLayers.SetBools("Running", true);
                     this.state = MovingDialogueNPCState.MOVING;
-                    currentRoutine = StartCoroutine(RunLoop());
+                    this.runStartTime = Time.time;
                     Log.Print("stationary changed to moving");
                 }
                 break;
             case MovingDialogueNPCState.MOVING:
-                if (IsStationary)
+                this.rb.velocity = runSpeed * velocity;
+                if (IsInDialogue)
                 {
-                    StopAllCoroutines();
-                    isStationary = 0;
-                    ChangeAnimation();
                     Log.Print("Moving changed to stationary");
-                    this.state = MovingDialogueNPCState.STATIONARY;
+                    this.animatedLayers.SetBools("Running", false);
+                    this.state = MovingDialogueNPCState.INTERACTING;
+                }
+                if (Time.time >= runStartTime + runTime)
+                {
+                    this.animatedLayers.SetBools("Running", false);
+                    this.idleStartTime = Time.time;
+                    this.state = MovingDialogueNPCState.IDLEING;
+                }
+                break;
+            case MovingDialogueNPCState.IDLEING:
+                this.rb.velocity = Vector2.zero;
+                if (IsInDialogue)
+                {
+                    Log.Print("Moving changed to stationary");
+                    this.idleStartTime = Time.time;
+                    this.state = MovingDialogueNPCState.INTERACTING;
+                }
+                if (Time.time >= idleStartTime + idleWaitTime)
+                {
+                    velocity = new Vector2(1, 0);
+                    this.animatedLayers.SetBools("Running", true);
+                    this.runStartTime = Time.time;
+                    this.state = MovingDialogueNPCState.MOVING;
                 }
                 break;
             default:
@@ -87,13 +110,9 @@ public abstract class WalkingBackAndForthNPC : NPC
         }
     }
 
-    private void ChangeAnimation()
+    private void GoToIdle()
     {
-        bool isRunning = isStationary != 0;
-        foreach (var animator in this.OverlayingAnimations)
-        {
-            animator.SetBool("Running", isRunning);
-        }
+
     }
 
     private void FlipSprite(float xDirection)
