@@ -1,3 +1,4 @@
+using Assets.GracesScripts;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,6 +42,11 @@ public class DialogueSlide : MonoBehaviour
         this.SpeakerPic = speakerPicture;
         this.dialogue = dialogue;
         this.options = options;
+        if(this.options.Count == 0)
+        {
+            Log.Print($"did you mean to have no option on the slide? for: pic: {speakerPicture}, \n Dialogue: {dialogue} \n this.name: {this.name}");
+            this.islastSlideInSequence = true;
+        }
     }
 
     public void SetValues(Sprite speakerPicture, string dialogue, DialogueSlide nextSlide)

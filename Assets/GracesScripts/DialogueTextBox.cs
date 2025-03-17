@@ -21,6 +21,7 @@ public class DialogueTextBox : MonoBehaviour
     public bool PlayerInteractFlagSet;
     readonly List<GameObject> buttons = new();
     [SerializeField] private float textspeed = 0.1f;
+    [SerializeField] private float underscorePauseTime = 0.01f;
     [SerializeField] GameObject prefabButton;
     [SerializeField] EventSystem UIEventSystem;
     [SerializeField] AudioSource dialogueSoundEffectAudioSource;
@@ -198,8 +199,17 @@ public class DialogueTextBox : MonoBehaviour
         MyGuard.IsNotNull(this.currentSlide.dialogue);
         for (int i = 0; i < this.currentSlide.dialogue.Length; i++)
         {
+            // don't play sound for either the special pause text printing character, or spaces. 
             if (this.currentSlide.dialogue[i] == pauseCharacterToNotPrint)
             {
+                yield return new WaitForSeconds(underscorePauseTime);
+                continue;
+            }
+
+            // dont play a sound but do print a space empty char
+            if (this.currentSlide.dialogue[i] == ' ')
+            {
+                this.TMPTextBox.text += this.currentSlide.dialogue[i];
                 yield return new WaitForSeconds(textspeed);
                 continue;
             }
@@ -207,12 +217,13 @@ public class DialogueTextBox : MonoBehaviour
             // play dialogue text sound effect
             this.dialogueSoundEffectAudioSource.Play();
 
-            if (i == 0) // set first letter.
+            if (i == 0) // set first letter if this is the first letter.
             {
                 this.TMPTextBox.SetText(this.currentSlide.dialogue[0].ToString());
                 continue;
             }
 
+            // do the rest of the letters
             this.TMPTextBox.text += this.currentSlide.dialogue[i];
             yield return new WaitForSeconds(textspeed);
         }

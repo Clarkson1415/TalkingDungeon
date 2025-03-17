@@ -13,6 +13,7 @@ public class PlayerDungeon : MonoBehaviour
     private Vector2 lastMovingDirection;
     [SerializeField] private float movementSpeed = 1f;
     private KnightState state = KnightState.PLAYERCANMOVE;
+    private AudioSource footstepsSound;
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
@@ -29,6 +30,7 @@ public class PlayerDungeon : MonoBehaviour
     {
         this.animatedLayers = GetComponent<AnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
+        footstepsSound = GetComponentInChildren<AudioSource>();
     }
 
     // Start is called before the first frame update
@@ -52,7 +54,6 @@ public class PlayerDungeon : MonoBehaviour
             this.dialogueBox.gameObject.SetActive(true);
             dialogueBox.PlayerInteractFlagSet = true;
             this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
-
         }
 
         // TODO: add more interactable features if I need e.g.
@@ -67,6 +68,7 @@ public class PlayerDungeon : MonoBehaviour
         this.animatedLayers.SetBools("Moving", false);
 
         // stop movement
+        footstepsSound.Stop();
         this.rb.velocity = Vector2.zero;
         this.direction = Vector2.zero;
         this.state = KnightState.INTERACTING;
@@ -128,6 +130,8 @@ public class PlayerDungeon : MonoBehaviour
 
         if (context.started)
         {
+            footstepsSound.Play();
+
             Log.Print("on move started");
             Log.Print($"dir: {this.direction.x}, {this.direction.y}");
             this.animatedLayers.SetFloats("LastXDir", this.direction.x);
@@ -139,6 +143,7 @@ public class PlayerDungeon : MonoBehaviour
         }
         else if (context.canceled)
         {
+            footstepsSound.Stop();
             Log.Print("on move cancelled");
         }
 
