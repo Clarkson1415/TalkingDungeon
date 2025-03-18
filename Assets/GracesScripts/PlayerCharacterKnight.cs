@@ -60,8 +60,12 @@ public class PlayerCharacterKnight : MonoBehaviour
                         dialogueBox.PlayerInteractFlagSet = true;
                         this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
                     }
+                    else if (this.interactableInRange is ItemContainer)
+                    {
 
-                    // TODO: add more interactable features if I need e.g. if IInteractble could be a moving lever or something. that does not have Dialogue.
+                    }
+
+                    // TODO: add more interactables here
                 }
                 else if(this.dialogueBox.State == DialogueTextBox.BoxState.WRITINGSLIDE || this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGONSLIDE)
                 {
@@ -71,8 +75,6 @@ public class PlayerCharacterKnight : MonoBehaviour
                 {
                     // regular movement logic stuff
                     this.rb.velocity = direction * movementSpeed;
-
-                    
                 }
                 break;
             case KnightState.INTERACTING:

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2054179943603568676}
   - component: {fileID: 8819741282109172404}
   - component: {fileID: 8953397240105698129}
+  - component: {fileID: 4965706431304121352}
   m_Layer: 0
   m_Name: DOG_Complete
   m_TagString: Untagged
@@ -79,9 +80,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runSpeed: 3
-  runTime: 3
-  leftBound: -36
-  rightBound: -22
+  runTime: 6
+  idleWaitTime: 2
+  leftBound: -3
+  rightBound: 5
 --- !u!61 &2054179943603568676
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -152,6 +154,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profilePic: {fileID: -2136400985, guid: 2cae6f126a784f4448939fb1bea04c6b, type: 3}
+--- !u!210 &4965706431304121352
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763470606553408635}
+  m_Enabled: 1
+  m_SortingLayerID: 116538399
+  m_SortingLayer: 1
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &4130495732460270338
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 public class PlayerDungeon : MonoBehaviour
 {
     [SerializeField] DialogueTextBox dialogueBox;
+    [SerializeField] ContainerMenu ContainerMenu;
     private IInteracble interactableInRange = null;
     private Rigidbody2D rb;
     private Vector2 direction;
@@ -25,8 +26,9 @@ public class PlayerDungeon : MonoBehaviour
 
     private enum KnightState
     {
-        INTERACTING,
+        INDIALOGUE,
         PLAYERCANMOVE,
+        inItemContainer,
     }
 
     private void Awake()
@@ -57,13 +59,16 @@ public class PlayerDungeon : MonoBehaviour
             this.dialogueBox.gameObject.SetActive(true);
             dialogueBox.PlayerInteractFlagSet = true;
             this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
+            this.state = KnightState.INDIALOGUE;
+        }
+        else if (this.interactableInRange is ItemContainer chest)
+        {
+            this.ContainerMenu.gameObject.SetActive(true);
+            chest.GetComponent<Animator>().SetTrigger("Opened");
+            this.state = KnightState.inItemContainer;
         }
 
-        // TODO: add more interactable features if I need e.g.
-        // if IInteractble could be a moving lever or something. that does not have Dialogue.
-        // e.g.
-        // if (this.interactableInRange is IHasLever)
-        // { than the lever is an IINteractable object and will do lever stuff. and then set the this.state
+        // TODO: add more interactables here
 
         // Stop animations
         this.animatedLayers.SetFloats("YVel", 0);
@@ -74,7 +79,6 @@ public class PlayerDungeon : MonoBehaviour
         footstepsSound.Stop();
         this.rb.velocity = Vector2.zero;
         this.direction = Vector2.zero;
-        this.state = KnightState.INTERACTING;
     }
 
 
@@ -89,7 +93,7 @@ public class PlayerDungeon : MonoBehaviour
                     StartInteraction();
                 }
                 break;
-            case KnightState.INTERACTING:
+            case KnightState.INDIALOGUE:
                 if (this.InteractFlagSet)
                 {
                     dialogueBox.PlayerInteractFlagSet = true;
@@ -98,6 +102,17 @@ public class PlayerDungeon : MonoBehaviour
                 else if ((this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGFORINTERACTION))
                 {
                     EndInteraction();
+                }
+                break;
+            case KnightState.inItemContainer:
+                if (this.InteractFlagSet)
+                {
+                    this.InteractFlagSet = false;
+                    if (this.interactableInRange is ItemContainer chest)
+                    {
+                        chest.GetComponent<Animator>().SetTrigger("Closed");
+                        EndInteraction();
+                    }
                 }
                 break;
             default:
@@ -122,7 +137,7 @@ public class PlayerDungeon : MonoBehaviour
     {
         // if in interactin dont update and Return early this stops animation from playing when you're in dialogue
         // another option is to diable and enable the PLayer Move action map and re enable.
-        if (this.state == KnightState.INTERACTING)
+        if (this.state != KnightState.PLAYERCANMOVE)
         {
             return;
         }
@@ -167,7 +182,7 @@ public class PlayerDungeon : MonoBehaviour
     {
         // if in interactin dont update and Return early this stops animation from playing when you're in dialogue
         // another option is to diable and enable the PLayer Move action map and re enable.
-        if (this.state == KnightState.INTERACTING)
+        if (this.state != KnightState.PLAYERCANMOVE)
         {
             return;
         }
