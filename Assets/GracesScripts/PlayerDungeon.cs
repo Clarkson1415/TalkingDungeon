@@ -128,6 +128,11 @@ public class PlayerDungeon : MonoBehaviour
                         if (this.interactableInRange is ItemContainer chest)
                         {
                             var item = this.ContainerMenu.GetSelectedItem();
+                            if (item == null)
+                            {
+                                return;
+                            }
+
                             Log.Print("picked up:");
                             Log.Print(item.name);
                             Log.Print(item.description);
