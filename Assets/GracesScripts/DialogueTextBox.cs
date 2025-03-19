@@ -68,11 +68,11 @@ public class DialogueTextBox : MonoBehaviour
             case BoxState.WAITINGFORINTERACTION:
                 if (this.PlayerInteractFlagSet && this.newInteractionSetup)
                 {
+                    State = BoxState.WRITINGSLIDE;
                     this.newInteractionSetup = false;
                     this.PlayerInteractFlagSet = false;
                     this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
                     this.FinishedWritingSlideOverTime = false;
-                    State = BoxState.WRITINGSLIDE;
                     //Log.Print("writing Slide");
                 }
                 break;

@@ -14,6 +14,9 @@ public class DialogueOptionButton : MonoBehaviour
 
     public bool isSelected;
 
+    /// <summary>
+    /// is used for something in the UI idk where
+    /// </summary>
     public void ButtonClicked()
     {
         Log.Print("button clicked");
@@ -36,10 +39,6 @@ public class DialogueOptionButton : MonoBehaviour
         this.OptionText = optionText;
         this.NextDialogueSlide = nextDSlide;
         this.isSelected = isSelected;
-    }
-
-    void Start()
-    {
     }
 
     public DialogueOptionButton(string optionText, DialogueSlide nextslide)

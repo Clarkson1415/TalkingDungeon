@@ -1,4 +1,5 @@
 using Assets.GracesScripts;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -47,7 +48,7 @@ public class PlayerDungeon : MonoBehaviour
     private void StartInteraction()
     {
         this.InteractFlagSet = false;
-        if (this.interactableInRange is IHasDialogue interactableWithDialogue)
+        if (this.interactableInRange is IHasDialogue interactableWithDialogue && interactableWithDialogue != null)
         {
             // if the object you start talking to is moving it can move out of range and causes on trigger exit player wont be able to spacebar out of dialogue.
             // stop moving on start interaction and finish on end interaction
@@ -61,7 +62,7 @@ public class PlayerDungeon : MonoBehaviour
             this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
             this.state = KnightState.INDIALOGUE;
         }
-        else if (this.interactableInRange is ItemContainer chest)
+        else if (this.interactableInRange is ItemContainer chest && chest != null)
         {
             this.ContainerMenu.gameObject.SetActive(true);
             chest.GetComponent<Animator>().SetTrigger("Opened");
@@ -111,6 +112,7 @@ public class PlayerDungeon : MonoBehaviour
                     if (this.interactableInRange is ItemContainer chest)
                     {
                         chest.GetComponent<Animator>().SetTrigger("Closed");
+                        this.ContainerMenu.gameObject.SetActive(false);
                         EndInteraction();
                     }
                 }
@@ -208,6 +210,11 @@ public class PlayerDungeon : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (this.state != KnightState.PLAYERCANMOVE)
+        {
+            return;
+        }
+
         if (collision.TryGetComponent<IInteracble>(out var NPCWithDialogue))
         {
             Log.Print("can interact with" + collision.name);
@@ -217,7 +224,7 @@ public class PlayerDungeon : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.TryGetComponent<IInteracble>(out var NPCWithDialogue) && (NPCWithDialogue == this.interactableInRange))
+        if (collision.TryGetComponent<IInteracble>(out var interactable) && (interactable == this.interactableInRange))
         {
             // empty interactable so cant be retriggered when out of range.
             this.interactableInRange = null;
