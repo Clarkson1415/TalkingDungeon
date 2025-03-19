@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 94028872611853017}
   - component: {fileID: 3126137473779665417}
   - component: {fileID: 3776224796188179683}
-  - component: {fileID: 4214380929646696390}
+  - component: {fileID: 2412361710623871366}
   m_Layer: 5
   m_Name: TODOFinishItemButtonPrefab
   m_TagString: Untagged
@@ -171,8 +171,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 54.975, y: 18.8}
-  m_SizeDelta: {x: 397.9501, y: 37.6}
+  m_AnchoredPosition: {x: 136.9, y: 18.8}
+  m_SizeDelta: {x: 222.996, y: 37.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &94028872611853017
 CanvasRenderer:
@@ -256,7 +256,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4214380929646696390}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DialogueOption, Assembly-CSharp
         m_MethodName: ButtonClicked
         m_Mode: 1
@@ -268,7 +268,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4214380929646696390
+--- !u!114 &2412361710623871366
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -277,7 +277,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 7157358213223145553}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 966ee6dfd314fc243bc004b436223748, type: 3}
+  m_Script: {fileID: 11500000, guid: c8f0d0c609b539144a83f7be26997af0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isSelected: 0
+  Item: {fileID: 11400000, guid: b58dd9fac9b3661488b2a2ce0ac93620, type: 2}

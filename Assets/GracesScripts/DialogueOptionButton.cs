@@ -7,21 +7,9 @@ using TMPro;
 using UnityEngine;
 [System.Serializable]
 
-public class DialogueOptionButton : MonoBehaviour
+public class DialogueOptionButton : Button
 {
     public DialogueSlide NextDialogueSlide { get; set; }
-    public string OptionText { get; set; }
-
-    public bool isSelected;
-
-    /// <summary>
-    /// is used for something in the UI idk where
-    /// </summary>
-    public void ButtonClicked()
-    {
-        Log.Print("button clicked");
-        isSelected = true;
-    }
 
     /// <summary>
     /// Set all values in a dialogue option to the option passed in.

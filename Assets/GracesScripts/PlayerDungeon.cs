@@ -66,6 +66,7 @@ public class PlayerDungeon : MonoBehaviour
         {
             this.ContainerMenu.gameObject.SetActive(true);
             chest.GetComponent<Animator>().SetTrigger("Opened");
+            this.ContainerMenu.CreateLootButtons(chest.loot);
             this.state = KnightState.inItemContainer;
         }
 
@@ -109,11 +110,27 @@ public class PlayerDungeon : MonoBehaviour
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
-                    if (this.interactableInRange is ItemContainer chest)
+
+                    // close button can be selected to close off to the left or right
+                    if (closebuttonselected)
                     {
-                        chest.GetComponent<Animator>().SetTrigger("Closed");
-                        this.ContainerMenu.gameObject.SetActive(false);
-                        EndInteraction();
+                        closebuttonselected = false;
+                        if (this.interactableInRange is ItemContainer chest)
+                        {
+                            chest.GetComponent<Animator>().SetTrigger("Closed");
+                            this.ContainerMenu.gameObject.SetActive(false);
+                            EndInteraction();
+                        }
+                    }
+                    else // we must have selected an item
+                    {
+                        if (this.interactableInRange is ItemContainer chest)
+                        {
+                            var item = this.ContainerMenu.GetSelectedItem();
+                            Log.Print("picked up:");
+                            Log.Print(item.name);
+                            Log.Print(item.description);
+                        }
                     }
                 }
                 break;
@@ -121,6 +138,13 @@ public class PlayerDungeon : MonoBehaviour
                 this.state = KnightState.PLAYERCANMOVE;
                 break;
         }
+    }
+
+    private bool closebuttonselected;
+
+    public void OnCancelInContainerButtonPressed()
+    {
+        closebuttonselected = true;
     }
 
     private void EndInteraction()
