@@ -101,9 +101,9 @@ public class PlayerDungeon : MonoBehaviour
                     dialogueBox.PlayerInteractFlagSet = true;
                     this.InteractFlagSet = false;
                 }
-                else if ((this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGFORINTERACTION))
+                else if (this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGFORINTERACTION)
                 {
-                    EndInteraction();
+                    EndMovingDialogue();
                 }
                 break;
             case KnightState.inItemContainer:
@@ -117,9 +117,10 @@ public class PlayerDungeon : MonoBehaviour
                         closebuttonselected = false;
                         if (this.interactableInRange is ItemContainer chest)
                         {
-                            chest.GetComponent<Animator>().SetTrigger("Closed");
                             this.ContainerMenu.gameObject.SetActive(false);
-                            EndInteraction();
+                            this.ContainerMenu.ClearItems();
+                            chest.GetComponent<Animator>().SetTrigger("Closed");
+                            this.state = KnightState.PLAYERCANMOVE;
                         }
                     }
                     else // we must have selected an item
@@ -130,6 +131,8 @@ public class PlayerDungeon : MonoBehaviour
                             Log.Print("picked up:");
                             Log.Print(item.name);
                             Log.Print(item.description);
+
+                            // TODO: stuff when item is selected
                         }
                     }
                 }
@@ -147,7 +150,7 @@ public class PlayerDungeon : MonoBehaviour
         closebuttonselected = true;
     }
 
-    private void EndInteraction()
+    private void EndMovingDialogue()
     {
         // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
         // this is to allow it to go back to moving state again.

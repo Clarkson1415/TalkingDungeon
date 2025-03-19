@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4914607107173481966}
   - component: {fileID: -16273219105249392}
   m_Layer: 5
-  m_Name: ButtonPrefab
+  m_Name: DiaButtonPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,8 +123,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: -16273219105249392}
-        m_TargetAssemblyTypeName: DialogueOption, Assembly-CSharp
-        m_MethodName: ButtonClicked
+        m_TargetAssemblyTypeName: Button, Assembly-CSharp
+        m_MethodName: ClickButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

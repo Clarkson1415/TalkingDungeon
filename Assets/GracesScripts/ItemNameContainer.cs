@@ -7,10 +7,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemSpriteContainer : MonoBehaviour
+public class ItemNameContainer : MonoBehaviour
 {
-    public void SetItem(Sprite image)
+    public void SetItem(string itemName)
     {
-        this.GetComponent<Image>().sprite = image;
+        this.GetComponent<TMP_Text>().text = itemName;
     }
 }
