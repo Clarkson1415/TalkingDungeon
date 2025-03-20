@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using static UnityEditor.Progress;
 #nullable enable
 
+[RequireComponent(typeof(AudioSource))]
 public class ContainerMenu : MonoBehaviour
 {
     [SerializeField] GameObject prefabItemButton;
@@ -20,6 +21,12 @@ public class ContainerMenu : MonoBehaviour
     List<GameObject> Buttons = new();
 
     private List<GameObject> Items = new();
+    private AudioSource? audioSource;
+
+    private void Awake()
+    {
+        audioSource = this.GetComponent<AudioSource>();
+    }
 
     public void CreateLootButtons(List<Item> items)
     {
@@ -41,7 +48,7 @@ public class ContainerMenu : MonoBehaviour
             }
         }
 
-        InitialiseItemView(items[0]);
+        InitialiseItemView(this.Buttons[0]);
 
         UIEventSystem.SetSelectedGameObject(this.Buttons[0]);
     }
@@ -49,33 +56,44 @@ public class ContainerMenu : MonoBehaviour
     private GameObject? currentShownDescription;
     private GameObject? currentShownName;
 
-    private void InitialiseItemView(Item item)
+    private void InitialiseItemView(GameObject firstSelected)
     {
-        this.currentlyShownItem = item;
+        this.currentlyShownItem = firstSelected;
         this.currentShownDescription = Instantiate(prefabItemDescription, ItemDescriptionLoc.transform);
-        this.currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(item.description);
+        var firstSelectedItem = firstSelected.GetComponent<ItemOptionButton>().Item;
+        this.currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(firstSelectedItem.description);
         Items.Add(this.currentShownDescription);
 
         currentShownName = Instantiate(prefabItemName, ItemNameLoc.transform);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(item.name);
+        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(firstSelectedItem.Name);
         Items.Add(currentShownName);
     }
 
-    private void UpdateItemView(Item? item)
+    private void UpdateItemView(GameObject selectedButton)
     {
-        this.currentlyShownItem = item;
+        this.currentlyShownItem = selectedButton;
         MyGuard.IsNotNull(currentShownDescription);
         MyGuard.IsNotNull(currentShownName);
 
-        if (item == null)
+        var newItemButtonComponent = selectedButton.GetComponent<ItemOptionButton>();
+
+        // TODO: make cancel button more explicit than just not having an ItemOptionButton on the gameObject. maybe make a cancelButton Monobehaviour just to attach. to tell the difference bewteen the Cancel and other buttons when they are added
+        if (newItemButtonComponent == null)
         {
-            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(" ");
+            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem("It says cancel stop looking here!");
+            currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem("Cancel DUH");
+            return;
+        }
+        else if (newItemButtonComponent.Item == null)
+        {
+            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem("Blank");
             currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem("Empty Slot");
             return;
         }
 
-        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(item.description);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(item.name);
+        var newItem = newItemButtonComponent.Item;
+        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(newItem.description);
+        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(newItem.name);
     }
 
     public void ClearItems()
@@ -108,15 +126,15 @@ public class ContainerMenu : MonoBehaviour
         return optionButton.Item;
     }
 
-    private Item? currentlyShownItem;
+    private GameObject? currentlyShownItem;
 
     // Update is called once per frame
     void Update()
     {
-        // TODO this is causing a null reference error do this another way?
-        var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject.GetComponent<ItemOptionButton>().Item;
+        var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
         if (highlightedMenuItem != currentlyShownItem)
         {
+            this.audioSource.Play();
             this.UpdateItemView(highlightedMenuItem);
         }
     }
