@@ -13,7 +13,7 @@ public class PauseMenu : MonoBehaviour
         
     }
 
-    public void OnCancelAction(InputAction.CallbackContext context)
+    public void StartPauseMenu(InputAction.CallbackContext context)
     {
         if (context.started)
         {
@@ -28,6 +28,4 @@ public class PauseMenu : MonoBehaviour
 
         }
     }
-
-
 }

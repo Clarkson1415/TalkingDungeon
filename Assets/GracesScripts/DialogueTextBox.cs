@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 #nullable enable
 
+[RequireComponent(typeof(AudioSource))]
 public class DialogueTextBox : MonoBehaviour
 {
     private Coroutine? writeSlidesOverTimeCoroutine = null;
@@ -15,7 +16,7 @@ public class DialogueTextBox : MonoBehaviour
     private bool FinishedWritingSlideOverTime;
     private const char pauseCharacterToNotPrint = '_';
     private TMP_Text TMPTextBox;
-    private DialogueSlide? currentSlide;
+    public DialogueSlide? CurrentSlide { get; private set; }
 
     public BoxState State { get; private set; } = BoxState.WAITINGFORINTERACTION;
     public bool PlayerInteractFlagSet;
@@ -24,9 +25,47 @@ public class DialogueTextBox : MonoBehaviour
     [SerializeField] private float underscorePauseTime = 0.01f;
     [SerializeField] GameObject prefabButton;
     [SerializeField] EventSystem UIEventSystem;
-    [SerializeField] AudioSource dialogueSoundEffectAudioSource;
+    [SerializeField] AudioSource audioSource;
     [SerializeField] List<GameObject> buttonPositionsTopToBottom;
     [SerializeField] Image speakersPicRenderer;
+    [SerializeField] AudioClip dialoguePrintingAudio;
+    [SerializeField] AudioClip highlightAudio;
+    [SerializeField] AudioClip selectAudio;
+
+
+    public void PlayHighlightOptionChangedSound()
+    {
+        if (this.audioSource.clip != this.highlightAudio)
+        {
+            this.audioSource.clip = this.highlightAudio;
+        }
+
+        this.audioSource.Play();
+    }
+
+    private void PlayDialoguePrintAudio()
+    {
+        if (this.audioSource.clip != this.dialoguePrintingAudio)
+        {
+            this.audioSource.clip = this.dialoguePrintingAudio;
+        }
+
+        this.audioSource.Play();
+    }
+
+
+    /// <summary>
+    /// TODO maybe this should be the buttons job. this is not used. its bein overriden by dialogue box printing text sound when it is selected immidietly.
+    /// </summary>
+    public void PlayButtonSelectedSound()
+    {
+        if (this.audioSource.clip != this.selectAudio)
+        {
+            this.audioSource.clip = this.selectAudio;
+        }
+
+        this.audioSource.Play();
+    }
 
     public void BeginDialogue(DialogueSlide firstSlide)
     {
@@ -44,25 +83,42 @@ public class DialogueTextBox : MonoBehaviour
     private void Awake()
     {
         TMPTextBox = this.GetComponentInChildren<TMP_Text>();
-        this.dialogueSoundEffectAudioSource.loop = false;
+        this.audioSource.loop = false;
     }
 
     private void UpdateCurrentSlide(DialogueSlide? newSlide)
     {
         if (newSlide == null)
         {
-            this.currentSlide = null;
+            this.CurrentSlide = null;
             this.speakersPicRenderer.sprite = null;
         }
         else
         {
-            this.currentSlide = newSlide;
+            this.CurrentSlide = newSlide;
             this.speakersPicRenderer.sprite = newSlide.SpeakerPic;
         }
     }
 
+    private GameObject? currentHighlightedbutton;
+
+    /// <summary>
+    /// For SOUND PURPOSES ONLY maybe a better way idk
+    /// </summary>
+    private void ChangeHighlightedButton()
+    {
+        this.currentHighlightedbutton = this.UIEventSystem.currentSelectedGameObject;
+    }
+
     private void Update()
     {
+        var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
+        if (highlightedMenuItem != currentHighlightedbutton && currentHighlightedbutton != null) // starts off null i dont think i want the change selection sound to play when the buttons are instantiated.
+        {
+            this.PlayHighlightOptionChangedSound();
+            this.ChangeHighlightedButton();
+        }
+
         switch (State)
         {
             case BoxState.WAITINGFORINTERACTION:
@@ -95,8 +151,8 @@ public class DialogueTextBox : MonoBehaviour
                 if (this.PlayerInteractFlagSet)
                 {
                     this.PlayerInteractFlagSet = false;
-                    MyGuard.IsNotNull(this.currentSlide);
-                    if (this.currentSlide.islastSlideInSequence)
+                    MyGuard.IsNotNull(this.CurrentSlide);
+                    if (this.CurrentSlide.islastSlideInSequence)
                     {
                         UpdateCurrentSlide(null);
                         //Log.Print("state INVIS INACTIVE");
@@ -107,10 +163,10 @@ public class DialogueTextBox : MonoBehaviour
                     }
                     else
                     {
-                        if (this.currentSlide.options == null || this.currentSlide.options.Count == 0)
+                        if (this.CurrentSlide.options.Count == 0)
                         {
-                            MyGuard.IsNotNull(this.currentSlide.nextSlide);
-                            this.UpdateCurrentSlide(this.currentSlide.nextSlide);
+                            MyGuard.IsNotNull(this.CurrentSlide.nextSlide);
+                            this.UpdateCurrentSlide(this.CurrentSlide.nextSlide);
                         }
                         else
                         {
@@ -141,9 +197,9 @@ public class DialogueTextBox : MonoBehaviour
         StopCoroutine(writeSlidesOverTimeCoroutine);
         DrawButtons();
         string parsedString = "";
-        MyGuard.IsNotNull(currentSlide);
-        MyGuard.IsNotNull(currentSlide.dialogue);
-        foreach (var item in currentSlide.dialogue)
+        MyGuard.IsNotNull(CurrentSlide);
+        MyGuard.IsNotNull(CurrentSlide.dialogue);
+        foreach (var item in CurrentSlide.dialogue)
         {
             if (item != pauseCharacterToNotPrint)
             {
@@ -156,23 +212,23 @@ public class DialogueTextBox : MonoBehaviour
 
     private void DrawButtons()
     {
-        if (this.currentSlide?.options == null)
+        if (this.CurrentSlide?.options == null || this.CurrentSlide.options.Count == 0)
         {
             return;
         }
 
-        if (this.currentSlide.options.Count > 0)
+        if (this.CurrentSlide.options.Count > 0)
         {
             Vector3 positionVector = new Vector3(0, 0, 0);
 
-            for (int i = 0; i < this.currentSlide.options.Count; i++)
+            for (int i = 0; i < this.CurrentSlide.options.Count; i++)
             {
                 // Instantiate new button with that gameobject as parent.
                 var buttonGameObj = Instantiate(this.prefabButton, this.buttonPositionsTopToBottom[i].transform);
 
                 // set button Dialogue Option to the Dialogue Option.
                 // REMEBER THIS IS NOT THE SAME OBJECT AS IN THE CURRENT SLIDE.OPTIONS
-                buttonGameObj.GetComponent<DialogueOptionButton>().SetValues(this.currentSlide.options[i]);
+                buttonGameObj.GetComponent<DialogueOptionButton>().SetValues(this.CurrentSlide.options[i]);
                 this.buttons.Add(buttonGameObj);
             }
 
@@ -195,36 +251,36 @@ public class DialogueTextBox : MonoBehaviour
         this.buttons.ForEach(x => Destroy(x));
         this.buttons.Clear();
 
-        MyGuard.IsNotNull(this.currentSlide);
-        MyGuard.IsNotNull(this.currentSlide.dialogue);
-        for (int i = 0; i < this.currentSlide.dialogue.Length; i++)
+        MyGuard.IsNotNull(this.CurrentSlide);
+        MyGuard.IsNotNull(this.CurrentSlide.dialogue);
+        for (int i = 0; i < this.CurrentSlide.dialogue.Length; i++)
         {
             // don't play sound for either the special pause text printing character, or spaces. 
-            if (this.currentSlide.dialogue[i] == pauseCharacterToNotPrint)
+            if (this.CurrentSlide.dialogue[i] == pauseCharacterToNotPrint)
             {
                 yield return new WaitForSeconds(underscorePauseTime);
                 continue;
             }
 
             // dont play a sound but do print a space empty char
-            if (this.currentSlide.dialogue[i] == ' ')
+            if (this.CurrentSlide.dialogue[i] == ' ')
             {
-                this.TMPTextBox.text += this.currentSlide.dialogue[i];
+                this.TMPTextBox.text += this.CurrentSlide.dialogue[i];
                 yield return new WaitForSeconds(textspeed);
                 continue;
             }
 
             // play dialogue text sound effect
-            this.dialogueSoundEffectAudioSource.Play();
+            this.PlayDialoguePrintAudio();
 
             if (i == 0) // set first letter if this is the first letter.
             {
-                this.TMPTextBox.SetText(this.currentSlide.dialogue[0].ToString());
+                this.TMPTextBox.SetText(this.CurrentSlide.dialogue[0].ToString());
                 continue;
             }
 
             // do the rest of the letters
-            this.TMPTextBox.text += this.currentSlide.dialogue[i];
+            this.TMPTextBox.text += this.CurrentSlide.dialogue[i];
             yield return new WaitForSeconds(textspeed);
         }
 

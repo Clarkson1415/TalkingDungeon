@@ -1,5 +1,7 @@
 using Assets.GracesScripts;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +13,8 @@ public class PlayerDungeon : MonoBehaviour
 {
     [SerializeField] DialogueTextBox dialogueBox;
     [SerializeField] ContainerMenu ContainerMenu;
+    [SerializeField] PauseMenu pauseMenu;
+
     private IInteracble interactableInRange = null;
     private Rigidbody2D rb;
     private Vector2 direction;
@@ -37,6 +41,7 @@ public class PlayerDungeon : MonoBehaviour
         animatedLayers = GetComponent<UseAnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
         footstepsSound = GetComponentInChildren<AudioSource>();
+        this.currentMenuOpen = this.pauseMenu.gameObject;
     }
 
     // Start is called before the first frame update
@@ -57,6 +62,7 @@ public class PlayerDungeon : MonoBehaviour
                 movingNPC.IsInDialogue = true;
             }
 
+            currentMenuOpen = this.dialogueBox.gameObject;
             this.dialogueBox.gameObject.SetActive(true);
             dialogueBox.PlayerInteractFlagSet = true;
             this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
@@ -64,6 +70,7 @@ public class PlayerDungeon : MonoBehaviour
         }
         else if (this.interactableInRange is ItemContainer chest && chest != null)
         {
+            currentMenuOpen = this.ContainerMenu.gameObject;
             this.ContainerMenu.gameObject.SetActive(true);
             chest.GetComponent<Animator>().SetTrigger("Opened");
             this.ContainerMenu.CreateLootButtons(chest.loot);
@@ -111,35 +118,19 @@ public class PlayerDungeon : MonoBehaviour
                 {
                     this.InteractFlagSet = false;
 
-                    // close button can be selected to close off to the left or right
-                    if (closebuttonselected)
-                    {
-                        closebuttonselected = false;
-                        if (this.interactableInRange is ItemContainer chest)
-                        {
-                            this.ContainerMenu.gameObject.SetActive(false);
-                            this.ContainerMenu.ClearItems();
-                            chest.GetComponent<Animator>().SetTrigger("Closed");
-                            this.state = KnightState.PLAYERCANMOVE;
-                        }
-                    }
-                    else // we must have selected an item
-                    {
-                        if (this.interactableInRange is ItemContainer chest)
-                        {
-                            var item = this.ContainerMenu.GetSelectedItem();
-                            if (item == null)
-                            {
-                                return;
-                            }
+                    this.ContainerMenu.PlayButtonSelectedSound();
 
-                            Log.Print("picked up:");
-                            Log.Print(item.name);
-                            Log.Print(item.description);
+                    var button = this.ContainerMenu.GetSelectedButton();
 
-                            // TODO: stuff when item is selected
-                        }
+                    var itemOption = button.GetComponent<ItemOptionButton>();
+                    var item = itemOption.Item;
+
+                    if (item == null)
+                    {
+                        return;
                     }
+
+                    Debug.Log($"selected {item.Name}");
                 }
                 break;
             default:
@@ -148,11 +139,36 @@ public class PlayerDungeon : MonoBehaviour
         }
     }
 
-    private bool closebuttonselected;
+    public GameObject currentMenuOpen;
 
-    public void OnCancelInContainerButtonPressed()
+    public void OnMenuCancel(InputAction.CallbackContext context)
     {
-        closebuttonselected = true;
+        if(!context.started)
+        {
+            return;
+        }
+
+        if(currentMenuOpen.TryGetComponent<PauseMenu>(out var menu))
+        {
+            this.pauseMenu.gameObject.SetActive(!this.pauseMenu.gameObject.activeSelf);
+        }
+        else if (currentMenuOpen.TryGetComponent<ContainerMenu>(out var containerMenu))
+        {
+            this.ContainerMenu.gameObject.SetActive(false);
+            this.ContainerMenu.ClearItems();
+
+            if(this.interactableInRange is ItemContainer chestOrSomething)
+            {
+                chestOrSomething.GetComponent<Animator>().SetTrigger("Closed");
+            }
+
+            this.state = KnightState.PLAYERCANMOVE;
+        }
+
+        // TODO other menus
+
+        // default is pause menu
+        this.currentMenuOpen = this.pauseMenu.gameObject;
     }
 
     private void EndMovingDialogue()
@@ -167,14 +183,16 @@ public class PlayerDungeon : MonoBehaviour
         this.state = KnightState.PLAYERCANMOVE;
     }
 
-    public void OnMove(InputAction.CallbackContext context)
+    public void OnNavigateOrMove(InputAction.CallbackContext context)
     {
-        // if in interactin dont update and Return early this stops animation from playing when you're in dialogue
-        // another option is to diable and enable the PLayer Move action map and re enable.
+        // TODO a better way would have each button fire their own OnNavigatedToo event when they are highlighted to play it's sound.
         if (this.state != KnightState.PLAYERCANMOVE)
         {
             return;
         }
+
+        // if in interactin dont update and Return early this stops animation from playing when you're in dialogue
+        // another option is to diable and enable the PLayer Move action map and re enable.
 
         this.direction = context.ReadValue<Vector2>();
 

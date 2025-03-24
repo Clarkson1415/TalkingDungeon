@@ -9,7 +9,7 @@ using UnityEngine;
 public class DialogueSlide : MonoBehaviour
 {
     [SerializeField] public string? dialogue { get; set; }
-    [SerializeField] public List<DialogueOptionButton>? options { get; set; }
+    [SerializeField] public List<DialogueOptionButton> options { get; set; } = new();
     [SerializeField] public DialogueSlide? nextSlide { get; set; }
     public Sprite? SpeakerPic { get; set; }
     public bool islastSlideInSequence { get; private set; } = false;

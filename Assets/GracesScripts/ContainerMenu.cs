@@ -4,6 +4,7 @@ using System.Linq;
 using System.Transactions;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
 #nullable enable
@@ -11,6 +12,8 @@ using static UnityEditor.Progress;
 [RequireComponent(typeof(AudioSource))]
 public class ContainerMenu : MonoBehaviour
 {
+    [SerializeField] AudioClip highlightAudio;
+    [SerializeField] AudioClip selectAudio;
     [SerializeField] GameObject prefabItemButton;
     [SerializeField] GameObject prefabItemDescription;
     [SerializeField] GameObject prefabItemName;
@@ -21,7 +24,7 @@ public class ContainerMenu : MonoBehaviour
     List<GameObject> Buttons = new();
 
     private List<GameObject> Items = new();
-    private AudioSource? audioSource;
+    private AudioSource audioSource;
 
     private void Awake()
     {
@@ -69,8 +72,10 @@ public class ContainerMenu : MonoBehaviour
         Items.Add(currentShownName);
     }
 
-    private void UpdateItemView(GameObject selectedButton)
+    private void UpdateItemView()
     {
+        var selectedButton = this.UIEventSystem.currentSelectedGameObject;
+
         this.currentlyShownItem = selectedButton;
         MyGuard.IsNotNull(currentShownDescription);
         MyGuard.IsNotNull(currentShownName);
@@ -112,18 +117,17 @@ public class ContainerMenu : MonoBehaviour
     }
 
     /// <summary>
-    /// TODO: really slow too many get components
+    /// TODO: really slow too many get components. ALSO im not even using the ItemOptnButton.ClickButton() event setup in the prefab to trigger on click. but that could be where the sound is played instead 
     /// </summary>
-    public Item? GetSelectedItem()
+    public GameObject GetSelectedButton()
     {
-        if (this.UIEventSystem.currentSelectedGameObject.GetComponent<ItemOptionButton>().Item == null || this.Buttons.Count == 0)
-        {
-            return null;
-        }
+        return this.UIEventSystem.currentSelectedGameObject;
+    }
 
-        var selectedItemButton = this.Buttons.First(x => x.GetComponent<ItemOptionButton>().isSelected);
-        var optionButton = selectedItemButton.GetComponent<ItemOptionButton>();
-        return optionButton.Item;
+    public bool ExitButtonSelected = false;
+    public void OnExitClicked()
+    {
+        this.ExitButtonSelected = true;
     }
 
     private GameObject? currentlyShownItem;
@@ -134,8 +138,34 @@ public class ContainerMenu : MonoBehaviour
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
         if (highlightedMenuItem != currentlyShownItem)
         {
-            this.audioSource.Play();
-            this.UpdateItemView(highlightedMenuItem);
+            this.PlayHighlightOptionChangedSound();
+            this.UpdateItemView();
         }
+    }
+
+    /// <summary>
+    /// TODO maybe this should be the buttons job
+    /// </summary>
+    public void PlayHighlightOptionChangedSound()
+    {
+        if (this.audioSource.clip != this.highlightAudio)
+        {
+            this.audioSource.clip = this.highlightAudio;
+        }
+
+        this.audioSource.Play();
+    }
+
+    /// <summary>
+    /// TODO maybe this should be the buttons job
+    /// </summary>
+    public void PlayButtonSelectedSound()
+    {
+        if(this.audioSource.clip != this.selectAudio)
+        {
+            this.audioSource.clip = this.selectAudio;
+        }
+
+        this.audioSource.Play();
     }
 }
