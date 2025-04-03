@@ -12,6 +12,5 @@ public class ItemOptionButton : Button
     public void SetItem(Item item)
     {
         this.Item = item;
-        this.OptionText = item.Name;
     }
 }

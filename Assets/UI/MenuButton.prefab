@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 4473074974338727597}
   - component: {fileID: 1585790541603217437}
   - component: {fileID: 4914607107173481966}
-  - component: {fileID: -16273219105249392}
   - component: {fileID: 8827876136857921731}
+  - component: {fileID: 3704845610198345114}
   m_Layer: 5
-  m_Name: DiaButtonPrefab
+  m_Name: MenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: -16273219105249392}
+      - m_Target: {fileID: 3704845610198345114}
         m_TargetAssemblyTypeName: Button, Assembly-CSharp
         m_MethodName: ClickButton
         m_Mode: 1
@@ -135,22 +135,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &-16273219105249392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2022398923937881920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 966ee6dfd314fc243bc004b436223748, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  highlightSound: {fileID: 8300000, guid: 782eec1bfc660704387355bd0d7d4f6f, type: 3}
-  selectedSound: {fileID: 0}
-  audioSource: {fileID: 8827876136857921731}
-  isSelected: 0
 --- !u!82 &8827876136857921731
 AudioSource:
   m_ObjectHideFlags: 0
@@ -247,6 +231,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3704845610198345114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022398923937881920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d705d1fbec242944a1eb0f43a044a6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightSound: {fileID: 8300000, guid: 782eec1bfc660704387355bd0d7d4f6f, type: 3}
+  selectedSound: {fileID: 8300000, guid: e168fc8691f9def419b21ba446bf6161, type: 3}
+  audioSource: {fileID: 8827876136857921731}
+  isSelected: 0
+  buttonText: Cancel
 --- !u!1 &9024202051605738648
 GameObject:
   m_ObjectHideFlags: 0

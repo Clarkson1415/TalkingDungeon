@@ -18,6 +18,5 @@ public class UsesProfilePic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // TODO: behaviour??? idk they don't have any yet, if none make this an INPC
     }
 }

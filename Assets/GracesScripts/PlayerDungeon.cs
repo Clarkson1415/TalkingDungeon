@@ -33,7 +33,8 @@ public class PlayerDungeon : MonoBehaviour
     {
         INDIALOGUE,
         PLAYERCANMOVE,
-        inItemContainer,
+        InItemContainer,
+        INPAUSEMENU,
     }
 
     private void Awake()
@@ -74,7 +75,7 @@ public class PlayerDungeon : MonoBehaviour
             this.ContainerMenu.gameObject.SetActive(true);
             chest.GetComponent<Animator>().SetTrigger("Opened");
             this.ContainerMenu.CreateLootButtons(chest.loot);
-            this.state = KnightState.inItemContainer;
+            this.state = KnightState.InItemContainer;
         }
 
         // TODO: add more interactables here
@@ -113,7 +114,7 @@ public class PlayerDungeon : MonoBehaviour
                     EndMovingDialogue();
                 }
                 break;
-            case KnightState.inItemContainer:
+            case KnightState.InItemContainer:
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
@@ -128,6 +129,21 @@ public class PlayerDungeon : MonoBehaviour
                     }
 
                     Debug.Log($"selected {item.Name}");
+                }
+                break;
+            case KnightState.INPAUSEMENU:
+                if (this.InteractFlagSet)
+                {
+                    this.InteractFlagSet = false;
+                    var button = this.pauseMenu.GetSelectedButton();
+
+                    var option = button.GetComponent<ButtonMenuOption>();
+
+                    Debug.Log($"selected {option}");
+                }
+                if (!this.pauseMenu.isActiveAndEnabled)
+                {
+                    this.state = KnightState.PLAYERCANMOVE;
                 }
                 break;
             default:
@@ -145,9 +161,18 @@ public class PlayerDungeon : MonoBehaviour
             return;
         }
 
+        // TODO: might want to change this later if want to open pause menu over dialogue but for now this is fastest solution
+        // dont open pause menu in dialogue.
+        if (this.state == KnightState.INDIALOGUE)
+        {
+            return;
+        }
+
         if(currentMenuOpen.TryGetComponent<PauseMenu>(out var menu))
         {
             this.pauseMenu.gameObject.SetActive(!this.pauseMenu.gameObject.activeSelf);
+            this.pauseMenu.StartPauseMenu();
+            this.state = KnightState.INPAUSEMENU;
         }
         else if (currentMenuOpen.TryGetComponent<ContainerMenu>(out var containerMenu))
         {

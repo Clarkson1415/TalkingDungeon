@@ -213,6 +213,8 @@ public class DialogueTextBox : MonoBehaviour
                 button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOptionButton>().OptionText;
             }
         }
+
+        this.currentHighlightedbutton = this.UIEventSystem.currentSelectedGameObject;
     }
 
     private IEnumerator WriteSlideOverTime()

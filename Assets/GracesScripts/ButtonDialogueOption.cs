@@ -11,6 +11,17 @@ public class DialogueOptionButton : Button
 {
     public DialogueSlide NextDialogueSlide { get; set; }
 
+    public string OptionText { get; set; }
+
+    public void Start()
+    {
+    }
+
+    public void UpdateButtonText()
+    {
+        this.GetComponentInChildren<TMP_Text>().text = this.OptionText;
+    }
+
     /// <summary>
     /// Set all values in a dialogue option to the option passed in.
     /// </summary>

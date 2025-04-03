@@ -16,7 +16,7 @@ public class DialogueSlide : MonoBehaviour
     
 
     /// <summary>
-    /// TODO: font size setting, and this based on font size setting.
+    /// TODO: change so this is this based on font size setting.
     /// max characters for text box
     /// </summary>
     static private int MaxChars = 212;

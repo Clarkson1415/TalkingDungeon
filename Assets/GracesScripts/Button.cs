@@ -23,21 +23,10 @@ public class Button : MonoBehaviour
         this.audioSource.Play();
     }
 
-    public string OptionText { get; set; }
-
-    public void Start()
-    {
-    }
-
-    public void UpdateButtonText()
-    {
-        this.GetComponentInChildren<TMP_Text>().text = this.OptionText;
-    }
-
     /// <summary>
     /// is used in the Button component on the game object in the folder Assets/UI
     /// </summary>
-    public void ClickButton()
+    public virtual void ClickButton()
     {
         isSelected = true;
 
