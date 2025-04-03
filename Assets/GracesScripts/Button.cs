@@ -1,18 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
-
+#nullable enable
 
 /// <summary>
 /// Button class, draws itself upon activation / instantiation.
 /// </summary>
 public class Button : MonoBehaviour
 {
+    [SerializeField] AudioClip highlightSound;
+    [SerializeField] AudioClip? selectedSound;
+    [SerializeField] AudioSource audioSource;
+
     public bool isSelected;
+
+    public void PlayHighlightOptionChangedSound()
+    {
+        if (this.audioSource.clip != highlightSound)
+        {
+            this.audioSource.clip = highlightSound;
+        }
+
+        this.audioSource.Play();
+    }
 
     public string OptionText { get; set; }
 
@@ -26,10 +35,23 @@ public class Button : MonoBehaviour
     }
 
     /// <summary>
-    /// is used for something in the UI idk where
+    /// is used in the Button component on the game object in the folder Assets/UI
     /// </summary>
     public void ClickButton()
     {
         isSelected = true;
+
+        if (selectedSound == null)
+        {
+            // dialogue buttons wont have a selected sound;
+            return; 
+        }
+
+        if (this.audioSource.clip != selectedSound)
+        {
+            this.audioSource.clip = selectedSound;
+        }
+
+        this.audioSource.Play();
     }
 }

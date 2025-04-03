@@ -117,9 +117,6 @@ public class PlayerDungeon : MonoBehaviour
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
-
-                    this.ContainerMenu.PlayButtonSelectedSound();
-
                     var button = this.ContainerMenu.GetSelectedButton();
 
                     var itemOption = button.GetComponent<ItemOptionButton>();

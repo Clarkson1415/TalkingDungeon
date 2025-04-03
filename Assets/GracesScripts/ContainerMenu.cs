@@ -9,11 +9,8 @@ using UnityEngine.UI;
 using static UnityEditor.Progress;
 #nullable enable
 
-[RequireComponent(typeof(AudioSource))]
 public class ContainerMenu : MonoBehaviour
 {
-    [SerializeField] AudioClip highlightAudio;
-    [SerializeField] AudioClip selectAudio;
     [SerializeField] GameObject prefabItemButton;
     [SerializeField] GameObject prefabItemDescription;
     [SerializeField] GameObject prefabItemName;
@@ -22,13 +19,10 @@ public class ContainerMenu : MonoBehaviour
     [SerializeField] GameObject ItemNameLoc;
     [SerializeField] EventSystem UIEventSystem;
     List<GameObject> Buttons = new();
-
     private List<GameObject> Items = new();
-    private AudioSource audioSource;
 
     private void Awake()
     {
-        audioSource = this.GetComponent<AudioSource>();
     }
 
     public void CreateLootButtons(List<Item> items)
@@ -74,31 +68,21 @@ public class ContainerMenu : MonoBehaviour
 
     private void UpdateItemView()
     {
-        var selectedButton = this.UIEventSystem.currentSelectedGameObject;
-
-        this.currentlyShownItem = selectedButton;
+        this.currentlyShownItem = this.UIEventSystem.currentSelectedGameObject;
         MyGuard.IsNotNull(currentShownDescription);
         MyGuard.IsNotNull(currentShownName);
 
-        var newItemButtonComponent = selectedButton.GetComponent<ItemOptionButton>();
+        var newItemButtonComponent = this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
 
-        // TODO: make cancel button more explicit than just not having an ItemOptionButton on the gameObject. maybe make a cancelButton Monobehaviour just to attach. to tell the difference bewteen the Cancel and other buttons when they are added
-        if (newItemButtonComponent == null)
-        {
-            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem("It says cancel stop looking here!");
-            currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem("Cancel DUH");
-            return;
-        }
-        else if (newItemButtonComponent.Item == null)
+        if (itemButtonComp.Item == null)
         {
             currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem("Blank");
             currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem("Empty Slot");
             return;
         }
 
-        var newItem = newItemButtonComponent.Item;
-        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(newItem.description);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(newItem.name);
+        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(itemButtonComp.Item.description);
+        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(itemButtonComp.Item.name);
     }
 
     public void ClearItems()
@@ -136,36 +120,14 @@ public class ContainerMenu : MonoBehaviour
     void Update()
     {
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
-        if (highlightedMenuItem != currentlyShownItem)
+
+        if (highlightedMenuItem != currentlyShownItem && currentlyShownItem != null)
         {
-            this.PlayHighlightOptionChangedSound();
+            if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var button))
+            {
+                button.PlayHighlightOptionChangedSound();
+            }
             this.UpdateItemView();
         }
-    }
-
-    /// <summary>
-    /// TODO maybe this should be the buttons job
-    /// </summary>
-    public void PlayHighlightOptionChangedSound()
-    {
-        if (this.audioSource.clip != this.highlightAudio)
-        {
-            this.audioSource.clip = this.highlightAudio;
-        }
-
-        this.audioSource.Play();
-    }
-
-    /// <summary>
-    /// TODO maybe this should be the buttons job
-    /// </summary>
-    public void PlayButtonSelectedSound()
-    {
-        if(this.audioSource.clip != this.selectAudio)
-        {
-            this.audioSource.clip = this.selectAudio;
-        }
-
-        this.audioSource.Play();
     }
 }

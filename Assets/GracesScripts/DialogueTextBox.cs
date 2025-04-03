@@ -29,39 +29,12 @@ public class DialogueTextBox : MonoBehaviour
     [SerializeField] List<GameObject> buttonPositionsTopToBottom;
     [SerializeField] Image speakersPicRenderer;
     [SerializeField] AudioClip dialoguePrintingAudio;
-    [SerializeField] AudioClip highlightAudio;
-    [SerializeField] AudioClip selectAudio;
-
-
-    public void PlayHighlightOptionChangedSound()
-    {
-        if (this.audioSource.clip != this.highlightAudio)
-        {
-            this.audioSource.clip = this.highlightAudio;
-        }
-
-        this.audioSource.Play();
-    }
 
     private void PlayDialoguePrintAudio()
     {
         if (this.audioSource.clip != this.dialoguePrintingAudio)
         {
             this.audioSource.clip = this.dialoguePrintingAudio;
-        }
-
-        this.audioSource.Play();
-    }
-
-
-    /// <summary>
-    /// TODO maybe this should be the buttons job. this is not used. its bein overriden by dialogue box printing text sound when it is selected immidietly.
-    /// </summary>
-    public void PlayButtonSelectedSound()
-    {
-        if (this.audioSource.clip != this.selectAudio)
-        {
-            this.audioSource.clip = this.selectAudio;
         }
 
         this.audioSource.Play();
@@ -102,21 +75,18 @@ public class DialogueTextBox : MonoBehaviour
 
     private GameObject? currentHighlightedbutton;
 
-    /// <summary>
-    /// For SOUND PURPOSES ONLY maybe a better way idk
-    /// </summary>
-    private void ChangeHighlightedButton()
-    {
-        this.currentHighlightedbutton = this.UIEventSystem.currentSelectedGameObject;
-    }
-
     private void Update()
     {
+        // currentHighlightedbutton starts off null and i dont think i want the change selection sound to play when the buttons are instantiated.
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
-        if (highlightedMenuItem != currentHighlightedbutton && currentHighlightedbutton != null) // starts off null i dont think i want the change selection sound to play when the buttons are instantiated.
+        if (highlightedMenuItem != currentHighlightedbutton && currentHighlightedbutton != null) 
         {
-            this.PlayHighlightOptionChangedSound();
-            this.ChangeHighlightedButton();
+            this.currentHighlightedbutton = highlightedMenuItem;
+            
+            if (this.currentHighlightedbutton.TryGetComponent<DialogueOptionButton>(out var button))
+            {
+                button.PlayHighlightOptionChangedSound();
+            }
         }
 
         switch (State)
