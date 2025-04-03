@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+[RequireComponent(typeof(Button))]
 public class ItemOptionButton : Button
 {
     public Item Item;
@@ -12,5 +13,10 @@ public class ItemOptionButton : Button
     public void SetItem(Item item)
     {
         this.Item = item;
+    }
+
+    public void RemoveItem()
+    {
+        this.Item = null;
     }
 }

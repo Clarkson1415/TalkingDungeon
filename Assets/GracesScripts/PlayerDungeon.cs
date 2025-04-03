@@ -14,6 +14,8 @@ public class PlayerDungeon : MonoBehaviour
     [SerializeField] DialogueTextBox dialogueBox;
     [SerializeField] ContainerMenu ContainerMenu;
     [SerializeField] PauseMenu pauseMenu;
+    [SerializeField] InventoryMenu inventoryMenu;
+    public GameObject currentMenuOpen;
 
     private IInteracble interactableInRange = null;
     private Rigidbody2D rb;
@@ -23,6 +25,7 @@ public class PlayerDungeon : MonoBehaviour
     private KnightState state = KnightState.PLAYERCANMOVE;
     private AudioSource footstepsSound;
     private UseAnimatedLayers animatedLayers;
+
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
@@ -35,6 +38,7 @@ public class PlayerDungeon : MonoBehaviour
         PLAYERCANMOVE,
         InItemContainer,
         INPAUSEMENU,
+        ININVENTORY,
     }
 
     private void Awake()
@@ -97,6 +101,13 @@ public class PlayerDungeon : MonoBehaviour
         switch (this.state)
         {
             case KnightState.PLAYERCANMOVE:
+                if (iKeyFlag)
+                {
+                    iKeyFlag = false;
+                    this.currentMenuOpen = inventoryMenu.gameObject;
+                    this.currentMenuOpen.SetActive(true);
+                    this.state = KnightState.ININVENTORY;
+                }
                 this.rb.velocity = direction * movementSpeed;
                 if (this.InteractFlagSet)
                 {
@@ -118,10 +129,7 @@ public class PlayerDungeon : MonoBehaviour
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
-                    var button = this.ContainerMenu.GetSelectedButton();
-
-                    var itemOption = button.GetComponent<ItemOptionButton>();
-                    var item = itemOption.Item;
+                    var item = this.ContainerMenu.OnButtonSelected();
 
                     if (item == null)
                     {
@@ -146,17 +154,53 @@ public class PlayerDungeon : MonoBehaviour
                     this.state = KnightState.PLAYERCANMOVE;
                 }
                 break;
+            case KnightState.ININVENTORY:
+                if (iKeyFlag)
+                {
+                    // only use esc to close menues for now
+                    iKeyFlag = false;
+                }
+                if (escKeyFlag)
+                {
+                    escKeyFlag = false;
+                    this.currentMenuOpen.GetComponent<InventoryMenu>().Close();
+                    this.currentMenuOpen.SetActive(false);
+                    this.currentMenuOpen = pauseMenu.gameObject;
+                    this.state = KnightState.PLAYERCANMOVE;
+                }
+                if (this.InteractFlagSet)
+                {
+                    this.InteractFlagSet = false;
+                    var button = this.pauseMenu.GetSelectedButton();
+
+                    var option = button.GetComponent<ButtonMenuOption>();
+
+                    Debug.Log($"selected {option}");
+                }
+                break;
             default:
                 this.state = KnightState.PLAYERCANMOVE;
                 break;
         }
     }
 
-    public GameObject currentMenuOpen;
+
+    public void OnIKey(InputAction.CallbackContext context)
+    {
+        if (!context.started)
+        {
+            return;
+        }
+
+        iKeyFlag = true;
+    }
+
+    private bool iKeyFlag;
+    private bool escKeyFlag;
 
     public void OnMenuCancel(InputAction.CallbackContext context)
     {
-        if(!context.started)
+        if (!context.started)
         {
             return;
         }
@@ -168,14 +212,19 @@ public class PlayerDungeon : MonoBehaviour
             return;
         }
 
-        if(currentMenuOpen.TryGetComponent<PauseMenu>(out var menu))
+        escKeyFlag = true;
+
+        if (currentMenuOpen.TryGetComponent<PauseMenu>(out var menu))
         {
+            escKeyFlag = false;
             this.pauseMenu.gameObject.SetActive(!this.pauseMenu.gameObject.activeSelf);
             this.pauseMenu.StartPauseMenu();
             this.state = KnightState.INPAUSEMENU;
+            this.currentMenuOpen = this.pauseMenu.gameObject;
         }
         else if (currentMenuOpen.TryGetComponent<ContainerMenu>(out var containerMenu))
         {
+            escKeyFlag = false;
             this.ContainerMenu.gameObject.SetActive(false);
             this.ContainerMenu.ClearItems();
 
@@ -185,12 +234,12 @@ public class PlayerDungeon : MonoBehaviour
             }
 
             this.state = KnightState.PLAYERCANMOVE;
+            this.currentMenuOpen.GetComponent<ContainerMenu>().Close();
+            this.currentMenuOpen = this.pauseMenu.gameObject;
         }
-
         // TODO other menus
 
         // default is pause menu
-        this.currentMenuOpen = this.pauseMenu.gameObject;
     }
 
     private void EndMovingDialogue()

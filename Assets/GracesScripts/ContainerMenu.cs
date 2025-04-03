@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -20,10 +21,7 @@ public class ContainerMenu : MonoBehaviour
     [SerializeField] EventSystem UIEventSystem;
     List<GameObject> Buttons = new();
     private List<GameObject> Items = new();
-
-    private void Awake()
-    {
-    }
+    [SerializeField] public Sprite emptySlot;
 
     public void CreateLootButtons(List<Item> items)
     {
@@ -46,8 +44,12 @@ public class ContainerMenu : MonoBehaviour
         }
 
         InitialiseItemView(this.Buttons[0]);
-
         UIEventSystem.SetSelectedGameObject(this.Buttons[0]);
+    }
+
+    public void Close()
+    {
+        this.UIEventSystem.SetSelectedGameObject(null);
     }
 
     private GameObject? currentShownDescription;
@@ -101,17 +103,20 @@ public class ContainerMenu : MonoBehaviour
     }
 
     /// <summary>
-    /// TODO: really slow too many get components. ALSO im not even using the ItemOptnButton.ClickButton() event setup in the prefab to trigger on click. but that could be where the sound is played instead 
+    /// returns selected. 
     /// </summary>
-    public GameObject GetSelectedButton()
+    public Item OnButtonSelected()
     {
-        return this.UIEventSystem.currentSelectedGameObject;
-    }
+        var selected = this.UIEventSystem.currentSelectedGameObject;
 
-    public bool ExitButtonSelected = false;
-    public void OnExitClicked()
-    {
-        this.ExitButtonSelected = true;
+        selected.GetComponentInChildren<TMP_Text>().text = string.Empty;
+        var spriteImageComponent = selected.GetComponentInChildren<ItemOptionButtonImage>();
+        spriteImageComponent.SetImage(emptySlot);
+
+        this.UIEventSystem.currentSelectedGameObject.TryGetComponent<ItemOptionButton>(out var itemBut);
+        itemBut.RemoveItem();
+
+        return itemBut.Item;
     }
 
     private GameObject? currentlyShownItem;

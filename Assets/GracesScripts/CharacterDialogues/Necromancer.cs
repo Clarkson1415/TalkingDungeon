@@ -22,11 +22,11 @@ public class Necromancer : UsesProfilePic, IHasDialogue, IInteracble
         Slide1Option1.SetValues("*stay silent*", Slide1Option1_NextSlide);
 
         var Slide1Option3 = gameObject.AddComponent<DialogueOptionButton>();
-        Slide1Option3.SetValues("Whats going on here?", Slide1Option1_NextSlide);
+        Slide1Option3.SetValues("what?", Slide1Option1_NextSlide);
 
         // Slide 1
         var Slide1 = gameObject.AddComponent<DialogueSlide>();
-        Slide1.SetValues(this.profilePic, "shhh!", new List<DialogueOptionButton>() { Slide1Option1, Slide1Option3 });
+        Slide1.SetValues(this.profilePic, "shhh! ah nevermind you just interrupted me. I was almost out of here.", new List<DialogueOptionButton>() { Slide1Option1, Slide1Option3 });
 
         this.FirstDialogue = Slide1;
     }
