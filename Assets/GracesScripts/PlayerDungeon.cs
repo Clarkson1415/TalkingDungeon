@@ -32,7 +32,7 @@ public class PlayerDungeon : MonoBehaviour
     [SerializeField] private float maxWellbeing;
     [SerializeField] private float currentWellbeing;
     [SerializeField] Image healthBarImage;
-
+    [SerializeField] List<Ability> abilites;
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
