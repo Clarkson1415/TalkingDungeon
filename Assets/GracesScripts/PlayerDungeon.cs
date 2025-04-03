@@ -29,8 +29,8 @@ public class PlayerDungeon : MonoBehaviour
     private AudioSource footstepsSound;
     private UseAnimatedLayers animatedLayers;
     [SerializeField] private List<Item> Inventory;
-    [SerializeField] private int maxWellbeing;
-    [SerializeField] private int currentHealth;
+    [SerializeField] private float maxWellbeing;
+    [SerializeField] private float currentWellbeing;
     [SerializeField] Image healthBarImage;
 
 
@@ -215,6 +215,12 @@ public class PlayerDungeon : MonoBehaviour
                 this.state = KnightState.PLAYERCANMOVE;
                 break;
         }
+    }
+
+    private void TakeDamage(float damage)
+    {
+        this.currentWellbeing -= damage;
+        this.healthBarImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
     }
 
     public void OnIKey(InputAction.CallbackContext context)
