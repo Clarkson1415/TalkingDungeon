@@ -1,9 +1,12 @@
 using Assets.GracesScripts;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// Player guy
@@ -25,6 +28,10 @@ public class PlayerDungeon : MonoBehaviour
     private KnightState state = KnightState.PLAYERCANMOVE;
     private AudioSource footstepsSound;
     private UseAnimatedLayers animatedLayers;
+    [SerializeField] private List<Item> Inventory;
+    [SerializeField] private int maxWellbeing;
+    [SerializeField] private int currentHealth;
+    [SerializeField] Image healthBarImage;
 
 
     /// <summary>
@@ -78,7 +85,7 @@ public class PlayerDungeon : MonoBehaviour
             currentMenuOpen = this.ContainerMenu.gameObject;
             this.ContainerMenu.gameObject.SetActive(true);
             chest.GetComponent<Animator>().SetTrigger("Opened");
-            this.ContainerMenu.CreateLootButtons(chest.loot);
+            this.ContainerMenu.PopulateContainer(chest.loot);
             this.state = KnightState.InItemContainer;
         }
 
@@ -101,10 +108,19 @@ public class PlayerDungeon : MonoBehaviour
         switch (this.state)
         {
             case KnightState.PLAYERCANMOVE:
+                if (escKeyFlag)
+                {
+                    escKeyFlag = false;
+                    this.pauseMenu.gameObject.SetActive(true);
+                    this.pauseMenu.StartPauseMenu();
+                    this.state = KnightState.INPAUSEMENU;
+                    this.currentMenuOpen = this.pauseMenu.gameObject;
+                }
                 if (iKeyFlag)
                 {
                     iKeyFlag = false;
                     this.currentMenuOpen = inventoryMenu.gameObject;
+                    inventoryMenu.OpenInventory(Inventory);
                     this.currentMenuOpen.SetActive(true);
                     this.state = KnightState.ININVENTORY;
                 }
@@ -126,7 +142,16 @@ public class PlayerDungeon : MonoBehaviour
                 }
                 break;
             case KnightState.InItemContainer:
-                if (this.InteractFlagSet)
+                if (escKeyFlag)
+                {
+                    escKeyFlag = false;
+                    this.ContainerMenu.gameObject.SetActive(false);
+                    this.ContainerMenu.ClearItems();
+                    this.ContainerMenu.Close();
+                    this.state = KnightState.PLAYERCANMOVE;
+                    this.currentMenuOpen = this.pauseMenu.gameObject;
+                }
+                else if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
                     var item = this.ContainerMenu.OnButtonSelected();
@@ -134,6 +159,12 @@ public class PlayerDungeon : MonoBehaviour
                     if (item == null)
                     {
                         return;
+                    }
+
+                    if (this.interactableInRange is ItemContainer chest && chest != null)
+                    {
+                        chest.loot.Remove(item);
+                        this.Inventory.Add(item);
                     }
 
                     Debug.Log($"selected {item.Name}");
@@ -149,8 +180,11 @@ public class PlayerDungeon : MonoBehaviour
 
                     Debug.Log($"selected {option}");
                 }
-                if (!this.pauseMenu.isActiveAndEnabled)
+                if (escKeyFlag)
                 {
+                    escKeyFlag = false;
+                    this.pauseMenu.gameObject.SetActive(false);
+                    this.pauseMenu.Close();
                     this.state = KnightState.PLAYERCANMOVE;
                 }
                 break;
@@ -172,7 +206,6 @@ public class PlayerDungeon : MonoBehaviour
                 {
                     this.InteractFlagSet = false;
                     var button = this.pauseMenu.GetSelectedButton();
-
                     var option = button.GetComponent<ButtonMenuOption>();
 
                     Debug.Log($"selected {option}");
@@ -183,7 +216,6 @@ public class PlayerDungeon : MonoBehaviour
                 break;
         }
     }
-
 
     public void OnIKey(InputAction.CallbackContext context)
     {
@@ -213,33 +245,6 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         escKeyFlag = true;
-
-        if (currentMenuOpen.TryGetComponent<PauseMenu>(out var menu))
-        {
-            escKeyFlag = false;
-            this.pauseMenu.gameObject.SetActive(!this.pauseMenu.gameObject.activeSelf);
-            this.pauseMenu.StartPauseMenu();
-            this.state = KnightState.INPAUSEMENU;
-            this.currentMenuOpen = this.pauseMenu.gameObject;
-        }
-        else if (currentMenuOpen.TryGetComponent<ContainerMenu>(out var containerMenu))
-        {
-            escKeyFlag = false;
-            this.ContainerMenu.gameObject.SetActive(false);
-            this.ContainerMenu.ClearItems();
-
-            if(this.interactableInRange is ItemContainer chestOrSomething)
-            {
-                chestOrSomething.GetComponent<Animator>().SetTrigger("Closed");
-            }
-
-            this.state = KnightState.PLAYERCANMOVE;
-            this.currentMenuOpen.GetComponent<ContainerMenu>().Close();
-            this.currentMenuOpen = this.pauseMenu.gameObject;
-        }
-        // TODO other menus
-
-        // default is pause menu
     }
 
     private void EndMovingDialogue()
@@ -301,6 +306,10 @@ public class PlayerDungeon : MonoBehaviour
         this.animatedLayers.SetFloats("XDir", direction.x);
     }
 
+    /// <summary>
+    /// TODO Run animations are not gotten from the sprite sheet
+    /// </summary>
+    /// <param name="context"></param>
     public void OnRunKey(InputAction.CallbackContext context)
     {
         // if in interactin dont update and Return early this stops animation from playing when you're in dialogue

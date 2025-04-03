@@ -7,65 +7,48 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using static UnityEditor.Progress;
 #nullable enable
 
-public class ContainerMenu : MonoBehaviour
+public class ContainerMenu : Menu
 {
     [SerializeField] GameObject prefabItemButton;
-    [SerializeField] GameObject prefabItemDescription;
-    [SerializeField] GameObject prefabItemName;
-    [SerializeField] List<GameObject> itemButtonLocations;
-    [SerializeField] GameObject ItemDescriptionLoc;
-    [SerializeField] GameObject ItemNameLoc;
-    [SerializeField] EventSystem UIEventSystem;
-    List<GameObject> Buttons = new();
-    private List<GameObject> Items = new();
-    [SerializeField] public Sprite emptySlot;
 
-    public void CreateLootButtons(List<Item> items)
+    [SerializeField] List<GameObject> itemButtonLocations;
+
+    List<GameObject> Buttons = new();
+    private List<GameObject> GraphicalItems = new();
+    [SerializeField] private GameObject currentShownDescription;
+    [SerializeField] private GameObject currentShownName;
+
+    public void PopulateContainer(List<Item> items)
     {
-        for(int i = 0; i < itemButtonLocations.Count; i++)
+        for (int i = 0; i < itemButtonLocations.Count; i++)
         {
             // add all buttons
             var buttonObj = Instantiate(prefabItemButton, itemButtonLocations[i].transform);
-            var itemButton = buttonObj.GetComponent<ItemOptionButton>();
             
+            Buttons.Add(buttonObj);
+            GraphicalItems.Add(buttonObj);
+            var spriteImageComponent = buttonObj.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
+            spriteImageComponent.SetImage(this.emptySlotImage);
+
             // add items to buttons if there is an item in that slot
             if (i < items.Count)
             {
+                var itemButton = buttonObj.GetComponent<ItemOptionButton>();
                 itemButton.SetItem(items[i]);
-                Buttons.Add(buttonObj);
-                Items.Add(buttonObj);
-
-                var spriteImageComponent = buttonObj.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
-                spriteImageComponent.SetImage(items[i].image);
             }
         }
 
-        InitialiseItemView(this.Buttons[0]);
-        UIEventSystem.SetSelectedGameObject(this.Buttons[0]);
+        this.UIEventSystem.SetSelectedGameObject(this.Buttons[0]);
+        UpdateItemView();
     }
 
-    public void Close()
+    private void Awake()
     {
-        this.UIEventSystem.SetSelectedGameObject(null);
-    }
-
-    private GameObject? currentShownDescription;
-    private GameObject? currentShownName;
-
-    private void InitialiseItemView(GameObject firstSelected)
-    {
-        this.currentlyShownItem = firstSelected;
-        this.currentShownDescription = Instantiate(prefabItemDescription, ItemDescriptionLoc.transform);
-        var firstSelectedItem = firstSelected.GetComponent<ItemOptionButton>().Item;
-        this.currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(firstSelectedItem.description);
-        Items.Add(this.currentShownDescription);
-
-        currentShownName = Instantiate(prefabItemName, ItemNameLoc.transform);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(firstSelectedItem.Name);
-        Items.Add(currentShownName);
+        UpdateItemView();
     }
 
     private void UpdateItemView()
@@ -74,49 +57,31 @@ public class ContainerMenu : MonoBehaviour
         MyGuard.IsNotNull(currentShownDescription);
         MyGuard.IsNotNull(currentShownName);
 
-        var newItemButtonComponent = this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
+        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
+        currentShownName.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
 
-        if (itemButtonComp.Item == null)
+        if (currentlyShownItem == null)
         {
-            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem("Blank");
-            currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem("Empty Slot");
             return;
         }
 
-        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(itemButtonComp.Item.description);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(itemButtonComp.Item.name);
+        var newItemButtonComponent = this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
+
+        if (itemButtonComp.Item != null)
+        {
+            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
+            currentShownName.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
+            return;
+        }
     }
 
     public void ClearItems()
     {
-        foreach(var item in Items)
-        {
-            Destroy(item);
-        }
-        Items.Clear();
-
         foreach (var butt in Buttons)
         {
             Destroy(butt);
         }
         Buttons.Clear();
-    }
-
-    /// <summary>
-    /// returns selected. 
-    /// </summary>
-    public Item OnButtonSelected()
-    {
-        var selected = this.UIEventSystem.currentSelectedGameObject;
-
-        selected.GetComponentInChildren<TMP_Text>().text = string.Empty;
-        var spriteImageComponent = selected.GetComponentInChildren<ItemOptionButtonImage>();
-        spriteImageComponent.SetImage(emptySlot);
-
-        this.UIEventSystem.currentSelectedGameObject.TryGetComponent<ItemOptionButton>(out var itemBut);
-        itemBut.RemoveItem();
-
-        return itemBut.Item;
     }
 
     private GameObject? currentlyShownItem;
@@ -125,7 +90,16 @@ public class ContainerMenu : MonoBehaviour
     void Update()
     {
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
+        
+        // on menu open after another has been open do onece
+        if (highlightedMenuItem == null)
+        {
+            this.UIEventSystem.SetSelectedGameObject(this.Buttons[0]);
+            UpdateItemView();
+            return;
+        }
 
+        // when it is open do this
         if (highlightedMenuItem != currentlyShownItem && currentlyShownItem != null)
         {
             if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var button))

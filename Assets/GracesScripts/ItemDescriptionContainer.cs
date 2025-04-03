@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class ItemDescriptionContainer : MonoBehaviour
 {
-    public void SetItem(string description)
+    public void SetDescription(string description)
     {
         this.GetComponent<TMP_Text>().text = description;
     }

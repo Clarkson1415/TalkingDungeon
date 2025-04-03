@@ -231,6 +231,7 @@ public class DialogueTextBox : MonoBehaviour
             if (this.CurrentSlide.dialogue[i] == pauseCharacterToNotPrint)
             {
                 yield return new WaitForSeconds(underscorePauseTime);
+                this.audioSource.Pause();
                 continue;
             }
 
@@ -238,12 +239,16 @@ public class DialogueTextBox : MonoBehaviour
             if (this.CurrentSlide.dialogue[i] == ' ')
             {
                 this.TMPTextBox.text += this.CurrentSlide.dialogue[i];
+                this.audioSource.Pause();
                 yield return new WaitForSeconds(textspeed);
                 continue;
             }
 
             // play dialogue text sound effect
-            this.PlayDialoguePrintAudio();
+            if (!this.audioSource.isPlaying)
+            {
+                this.PlayDialoguePrintAudio();
+            }
 
             if (i == 0) // set first letter if this is the first letter.
             {
@@ -256,6 +261,7 @@ public class DialogueTextBox : MonoBehaviour
             yield return new WaitForSeconds(textspeed);
         }
 
+        this.audioSource.Stop();
         DrawButtons();
         this.FinishedWritingSlideOverTime = true;
     }

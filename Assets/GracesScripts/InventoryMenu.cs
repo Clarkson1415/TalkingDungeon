@@ -2,39 +2,36 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static UnityEditor.Progress;
 #nullable enable
 
-public class InventoryMenu : MonoBehaviour
+public class InventoryMenu : Menu
 {
     [SerializeField] GameObject prefabItemButton;
-    [SerializeField] GameObject prefabItemDescription;
-    [SerializeField] GameObject prefabItemName;
+
     [SerializeField] List<GameObject> itemButtonLocations;
     [SerializeField] GameObject ItemDescriptionLoc;
     [SerializeField] GameObject ItemNameLoc;
-    [SerializeField] EventSystem UIEventSystem;
     List<GameObject> Buttons = new();
-    [SerializeField] private List<Item> Items;
-    private GameObject? currentShownDescription;
-    private GameObject? currentShownName;
 
-    private void Start()
+    // TODO: change these to [serialise field] references instead of instantiating in start and chaneg this in containermenu
+    [SerializeField] private GameObject currentShownDescription;
+    [SerializeField] private GameObject currentShownName;
+
+    public void OpenInventory(List<Item> Items)
     {
+        Buttons.Clear();
+
         for (int i = 0; i < itemButtonLocations.Count; i++)
         {
             // add all buttons
             var buttonObj = Instantiate(prefabItemButton, itemButtonLocations[i].transform);
             var itemButton = buttonObj.GetComponent<ItemOptionButton>();
+            Buttons.Add(buttonObj);
 
             // add items to buttons if there is an item in that slot
             if (i < Items.Count)
             {
                 itemButton.SetItem(Items[i]);
-                Buttons.Add(buttonObj);
-
-                var spriteImageComponent = buttonObj.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
-                spriteImageComponent.SetImage(Items[i].image);
             }
         }
 
@@ -42,27 +39,25 @@ public class InventoryMenu : MonoBehaviour
         UIEventSystem.SetSelectedGameObject(this.Buttons[0]);
     }
 
-    public void Close()
+    private void Start()
     {
-        this.UIEventSystem.SetSelectedGameObject(null);
+        this.currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(string.Empty);
+        currentShownName.GetComponentInChildren<ItemNameContainer>().SetName(string.Empty);
     }
 
     public void AddItem(Item item)
     {
         var itemButtonToUpdate = this.Buttons.Find(x => x.GetComponent<ItemOptionButton>().Item != null);
-        var spriteImageComponent = itemButtonToUpdate.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
-        spriteImageComponent.SetImage(item.image);
+
+        itemButtonToUpdate.GetComponent<ItemOptionButton>().SetItem(item);
     }
 
     private void InitialiseItemView(GameObject firstSelected)
     {
         this.currentlyShownItem = firstSelected;
-        this.currentShownDescription = Instantiate(prefabItemDescription, ItemDescriptionLoc.transform);
         var firstSelectedItem = firstSelected.GetComponent<ItemOptionButton>().Item;
-        this.currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(firstSelectedItem.description);
-
-        currentShownName = Instantiate(prefabItemName, ItemNameLoc.transform);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(firstSelectedItem.Name);
+        this.currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(firstSelectedItem.description);
+        currentShownName.GetComponentInChildren<ItemNameContainer>().SetName(firstSelectedItem.Name);
     }
 
     private void UpdateItemView()
@@ -75,34 +70,32 @@ public class InventoryMenu : MonoBehaviour
 
         if (itemButtonComp.Item == null)
         {
-            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem("Blank");
-            currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem("Empty Slot");
+            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
+            currentShownName.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
             return;
         }
 
-        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetItem(itemButtonComp.Item.description);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetItem(itemButtonComp.Item.name);
+        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
+        currentShownName.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
     }
 
     /// <summary>
-    /// </summary>
-    /// <summary>
     /// returns selected. 
     /// </summary>
-    public Item OnButtonSelected()
+    public override Item OnButtonSelected()
     {
         var selected = this.UIEventSystem.currentSelectedGameObject;
 
         selected.GetComponentInChildren<TMP_Text>().text = string.Empty;
         var spriteImageComponent = selected.GetComponentInChildren<ItemOptionButtonImage>();
-        
+
         // TODO: do something to indicate equipped.
         // spriteImageComponent.SetImage(emptySlot);
         this.UIEventSystem.currentSelectedGameObject.TryGetComponent<ItemOptionButton>(out var itemBut);
-        
 
         return itemBut.Item;
     }
+
 
     private GameObject? currentlyShownItem;
 
@@ -111,7 +104,7 @@ public class InventoryMenu : MonoBehaviour
     {
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
 
-        // on menu open do onece
+        // on menu open after another has been open do onece
         if (highlightedMenuItem == null)
         {
             this.UIEventSystem.SetSelectedGameObject(this.Buttons[0]);

@@ -13,6 +13,9 @@ public class ItemOptionButton : Button
     public void SetItem(Item item)
     {
         this.Item = item;
+
+        var spriteImageComponent = this.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
+        spriteImageComponent.SetImage(item.image);
     }
 
     public void RemoveItem()

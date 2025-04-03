@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class ItemNameContainer : MonoBehaviour
 {
-    public void SetItem(string itemName)
+    public void SetName(string itemName)
     {
         this.GetComponent<TMP_Text>().text = itemName;
     }
