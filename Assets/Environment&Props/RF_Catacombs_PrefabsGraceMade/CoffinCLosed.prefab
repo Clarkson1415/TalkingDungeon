@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3340860211605670833}
   - component: {fileID: 3224154395850393338}
   - component: {fileID: 6031969424847274324}
+  - component: {fileID: 1097577806550907699}
   m_Layer: 0
   m_Name: CoffinCLosed
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2865933234497551194}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.37, y: 1.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -158,3 +159,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.15625, y: 0.84375}
   m_EdgeRadius: 0
+--- !u!114 &1097577806550907699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2865933234497551194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 15d976ea000000001b3f8e121f3cf206db29d549
+  m_ShapePath:
+  - {x: -0.578125, y: -0.421875, z: 0}
+  - {x: -0.578125, y: 0.421875, z: 0}
+  - {x: 0.578125, y: 0.421875, z: 0}
+  - {x: 0.578125, y: -0.421875, z: 0}
+  m_ShapePathHash: 0
+  m_Mesh: {fileID: 0}
+  m_InstanceId: -2177370
+  m_LocalBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.578125, y: 0.421875, z: 0}

@@ -20,8 +20,14 @@ public class InventoryMenu : Menu
     [SerializeField] GameObject ItemDescriptionLoc;
     [SerializeField] GameObject ItemNameLoc;
 
-    [SerializeField] private GameObject currentShownDescription;
-    [SerializeField] private GameObject currentShownName;
+    [SerializeField] private GameObject descriptionContainer;
+    [SerializeField] private GameObject nameContainer;
+    [SerializeField] private TMP_Text powerValue;
+    [SerializeField] private TMP_Text defenceValue;
+    [SerializeField] private TMP_Text playerPowerStatText;
+    [SerializeField] private TMP_Text playerDefenceStatText;
+    [SerializeField] private TMP_Text playerWellBeingText;
+
     List<GameObject> Buttons_NotIncludesEquippedITems = new();
 
     /// <summary>
@@ -52,10 +58,6 @@ public class InventoryMenu : Menu
         UpdateItemView();
     }
 
-    private void Start()
-    {
-    }
-
     public void AddItem(Item item)
     {
         var itemButtonToUpdate = this.Buttons_NotIncludesEquippedITems.Find(x => x.GetComponent<ItemOptionButton>().Item != null);
@@ -63,23 +65,36 @@ public class InventoryMenu : Menu
         itemButtonToUpdate.GetComponent<ItemOptionButton>().SetItemAndImage(item);
     }
 
+    public void UpdatePlayerStatsDisplay(int power, int defence)
+    {
+        this.playerPowerStatText.text = power.ToString();
+        this.playerDefenceStatText.text = defence.ToString();
+    }
+
+    public void UpdatePlayerWellBeingDislpay(int wellBeing)
+    {
+        this.playerWellBeingText.text = wellBeing.ToString();
+    }
+
     private void UpdateItemView()
     {
         this.currentlyShownItem = this.UIEventSystem.currentSelectedGameObject;
-        MyGuard.IsNotNull(currentShownDescription);
-        MyGuard.IsNotNull(currentShownName);
+        MyGuard.IsNotNull(descriptionContainer);
+        MyGuard.IsNotNull(nameContainer);
 
         var newItemButtonComponent = this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
 
         if (itemButtonComp.Item == null)
         {
-            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
-            currentShownName.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
+            descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
+            nameContainer.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
             return;
         }
 
-        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
+        descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
+        nameContainer.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
+        this.powerValue.text = itemButtonComp.Item.PowerStat.ToString();
+        this.defenceValue.text = itemButtonComp.Item.DefenceStat.ToString();
     }
 
     public void RemoveEquippedItem(Item item)

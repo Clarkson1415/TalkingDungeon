@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using UnityEngine;
@@ -38,6 +39,8 @@ public class PlayerDungeon : MonoBehaviour
     [SerializeField] private float currentWellbeing;
     [SerializeField] Image healthBarImage;
     [SerializeField] List<Ability> abilites;
+    private int playerPowerStat = 0;
+    private int playerDefenceStat = 0;
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
@@ -65,6 +68,7 @@ public class PlayerDungeon : MonoBehaviour
     private void Start()
     {
         this.state = KnightState.PLAYERCANMOVE;
+        this.healthBarImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
     }
 
     private void StartInteraction()
@@ -126,6 +130,11 @@ public class PlayerDungeon : MonoBehaviour
                     this.currentMenuOpen = inventoryMenu.gameObject;
                     this.currentMenuOpen.SetActive(true);
                     inventoryMenu.OpenInventory(Inventory);
+                    
+                    UpdateStats();
+                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.playerPowerStat, this.playerDefenceStat);
+                    this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
+
                     this.state = KnightState.ININVENTORY;
                 }
                 this.rb.velocity = direction * movementSpeed;
@@ -241,7 +250,10 @@ public class PlayerDungeon : MonoBehaviour
                         Log.Print("can't equip that");
                     }
 
-                    //Debug.Log($"selected {option}");
+                    // need to store in this script for battles
+                    UpdateStats();
+                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.playerPowerStat, this.playerDefenceStat);
+                    this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
                 }
                 break;
             default:
@@ -250,6 +262,23 @@ public class PlayerDungeon : MonoBehaviour
         }
     }
 
+    private void UpdateStats()
+    {
+        this.playerPowerStat = 0;
+        this.playerDefenceStat = 0;
+
+        foreach (var item in this.equippedItems)
+        {
+            if (item == null)
+            {
+                continue;
+            }
+
+            playerPowerStat += item.PowerStat;
+            playerDefenceStat += item.DefenceStat;
+        }
+    }
+    
     /// <summary>
     /// Idk if comparing name string is neccessary though I
     /// </summary>
@@ -294,16 +323,13 @@ public class PlayerDungeon : MonoBehaviour
     private Item? equippedSpecialItem;
 
     /// <summary>
-    /// TODO
+    /// TODO, was thinkging of having player stat /level blocks for items but now probs not
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
     private bool IsValidEquip(Item? item)
     {
         bool isValid = true;
-
-        
-
         return isValid;
     }
 
