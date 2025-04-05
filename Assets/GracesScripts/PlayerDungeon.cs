@@ -23,7 +23,7 @@ public class PlayerDungeon : MonoBehaviour
     [SerializeField] ContainerMenu ContainerMenu;
     [SerializeField] PauseMenu pauseMenu;
     [SerializeField] InventoryMenu inventoryMenu;
-    public GameObject currentMenuOpen;
+    private GameObject currentMenuOpen;
 
     private IInteracble? interactableInRange = null;
     private Rigidbody2D rb;
@@ -278,16 +278,14 @@ public class PlayerDungeon : MonoBehaviour
                 this.equippedWeapon = itemToEquip;
                 break;
             case ItemType.Clothing:
-                this.equippedWeapon = itemToEquip;
+                this.equippedClothing = itemToEquip;
                 break;
             case ItemType.SpecialItem:
-                this.equippedWeapon = itemToEquip;
+                this.equippedSpecialItem = itemToEquip;
                 break;
             default:
                 throw new ArgumentOutOfRangeException("No type found fo add to player quip.");
-        }
-
-        
+        }        
     }
 
     private List<Item?> equippedItems => new() { this.equippedClothing, this.equippedWeapon, this.equippedSpecialItem };

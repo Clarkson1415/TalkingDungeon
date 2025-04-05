@@ -135,7 +135,6 @@ public class InventoryMenu : Menu
             var itemButton = buttonObj.GetComponent<ItemOptionButton>();
             itemButton.SetItemAndImage(newItem);
         }
-
     }
 
     private GameObject? currentlyShownItem;
