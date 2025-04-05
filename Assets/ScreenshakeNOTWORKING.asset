@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8483287b24a2074fa2a9b3ef3856053, type: 3}
+  m_Name: ScreenshakeNOTWORKING
+  m_EditorClassIdentifier: 
+  feedbackItems:
+  - rid: 9053173269356871681
+  - rid: 9053173269356871682
+  references:
+    version: 2
+    RefIds:
+    - rid: 9053173269356871681
+      type: {class: CameraShake, ns: FastFeedback, asm: Assembly-CSharp}
+      data:
+        isEnabled: 1
+        effectTag: 
+        hasError: 0
+        targetGameObjectSettings: 0
+        targetGameObject: {fileID: 0}
+        targetGameObjectTag: 
+        animationCurveSettings: 0
+        customCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        isExpanded: 1
+        cameraToShake: {fileID: 0}
+        shakeAmount: 0.5
+        shakeDecay: 0.5
+        cameraSettings: 0
+    - rid: 9053173269356871682
+      type: {class: PlaySound, ns: FastFeedback, asm: Assembly-CSharp}
+      data:
+        isEnabled: 1
+        effectTag: 
+        hasError: 0
+        targetGameObjectSettings: 0
+        targetGameObject: {fileID: 0}
+        targetGameObjectTag: 
+        animationCurveSettings: 0
+        customCurve:
+          serializedVersion: 2
+          m_Curve: []
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        isExpanded: 1
+        soundToPlay: {fileID: 8300000, guid: e168fc8691f9def419b21ba446bf6161, type: 3}
+        volume: 1
+        playConditions: 0
+        timesToPlay: 0
+        durationToPlayFor: 0
+        soundSettings: 0
+        soundTarget: {fileID: 0}
+        targetTag: 
+        minPitchChange: 1
+        maxPitchChange: 1
+        soundTargetSettings: 0
+        soundChoiceSettings: 0
+        randomisedSounds:
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        - {fileID: 0}
+        randomisedSoundCount: 2
