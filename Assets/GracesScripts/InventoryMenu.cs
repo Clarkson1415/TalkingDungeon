@@ -13,10 +13,13 @@ public class InventoryMenu : Menu
     [SerializeField] GameObject ItemNameLoc;
     List<GameObject> Buttons = new();
 
-    // TODO: change these to [serialise field] references instead of instantiating in start and chaneg this in containermenu
     [SerializeField] private GameObject currentShownDescription;
     [SerializeField] private GameObject currentShownName;
 
+    /// <summary>
+    /// TODO: mahbe change so first selected item was the same as when it was last opened. instead of inistialising to button 0?
+    /// </summary>
+    /// <param name="Items"></param>
     public void OpenInventory(List<Item> Items)
     {
         Buttons.Clear();
@@ -35,14 +38,12 @@ public class InventoryMenu : Menu
             }
         }
 
-        InitialiseItemView(this.Buttons[0]);
         UIEventSystem.SetSelectedGameObject(this.Buttons[0]);
+        UpdateItemView();
     }
 
     private void Start()
     {
-        this.currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(string.Empty);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetName(string.Empty);
     }
 
     public void AddItem(Item item)
@@ -50,14 +51,6 @@ public class InventoryMenu : Menu
         var itemButtonToUpdate = this.Buttons.Find(x => x.GetComponent<ItemOptionButton>().Item != null);
 
         itemButtonToUpdate.GetComponent<ItemOptionButton>().SetItem(item);
-    }
-
-    private void InitialiseItemView(GameObject firstSelected)
-    {
-        this.currentlyShownItem = firstSelected;
-        var firstSelectedItem = firstSelected.GetComponent<ItemOptionButton>().Item;
-        this.currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(firstSelectedItem.description);
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetName(firstSelectedItem.Name);
     }
 
     private void UpdateItemView()

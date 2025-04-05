@@ -30,6 +30,11 @@ public class DialogueTextBox : MonoBehaviour
     [SerializeField] Image speakersPicRenderer;
     [SerializeField] AudioClip dialoguePrintingAudio;
 
+    /// <summary>
+    /// for the player statemachine to recognise the interaction has finished.
+    /// </summary>
+    public bool finishedInteractionFlag;
+
     private void PlayDialoguePrintAudio()
     {
         if (this.audioSource.clip != this.dialoguePrintingAudio)
@@ -127,6 +132,7 @@ public class DialogueTextBox : MonoBehaviour
                         UpdateCurrentSlide(null);
                         //Log.Print("state INVIS INACTIVE");
                         this.speakersPicRenderer.sprite = null;
+                        finishedInteractionFlag = true;
                         this.State = BoxState.WAITINGFORINTERACTION;
                         Debug.Log("Box in Set to waiting for interaction");
                         this.gameObject.SetActive(false);

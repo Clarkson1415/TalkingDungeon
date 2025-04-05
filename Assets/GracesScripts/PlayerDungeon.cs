@@ -120,8 +120,8 @@ public class PlayerDungeon : MonoBehaviour
                 {
                     iKeyFlag = false;
                     this.currentMenuOpen = inventoryMenu.gameObject;
-                    inventoryMenu.OpenInventory(Inventory);
                     this.currentMenuOpen.SetActive(true);
+                    inventoryMenu.OpenInventory(Inventory);
                     this.state = KnightState.ININVENTORY;
                 }
                 this.rb.velocity = direction * movementSpeed;
@@ -133,12 +133,13 @@ public class PlayerDungeon : MonoBehaviour
             case KnightState.INDIALOGUE:
                 if (this.InteractFlagSet)
                 {
-                    dialogueBox.PlayerInteractFlagSet = true;
                     this.InteractFlagSet = false;
+                    dialogueBox.PlayerInteractFlagSet = true;
                 }
-                else if (this.dialogueBox.State == DialogueTextBox.BoxState.WAITINGFORINTERACTION)
+                else if (this.dialogueBox.finishedInteractionFlag)
                 {
-                    EndMovingDialogue();
+                    this.dialogueBox.finishedInteractionFlag = false;
+                    EndDialogue();
                 }
                 break;
             case KnightState.InItemContainer:
@@ -253,7 +254,7 @@ public class PlayerDungeon : MonoBehaviour
         escKeyFlag = true;
     }
 
-    private void EndMovingDialogue()
+    private void EndDialogue()
     {
         // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
         // this is to allow it to go back to moving state again.
