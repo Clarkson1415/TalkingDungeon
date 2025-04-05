@@ -22,6 +22,24 @@ public class ContainerMenu : Menu
     [SerializeField] private GameObject currentShownDescription;
     [SerializeField] private GameObject currentShownName;
 
+    /// <summary>
+    /// returns selected. 
+    /// </summary>
+    public Item RemoveItemImageFromSelectedButton()
+    {
+        var selected = this.UIEventSystem.currentSelectedGameObject;
+
+        selected.GetComponentInChildren<TMP_Text>().text = string.Empty;
+        var spriteImageComponent = selected.GetComponentInChildren<ItemOptionButtonImage>();
+        spriteImageComponent.SetImage(emptySlotImage);
+
+        this.UIEventSystem.currentSelectedGameObject.TryGetComponent<ItemOptionButton>(out var itemBut);
+        var itemToReturn = itemBut.Item;
+
+        itemBut.RemoveItem();
+
+        return itemToReturn;
+    }
     public void PopulateContainer(List<Item> items)
     {
         for (int i = 0; i < itemButtonLocations.Count; i++)
@@ -38,7 +56,7 @@ public class ContainerMenu : Menu
             if (i < items.Count)
             {
                 var itemButton = buttonObj.GetComponent<ItemOptionButton>();
-                itemButton.SetItem(items[i]);
+                itemButton.SetItemAndImage(items[i]);
             }
         }
 

@@ -22,23 +22,4 @@ abstract public class Menu : MonoBehaviour
     {
         return this.UIEventSystem.currentSelectedGameObject;
     }
-
-    /// <summary>
-    /// returns selected. 
-    /// </summary>
-    public virtual Item OnButtonSelected()
-    {
-        var selected = this.UIEventSystem.currentSelectedGameObject;
-
-        selected.GetComponentInChildren<TMP_Text>().text = string.Empty;
-        var spriteImageComponent = selected.GetComponentInChildren<ItemOptionButtonImage>();
-        spriteImageComponent.SetImage(emptySlotImage);
-
-        this.UIEventSystem.currentSelectedGameObject.TryGetComponent<ItemOptionButton>(out var itemBut);
-        var itemToReturn = itemBut.Item;
-
-        itemBut.RemoveItem();
-
-        return itemToReturn;
-    }
 }

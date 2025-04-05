@@ -1,4 +1,5 @@
 using Assets.GracesScripts;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -7,11 +8,15 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
+#nullable enable
+
 
 /// <summary>
 /// Player guy
 /// </summary>
 [RequireComponent(typeof(UseAnimatedLayers))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : MonoBehaviour
 {
     [SerializeField] DialogueTextBox dialogueBox;
@@ -20,7 +25,7 @@ public class PlayerDungeon : MonoBehaviour
     [SerializeField] InventoryMenu inventoryMenu;
     public GameObject currentMenuOpen;
 
-    private IInteracble interactableInRange = null;
+    private IInteracble? interactableInRange = null;
     private Rigidbody2D rb;
     private Vector2 direction;
     private Vector2 lastMovingDirection;
@@ -64,7 +69,6 @@ public class PlayerDungeon : MonoBehaviour
 
     private void StartInteraction()
     {
-        this.InteractFlagSet = false;
         if (this.interactableInRange is IHasDialogue interactableWithDialogue && interactableWithDialogue != null)
         {
             // if the object you start talking to is moving it can move out of range and causes on trigger exit player wont be able to spacebar out of dialogue.
@@ -127,6 +131,13 @@ public class PlayerDungeon : MonoBehaviour
                 this.rb.velocity = direction * movementSpeed;
                 if (this.InteractFlagSet)
                 {
+                    this.InteractFlagSet = false;
+
+                    if (this.interactableInRange == null)
+                    {
+                        return;
+                    }
+
                     StartInteraction();
                 }
                 break;
@@ -155,7 +166,7 @@ public class PlayerDungeon : MonoBehaviour
                 else if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
-                    var item = this.ContainerMenu.OnButtonSelected();
+                    var item = this.ContainerMenu.RemoveItemImageFromSelectedButton();
 
                     if (item == null)
                     {
@@ -206,16 +217,96 @@ public class PlayerDungeon : MonoBehaviour
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
-                    var button = this.pauseMenu.GetSelectedButton();
-                    var option = button.GetComponent<ButtonMenuOption>();
+                    var buttonGameObject = this.inventoryMenu.GetSelectedButton();
+                    var selectedItemOp = buttonGameObject.GetComponent<ItemOptionButton>();
 
-                    Debug.Log($"selected {option}");
+                    if (selectedItemOp.Item == null)
+                    {
+                        // nothing happens if empty square selected.
+                    }
+                    else if (this.equippedItems.Contains(selectedItemOp.Item))
+                    {
+                        selectedItemOp.ToggleEquipGraphic();
+                        this.inventoryMenu.RemoveEquippedItem(selectedItemOp.Item);
+                        RemoveFromPlayerEquipped(selectedItemOp.Item);
+                    }
+                    else if (IsValidEquip(selectedItemOp.Item))
+                    {
+                        selectedItemOp.ToggleEquipGraphic();
+                        this.inventoryMenu.AddOrReplaceEquipped(selectedItemOp.Item);
+                        AddToPlayerEquipped(selectedItemOp.Item);
+                    }
+                    else
+                    {
+                        Log.Print("can't equip that");
+                    }
+
+                    //Debug.Log($"selected {option}");
                 }
                 break;
             default:
                 this.state = KnightState.PLAYERCANMOVE;
                 break;
         }
+    }
+
+    /// <summary>
+    /// Idk if comparing name string is neccessary though I
+    /// </summary>
+    /// <param name="itemToRemove"></param>
+    private void RemoveFromPlayerEquipped(Item itemToRemove)
+    {
+        if (itemToRemove.name == equippedWeapon?.name)
+        {
+            equippedWeapon = null;
+        }
+        else if (itemToRemove.name == equippedClothing?.name)
+        {
+            equippedClothing = null;
+        }
+        else if (itemToRemove.name == equippedSpecialItem?.name)
+        {
+            equippedSpecialItem = null;
+        }
+    }
+
+    private void AddToPlayerEquipped(Item itemToEquip)
+    {
+        switch (itemToEquip.Type)
+        {
+            case ItemType.Weapon:
+                this.equippedWeapon = itemToEquip;
+                break;
+            case ItemType.Clothing:
+                this.equippedWeapon = itemToEquip;
+                break;
+            case ItemType.SpecialItem:
+                this.equippedWeapon = itemToEquip;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException("No type found fo add to player quip.");
+        }
+
+        
+    }
+
+    private List<Item?> equippedItems => new() { this.equippedClothing, this.equippedWeapon, this.equippedSpecialItem };
+    private Item? equippedWeapon;
+    private Item? equippedClothing;
+    private Item? equippedSpecialItem;
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    private bool IsValidEquip(Item? item)
+    {
+        bool isValid = true;
+
+        
+
+        return isValid;
     }
 
     private void TakeDamage(float damage)
@@ -375,12 +466,12 @@ public class PlayerDungeon : MonoBehaviour
             return;
         }
 
+        Log.Print("Interact flag set");
+        this.InteractFlagSet = true;
+
         if (interactableInRange == null)
         {
             return;
         }
-
-        Log.Print("Interact flag set");
-        this.InteractFlagSet = true;
     }
 }
