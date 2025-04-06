@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -20,24 +21,33 @@ using static UnityEditor.Progress;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : MonoBehaviour
 {
+    [Header("Menus")]
     [SerializeField] DialogueTextBox dialogueBox;
     [SerializeField] ContainerMenu ContainerMenu;
     [SerializeField] PauseMenu pauseMenu;
-    [SerializeField] InventoryMenu inventoryMenu;
     private GameObject currentMenuOpen;
 
+    [Header("Inventory")]
+    [SerializeField] InventoryMenu inventoryMenu;
+    [SerializeField] AudioClip InventoryOpenSound;
+    [SerializeField] AudioClip InventoryClosedSound;
+    [SerializeField] private List<Item> Inventory;
+    [SerializeField] private AudioSource audioSourceForInventorySounds;
+
+    [Header("Movement")]
+    [SerializeField] private float movementSpeed = 1f;
     private IInteracble? interactableInRange = null;
     private Rigidbody2D rb;
     private Vector2 direction;
-    private Vector2 lastMovingDirection;
-    [SerializeField] private float movementSpeed = 1f;
     private KnightState state = KnightState.PLAYERCANMOVE;
     private AudioSource footstepsSound;
     private UseAnimatedLayers animatedLayers;
-    [SerializeField] private List<Item> Inventory;
+
     [SerializeField] private float maxWellbeing;
     [SerializeField] private float currentWellbeing;
     [SerializeField] Image healthBarImage;
+    [Header("Stats")]
+
     [SerializeField] List<Ability> abilites;
     private int playerPowerStat = 0;
     private int playerDefenceStat = 0;
@@ -93,6 +103,7 @@ public class PlayerDungeon : MonoBehaviour
             currentMenuOpen = this.ContainerMenu.gameObject;
             this.ContainerMenu.gameObject.SetActive(true);
             chest.GetComponent<Animator>().SetTrigger("Opened");
+            chest.PlayOpenSound();
             this.ContainerMenu.PopulateContainer(chest.loot);
             this.state = KnightState.InItemContainer;
         }
@@ -130,7 +141,9 @@ public class PlayerDungeon : MonoBehaviour
                     this.currentMenuOpen = inventoryMenu.gameObject;
                     this.currentMenuOpen.SetActive(true);
                     inventoryMenu.OpenInventory(Inventory);
-                    
+                    audioSourceForInventorySounds.clip = this.InventoryOpenSound;
+                    audioSourceForInventorySounds.Play();
+
                     UpdateStats();
                     this.inventoryMenu.UpdatePlayerStatsDisplay(this.playerPowerStat, this.playerDefenceStat);
                     this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
@@ -167,15 +180,20 @@ public class PlayerDungeon : MonoBehaviour
                 {
                     escKeyFlag = false;
                     this.ContainerMenu.gameObject.SetActive(false);
-                    this.ContainerMenu.ClearItems();
                     this.ContainerMenu.Close();
+
+                    if (this.interactableInRange is ItemContainer chest && chest != null)
+                    {
+                        chest.PlayClosedSound();
+                    }
+
                     this.state = KnightState.PLAYERCANMOVE;
                     this.currentMenuOpen = this.pauseMenu.gameObject;
                 }
                 else if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
-                    var item = this.ContainerMenu.RemoveItemImageFromSelectedButton();
+                    var item = this.ContainerMenu.GiveItemToPlayer();
 
                     if (item == null)
                     {
@@ -219,6 +237,8 @@ public class PlayerDungeon : MonoBehaviour
                 {
                     escKeyFlag = false;
                     this.currentMenuOpen.GetComponent<InventoryMenu>().Close();
+                    audioSourceForInventorySounds.clip = this.InventoryClosedSound;
+                    audioSourceForInventorySounds.Play();
                     this.currentMenuOpen.SetActive(false);
                     this.currentMenuOpen = pauseMenu.gameObject;
                     this.state = KnightState.PLAYERCANMOVE;

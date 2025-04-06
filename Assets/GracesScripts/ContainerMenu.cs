@@ -14,49 +14,43 @@ using static UnityEditor.Progress;
 public class ContainerMenu : Menu
 {
     [SerializeField] GameObject prefabItemButton;
-
     [SerializeField] List<GameObject> itemButtonLocations;
-
     List<GameObject> Buttons = new();
-    private List<GameObject> GraphicalItems = new();
     [SerializeField] private GameObject currentShownDescription;
     [SerializeField] private GameObject currentShownName;
 
     /// <summary>
-    /// returns selected. 
+    /// returns selected and removed item image and item data from the Item slot.
     /// </summary>
-    public Item RemoveItemImageFromSelectedButton()
+    public Item GiveItemToPlayer()
     {
         var selected = this.UIEventSystem.currentSelectedGameObject;
 
-        selected.GetComponentInChildren<TMP_Text>().text = string.Empty;
-        var spriteImageComponent = selected.GetComponentInChildren<ItemOptionButtonImage>();
-        spriteImageComponent.SetImage(emptySlotImage);
+        var itemToReturn = selected.GetComponent<ItemOptionButton>();
 
-        this.UIEventSystem.currentSelectedGameObject.TryGetComponent<ItemOptionButton>(out var itemBut);
-        var itemToReturn = itemBut.Item;
+        // save item so dont edit the one returning
+        var tempItem = itemToReturn;
+        
+        // edit the old item
+        itemToReturn.ReplaceItemWithBlank();
 
-        itemBut.RemoveItem();
-
-        return itemToReturn;
+        return tempItem.Item;
     }
+
     public void PopulateContainer(List<Item> items)
     {
+        Buttons.Clear();
+
         for (int i = 0; i < itemButtonLocations.Count; i++)
         {
             // add all buttons
-            var buttonObj = Instantiate(prefabItemButton, itemButtonLocations[i].transform);
-            
-            Buttons.Add(buttonObj);
-            GraphicalItems.Add(buttonObj);
-            var spriteImageComponent = buttonObj.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
-            spriteImageComponent.SetImage(this.emptySlotImage);
+            var buttonObj = itemButtonLocations[i].GetComponentInChildren<ItemOptionButton>();
+            Buttons.Add(buttonObj.gameObject);
 
             // add items to buttons if there is an item in that slot
             if (i < items.Count)
             {
-                var itemButton = buttonObj.GetComponent<ItemOptionButton>();
-                itemButton.SetItemAndImage(items[i]);
+                buttonObj.SetItemAndImage(items[i]);
             }
         }
 
@@ -91,15 +85,6 @@ public class ContainerMenu : Menu
             currentShownName.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
             return;
         }
-    }
-
-    public void ClearItems()
-    {
-        foreach (var butt in Buttons)
-        {
-            Destroy(butt);
-        }
-        Buttons.Clear();
     }
 
     private GameObject? currentlyShownItem;

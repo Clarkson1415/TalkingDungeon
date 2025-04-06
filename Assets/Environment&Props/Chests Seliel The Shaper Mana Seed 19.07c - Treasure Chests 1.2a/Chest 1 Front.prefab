@@ -229,7 +229,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loot:
-  - {fileID: 11400000, guid: b58dd9fac9b3661488b2a2ce0ac93620, type: 2}
+  - {fileID: 11400000, guid: 109d4743971169143b315a73a128ae8f, type: 2}
+  - {fileID: 11400000, guid: 847a9cfef53812542b378e1f8fa2873c, type: 2}
+  - {fileID: 11400000, guid: d0a9375346a4cba4b84f30e478e74e0d, type: 2}
+  - {fileID: 11400000, guid: 7f3775b8e5f00ec4b8e5d97e4ac54e9e, type: 2}
+  chestOpenSound: {fileID: 8300000, guid: a1829c72a9d01b247ad45708f698f21f, type: 3}
+  chestClosedSound: {fileID: 8300000, guid: 4ea97ffab600bbd45af0fe816f4c93d0, type: 3}
 --- !u!61 &5248205103992981256
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -286,7 +291,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -397,7 +402,7 @@ MonoBehaviour:
   - {x: 0.325508, y: -0.36622274, z: 0}
   m_ShapePathHash: 902949349
   m_Mesh: {fileID: 0}
-  m_InstanceId: -868712
+  m_InstanceId: -2180
   m_LocalBounds:
     m_Center: {x: 0.0029081106, y: -0.06688863, z: 0}
     m_Extent: {x: 0.3225999, y: 0.2993341, z: 0}

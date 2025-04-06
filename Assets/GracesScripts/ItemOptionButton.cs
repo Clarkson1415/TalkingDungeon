@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 [RequireComponent(typeof(Button))]
 public class ItemOptionButton : Button
@@ -12,7 +13,6 @@ public class ItemOptionButton : Button
     public Item Item;
     [SerializeField] Sprite equippedOverlayGraphic;
     [SerializeField] Sprite unequippedGraphic;
-
     [SerializeField] Image EquippedOverlayTargetImage;
 
     public void SetItemAndImage(Item item)
@@ -23,9 +23,12 @@ public class ItemOptionButton : Button
         spriteImageComponent.SetImage(item.image);
     }
 
-    public void RemoveItem()
+    public void ReplaceItemWithBlank()
     {
         this.Item = null;
+
+        var spriteImageComponent = this.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
+        spriteImageComponent.SetImage(unequippedGraphic);
     }
 
     /// <summary>

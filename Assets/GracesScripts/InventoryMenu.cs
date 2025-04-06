@@ -6,8 +6,11 @@ using TMPro;
 using Unity.Loading;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using static UnityEditor.Progress;
 #nullable enable
 
+[RequireComponent(typeof(AudioSource))]
 public class InventoryMenu : Menu
 {
     [SerializeField] GameObject prefabItemButton;
@@ -17,18 +20,30 @@ public class InventoryMenu : Menu
     [SerializeField] private GameObject equippedClothingSlot;
     [SerializeField] private GameObject equippedSpecialItemSlot;
 
+
+    [Header("Item UI description")]
+    [SerializeField] private Image ItemTypeIndicatorImage;
+    [SerializeField] private Sprite specialItemImage;
+    [SerializeField] private Sprite ArmourItemImage;
+    [SerializeField] private Sprite WeaponItemImage;
+
     [SerializeField] GameObject ItemDescriptionLoc;
     [SerializeField] GameObject ItemNameLoc;
-
     [SerializeField] private GameObject descriptionContainer;
     [SerializeField] private GameObject nameContainer;
     [SerializeField] private TMP_Text powerValue;
     [SerializeField] private TMP_Text defenceValue;
+
+    [Header("player Stats")]
     [SerializeField] private TMP_Text playerPowerStatText;
     [SerializeField] private TMP_Text playerDefenceStatText;
     [SerializeField] private TMP_Text playerWellBeingText;
 
     List<GameObject> Buttons_NotIncludesEquippedITems = new();
+
+    private void Awake()
+    {
+    }
 
     /// <summary>
     /// TODO: mahbe change so first selected item was the same as when it was last opened. instead of inistialising to button 0?
@@ -88,13 +103,29 @@ public class InventoryMenu : Menu
         {
             descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
             nameContainer.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
+
+            this.powerValue.text = "0";
+            this.defenceValue.text = "0";
+
+            this.ItemTypeIndicatorImage.sprite = emptySlotImage;
             return;
         }
 
         descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
         nameContainer.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
+
         this.powerValue.text = itemButtonComp.Item.PowerStat.ToString();
         this.defenceValue.text = itemButtonComp.Item.DefenceStat.ToString();
+
+        Sprite typeSprite = itemButtonComp.Item.Type switch
+        {
+            ItemType.Weapon => this.WeaponItemImage,
+            ItemType.Clothing => this.ArmourItemImage,
+            ItemType.SpecialItem => this.specialItemImage,
+            _ => throw new ArgumentOutOfRangeException($"no Item Type found {itemButtonComp.Item.Type}")
+        };
+
+        this.ItemTypeIndicatorImage.sprite = typeSprite;
     }
 
     public void RemoveEquippedItem(Item item)
@@ -104,13 +135,13 @@ public class InventoryMenu : Menu
             ItemType.Weapon => this.equippedWeaponSlot,
             ItemType.Clothing => this.equippedClothingSlot,
             ItemType.SpecialItem => this.equippedSpecialItemSlot,
-            _ => throw new ArgumentOutOfRangeException($"no Item Type found {item.Type.ToString()}")
+            _ => throw new ArgumentOutOfRangeException($"no Item Type found {item.Type}")
         };
 
         var oldItem = equipmentSlot.GetComponentInChildren<ItemOptionButton>();
         if (oldItem != null)
         {
-            Destroy(oldItem.gameObject);
+            oldItem.ReplaceItemWithBlank();
         }
     }
 
@@ -130,13 +161,14 @@ public class InventoryMenu : Menu
         };
 
         var currentEquipped = equipmentSlot.GetComponentInChildren<ItemOptionButton>();
-        if (currentEquipped != null)
+
+        if (currentEquipped.Item != null)
         {
             // deselect old item UI Highlight
-            foreach(var button in this.Buttons_NotIncludesEquippedITems)
+            foreach (var button in this.Buttons_NotIncludesEquippedITems)
             {
                 var itemOption = button.GetComponentInChildren<ItemOptionButton>();
-                if(itemOption.Item == currentEquipped.Item)
+                if (itemOption.Item == currentEquipped.Item)
                 {
                     itemOption.ToggleEquipGraphic();
                 }
@@ -146,9 +178,7 @@ public class InventoryMenu : Menu
         }
         else
         {
-            var buttonObj = Instantiate(prefabItemButton, equipmentSlot.transform);
-            var itemButton = buttonObj.GetComponent<ItemOptionButton>();
-            itemButton.SetItemAndImage(newItem);
+            currentEquipped.SetItemAndImage(newItem);
         }
     }
 

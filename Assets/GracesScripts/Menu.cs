@@ -12,8 +12,7 @@ abstract public class Menu : MonoBehaviour
     [SerializeField] protected EventSystem UIEventSystem;
     [SerializeField] public Sprite emptySlotImage;
 
-
-    public void Close()
+    public virtual void Close()
     {
         this.UIEventSystem.SetSelectedGameObject(null);
     }
