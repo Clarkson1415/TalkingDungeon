@@ -120,8 +120,6 @@ public class PlayerDungeon : MonoBehaviour
         this.rb.velocity = Vector2.zero;
         this.direction = Vector2.zero;
     }
-
-
     private void FixedUpdate()
     {
         switch (this.state)
@@ -193,20 +191,21 @@ public class PlayerDungeon : MonoBehaviour
                 else if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
-                    var item = this.ContainerMenu.GiveItemToPlayer();
+                    var itemOpButton = this.ContainerMenu.GetCurrentSelected();
 
-                    if (item == null)
+                    if (itemOpButton == null)
                     {
                         return;
                     }
 
                     if (this.interactableInRange is ItemContainer chest && chest != null)
                     {
-                        chest.loot.Remove(item);
-                        this.Inventory.Add(item);
+                        chest.loot.Remove(itemOpButton.Item);
+                        this.Inventory.Add(itemOpButton.Item);
                     }
 
-                    Debug.Log($"selected {item.Name}");
+                    Debug.Log($"selected {itemOpButton.Item.Name}");
+                    this.ContainerMenu.RemoveOldItem(itemOpButton);
                 }
                 break;
             case KnightState.INPAUSEMENU:

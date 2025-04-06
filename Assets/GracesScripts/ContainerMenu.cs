@@ -1,14 +1,9 @@
-using System.Collections;
+using Assets.GracesScripts;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Transactions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
-using static UnityEditor.Progress;
 #nullable enable
 
 public class ContainerMenu : Menu
@@ -16,25 +11,32 @@ public class ContainerMenu : Menu
     [SerializeField] GameObject prefabItemButton;
     [SerializeField] List<GameObject> itemButtonLocations;
     List<GameObject> Buttons = new();
-    [SerializeField] private GameObject currentShownDescription;
-    [SerializeField] private GameObject currentShownName;
+
+    [Header("Item UI description")]
+    [SerializeField] private Image ItemTypeIndicatorImage;
+    [SerializeField] private Sprite specialItemImage;
+    [SerializeField] private Sprite ArmourItemImage;
+    [SerializeField] private Sprite WeaponItemImage;
+    [SerializeField] private GameObject descriptionContainer;
+    [SerializeField] private GameObject nameContainer;
+    [SerializeField] private TMP_Text powerValue;
+    [SerializeField] private TMP_Text defenceValue;
 
     /// <summary>
     /// returns selected and removed item image and item data from the Item slot.
     /// </summary>
-    public Item GiveItemToPlayer()
+    public ItemOptionButton GetCurrentSelected()
     {
         var selected = this.UIEventSystem.currentSelectedGameObject;
 
         var itemToReturn = selected.GetComponent<ItemOptionButton>();
 
-        // save item so dont edit the one returning
-        var tempItem = itemToReturn;
-        
-        // edit the old item
-        itemToReturn.ReplaceItemWithBlank();
+        return itemToReturn;
+    }
 
-        return tempItem.Item;
+    public void RemoveOldItem(ItemOptionButton itemToRemove)
+    {
+        itemToRemove.ReplaceItemWithBlank();
     }
 
     public void PopulateContainer(List<Item> items)
@@ -66,25 +68,54 @@ public class ContainerMenu : Menu
     private void UpdateItemView()
     {
         this.currentlyShownItem = this.UIEventSystem.currentSelectedGameObject;
-        MyGuard.IsNotNull(currentShownDescription);
-        MyGuard.IsNotNull(currentShownName);
+        MyGuard.IsNotNull(descriptionContainer);
+        MyGuard.IsNotNull(nameContainer);
 
-        currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
-        currentShownName.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
-
-        if (currentlyShownItem == null)
+        if (this.currentlyShownItem == null)
         {
             return;
         }
 
-        var newItemButtonComponent = this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
-
-        if (itemButtonComp.Item != null)
+        if (!this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp))
         {
-            currentShownDescription.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
-            currentShownName.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
+            descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
+            nameContainer.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
+
+            this.powerValue.text = "0";
+            this.defenceValue.text = "0";
+
+            this.ItemTypeIndicatorImage.sprite = emptySlotImage;
+            return;
+
+        }
+
+        if (itemButtonComp.Item == null)
+        {
+            descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
+            nameContainer.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
+
+            this.powerValue.text = "0";
+            this.defenceValue.text = "0";
+
+            this.ItemTypeIndicatorImage.sprite = emptySlotImage;
             return;
         }
+
+        descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
+        nameContainer.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
+
+        this.powerValue.text = itemButtonComp.Item.PowerStat.ToString();
+        this.defenceValue.text = itemButtonComp.Item.DefenceStat.ToString();
+
+        Sprite typeSprite = itemButtonComp.Item.Type switch
+        {
+            ItemType.Weapon => this.WeaponItemImage,
+            ItemType.Clothing => this.ArmourItemImage,
+            ItemType.SpecialItem => this.specialItemImage,
+            _ => throw new ArgumentOutOfRangeException($"no Item Type found {itemButtonComp.Item.Type}")
+        };
+
+        this.ItemTypeIndicatorImage.sprite = typeSprite;
     }
 
     private GameObject? currentlyShownItem;
@@ -93,7 +124,7 @@ public class ContainerMenu : Menu
     void Update()
     {
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
-        
+
         // on menu open after another has been open do onece
         if (highlightedMenuItem == null)
         {
@@ -109,6 +140,7 @@ public class ContainerMenu : Menu
             {
                 button.PlayHighlightOptionChangedSound();
             }
+
             this.UpdateItemView();
         }
     }
