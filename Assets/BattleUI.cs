@@ -58,16 +58,11 @@ public class BattleUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Log.Print("cancelled update in BattleIU.cs fix ability buttons not working");
-
-        return;
-
         switch(state)
         {
             case Battle.PlayerPickActionTurn:
                 if (this.actionClickedFlag)
                 {
-                    this.state = Battle.PlayerPickActionTurn;
                     this.abilityButtonSceen.SetActive(true);
                     this.actionButtonScreen.SetActive(false);
 
@@ -93,6 +88,8 @@ public class BattleUI : MonoBehaviour
 
                     // set active the game object the turn based ability is added to
                     this.eventSystem.SetSelectedGameObject(AbilityButtonLocations[0].GetComponentInChildren<TurnBasedAbilityButton>().gameObject);
+
+                    this.state = Battle.PlayerPickAbilityTurn;
                 }
                 break;
             case Battle.PlayerPickAbilityTurn:
