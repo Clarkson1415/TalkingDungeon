@@ -24,7 +24,7 @@ public class Button : MonoBehaviour
     }
 
     /// <summary>
-    /// is used in the Button component on the game object in the folder Assets/UI
+    /// Plays the selected sound.
     /// </summary>
     public virtual void ClickButton()
     {

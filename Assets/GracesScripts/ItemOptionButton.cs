@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
-[RequireComponent(typeof(Button))]
 public class ItemOptionButton : Button
 {
     public Item Item;
@@ -36,7 +29,7 @@ public class ItemOptionButton : Button
     /// </summary>
     public override void ClickButton()
     {
-        base.ClickButton(); 
+        base.ClickButton();
     }
 
     public void ToggleEquipGraphic()

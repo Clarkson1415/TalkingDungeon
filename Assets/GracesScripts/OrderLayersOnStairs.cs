@@ -60,6 +60,11 @@ public class OrderLayersOnStairs : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if(player == null || inStairBlock == null || AboveStairBlock == null || TriggerNewScene == null)
+        {
+            return;
+        }
+
         // swap order so ground is -1 from player 
         player.GetComponent<ShadowCaster2D>().enabled = true;
         player.GetComponent<SortingGroup>().sortingOrder = 0;

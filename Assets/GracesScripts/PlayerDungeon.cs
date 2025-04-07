@@ -1,18 +1,12 @@
 using Assets.GracesScripts;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 #nullable enable
-
 
 /// <summary>
 /// Player guy
@@ -21,6 +15,9 @@ using static UnityEditor.Progress;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : MonoBehaviour
 {
+    
+    [Header("REMEMBER PLAYER STUFF IS LOADED FROM SAVE DATA MODIFY THAT")]
+
     [Header("Menus")]
     [SerializeField] DialogueTextBox dialogueBox;
     [SerializeField] ContainerMenu ContainerMenu;
@@ -31,26 +28,29 @@ public class PlayerDungeon : MonoBehaviour
     [SerializeField] InventoryMenu inventoryMenu;
     [SerializeField] AudioClip InventoryOpenSound;
     [SerializeField] AudioClip InventoryClosedSound;
-    [SerializeField] private List<Item> Inventory;
+    public List<Item> Inventory;
     [SerializeField] private AudioSource audioSourceForInventorySounds;
+    private List<Item?> equippedItems => new() { this.equippedClothing, this.equippedWeapon, this.equippedSpecialItem };
+    public Item? equippedWeapon;
+    public Item? equippedClothing;
+    public Item? equippedSpecialItem;
 
     [Header("Movement")]
     [SerializeField] private float movementSpeed = 1f;
     private IInteracble? interactableInRange = null;
     private Rigidbody2D rb;
     private Vector2 direction;
-    private KnightState state = KnightState.PLAYERCANMOVE;
+    [SerializeField] private KnightState state = KnightState.PLAYERCANMOVE;
     private AudioSource footstepsSound;
     private UseAnimatedLayers animatedLayers;
 
-    [SerializeField] private float maxWellbeing;
-    [SerializeField] private float currentWellbeing;
-    [SerializeField] Image healthBarImage;
     [Header("Stats")]
-
-    [SerializeField] List<Ability> abilites;
-    private int playerPowerStat = 0;
-    private int playerDefenceStat = 0;
+    public float maxWellbeing;
+    public float currentWellbeing;
+    public Image healthBarFillImage;
+    public List<Ability> abilities;
+    public int power = 0;
+    public int defence = 0;
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
@@ -64,6 +64,7 @@ public class PlayerDungeon : MonoBehaviour
         InItemContainer,
         INPAUSEMENU,
         ININVENTORY,
+        InTurnBased,
     }
 
     private void Awake()
@@ -77,8 +78,16 @@ public class PlayerDungeon : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        this.state = KnightState.PLAYERCANMOVE;
-        this.healthBarImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
+        var saveData = FindObjectOfType<PersistanctSaveData>();
+
+        this.currentWellbeing = saveData.currentWellbeing;
+        this.maxWellbeing = saveData.maxWellbeing;
+        this.abilities = saveData.abilities;
+        this.power = saveData.power;
+        this.defence = saveData.defence;
+        this.Inventory = saveData.Inventory;
+
+        this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
     }
 
     private void StartInteraction()
@@ -110,6 +119,11 @@ public class PlayerDungeon : MonoBehaviour
 
         // TODO: add more interactables here
 
+        this.StopMovement();
+    }
+
+    private void StopMovement()
+    {
         // Stop animations
         this.animatedLayers.SetFloats("YVel", 0);
         this.animatedLayers.SetFloats("XVel", 0);
@@ -120,6 +134,7 @@ public class PlayerDungeon : MonoBehaviour
         this.rb.velocity = Vector2.zero;
         this.direction = Vector2.zero;
     }
+
     private void FixedUpdate()
     {
         switch (this.state)
@@ -131,6 +146,7 @@ public class PlayerDungeon : MonoBehaviour
                     this.pauseMenu.gameObject.SetActive(true);
                     this.pauseMenu.StartPauseMenu();
                     this.state = KnightState.INPAUSEMENU;
+                    StopMovement();
                     this.currentMenuOpen = this.pauseMenu.gameObject;
                 }
                 if (iKeyFlag)
@@ -143,9 +159,10 @@ public class PlayerDungeon : MonoBehaviour
                     audioSourceForInventorySounds.Play();
 
                     UpdateStats();
-                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.playerPowerStat, this.playerDefenceStat);
+                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.power, this.defence);
                     this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
 
+                    StopMovement();
                     this.state = KnightState.ININVENTORY;
                 }
                 this.rb.velocity = direction * movementSpeed;
@@ -161,7 +178,6 @@ public class PlayerDungeon : MonoBehaviour
                     StartInteraction();
                 }
                 break;
-            case KnightState.INDIALOGUE:
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
@@ -271,9 +287,12 @@ public class PlayerDungeon : MonoBehaviour
 
                     // need to store in this script for battles
                     UpdateStats();
-                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.playerPowerStat, this.playerDefenceStat);
+                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.power, this.defence);
                     this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
                 }
+                break;
+            case KnightState.InTurnBased:
+
                 break;
             default:
                 this.state = KnightState.PLAYERCANMOVE;
@@ -283,8 +302,8 @@ public class PlayerDungeon : MonoBehaviour
 
     private void UpdateStats()
     {
-        this.playerPowerStat = 0;
-        this.playerDefenceStat = 0;
+        this.power = 0;
+        this.defence = 0;
 
         foreach (var item in this.equippedItems)
         {
@@ -293,11 +312,11 @@ public class PlayerDungeon : MonoBehaviour
                 continue;
             }
 
-            playerPowerStat += item.PowerStat;
-            playerDefenceStat += item.DefenceStat;
+            power += item.PowerStat;
+            defence += item.DefenceStat;
         }
     }
-    
+
     /// <summary>
     /// Idk if comparing name string is neccessary though I
     /// </summary>
@@ -333,13 +352,8 @@ public class PlayerDungeon : MonoBehaviour
                 break;
             default:
                 throw new ArgumentOutOfRangeException("No type found fo add to player quip.");
-        }        
+        }
     }
-
-    private List<Item?> equippedItems => new() { this.equippedClothing, this.equippedWeapon, this.equippedSpecialItem };
-    private Item? equippedWeapon;
-    private Item? equippedClothing;
-    private Item? equippedSpecialItem;
 
     /// <summary>
     /// TODO, was thinkging of having player stat /level blocks for items but now probs not
@@ -355,7 +369,7 @@ public class PlayerDungeon : MonoBehaviour
     private void TakeDamage(float damage)
     {
         this.currentWellbeing -= damage;
-        this.healthBarImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
+        this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
     }
 
     public void OnIKey(InputAction.CallbackContext context)
