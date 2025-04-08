@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-public class ButtonMenuOption : Button
+public class ButtonMenuOption : DungeonButton
 {
     [SerializeField] string buttonText;
 

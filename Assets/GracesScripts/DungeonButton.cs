@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Button class, draws itself upon activation / instantiation.
 /// </summary>
-public class Button : MonoBehaviour
+public class DungeonButton : MonoBehaviour
 {
     [SerializeField] AudioClip highlightSound;
     [SerializeField] AudioClip? selectedSound;

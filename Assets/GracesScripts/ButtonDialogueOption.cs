@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 [System.Serializable]
 
-public class DialogueOptionButton : Button
+public class DialogueOptionButton : DungeonButton
 {
     public DialogueSlide NextDialogueSlide { get; set; }
 

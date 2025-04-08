@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemOptionButton : Button
+public class ItemOptionButton : DungeonButton
 {
     public Item Item;
     [SerializeField] Sprite equippedOverlayGraphic;

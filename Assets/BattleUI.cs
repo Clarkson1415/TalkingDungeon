@@ -1,18 +1,18 @@
 using Assets.GracesScripts;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements.Experimental;
+using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour
 {
     private Battle state;
     PlayerDungeon player;
-    private EventSystem eventSystem;
+    private EventSystem evSys;
     [SerializeField] AudioSource buttonClickAudioSource;
+    [SerializeField] Image enemyHealthFill;
+    private Enemy enemy;
 
     /// <summary>
     /// like attack, talk, flee etc.
@@ -36,12 +36,19 @@ public class BattleUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        eventSystem = FindObjectOfType<EventSystem>();
+        evSys = FindObjectOfType<EventSystem>();
         player = FindObjectOfType<PlayerDungeon>();
+        enemy = FindObjectOfType<Enemy>();
+        if (enemy == null)
+        {
+            throw new ArgumentNullException("enemy cannot be null in battle scene.");
+        }
 
         state = Battle.PlayerPickActionTurn;
 
-        eventSystem.SetSelectedGameObject(ActionButtons[0]);
+        evSys.SetSelectedGameObject(ActionButtons[0]);
+
+        this.enemyHealthFill.fillAmount = this.enemy.currentHealth / this.enemy.maxHealth;
     }
 
     private enum Battle
@@ -58,11 +65,13 @@ public class BattleUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        switch(state)
+        switch (state)
         {
             case Battle.PlayerPickActionTurn:
                 if (this.actionClickedFlag)
                 {
+                    this.actionClickedFlag = false;
+
                     this.abilityButtonSceen.SetActive(true);
                     this.actionButtonScreen.SetActive(false);
 
@@ -81,28 +90,42 @@ public class BattleUI : MonoBehaviour
                         {
                             var abButtonPrefab = Instantiate(abilityButtonPrefab, AbilityButtonLocations[i].transform);
                             abilityButton = abButtonPrefab.GetComponent<TurnBasedAbilityButton>();
+
+                            // TODO test this
+                            abilityButton.GetComponent<Button>().onClick.AddListener(OnAbilityButtonClicked);
                         }
 
                         abilityButton.SetAbility(player.abilities[i]);
                     }
 
                     // set active the game object the turn based ability is added to
-                    this.eventSystem.SetSelectedGameObject(AbilityButtonLocations[0].GetComponentInChildren<TurnBasedAbilityButton>().gameObject);
+                    this.evSys.SetSelectedGameObject(AbilityButtonLocations[0].GetComponentInChildren<TurnBasedAbilityButton>().gameObject);
 
                     this.state = Battle.PlayerPickAbilityTurn;
                 }
                 break;
             case Battle.PlayerPickAbilityTurn:
-                if (this.actionClickedFlag)
+                if (this.abilityClickedFlag)
                 {
+                    this.abilityClickedFlag = false;
+                    var abilityUsed = evSys.currentSelectedGameObject.GetComponent<TurnBasedAbilityButton>().Ability;
+                    Log.Print($"player used {abilityUsed.name} on {enemy.name} for {abilityUsed.attackPower}");
+                    this.enemy.currentHealth -= abilityUsed.attackPower;
+                    this.enemyHealthFill.fillAmount = this.enemy.currentHealth / this.enemy.maxHealth;
                     this.state = Battle.PlayerExecuteAbility;
                 }
                 if (this.backButtonClicked)
                 {
+                    this.backButtonClicked = false;
                     state = Battle.PlayerPickActionTurn;
                 }
                 break;
             case Battle.PlayerExecuteAbility:
+                // if animation finished or some delay go to action turn
+                this.abilityButtonSceen.SetActive(false);
+                this.actionButtonScreen.SetActive(true);
+                this.evSys.SetSelectedGameObject(ActionButtons[0]);
+                state = Battle.PlayerPickActionTurn;
                 break;
             case Battle.EnemyTurn:
                 break;
