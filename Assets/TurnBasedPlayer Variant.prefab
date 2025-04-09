@@ -21,7 +21,7 @@ PrefabInstance:
     - target: {fileID: 2041469104691919694, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_InstanceId
-      value: -2893784
+      value: -5826
       objectReference: {fileID: 0}
     - target: {fileID: 2041469104691919694, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
@@ -30,18 +30,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.8132
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.8132
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.8132
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.17
+      value: -1.747
       objectReference: {fileID: 0}
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.86
+      value: 0.292
       objectReference: {fileID: 0}
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.0036361096
+      value: 0.0036361
       objectReference: {fileID: 0}
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
@@ -88,6 +103,29 @@ PrefabInstance:
       propertyPath: currentWellbeing
       value: 80
       objectReference: {fileID: 0}
+    - target: {fileID: 5275466657955505087, guid: 165c377d257b14348a60bbf16bdcf26c,
+        type: 3}
+      propertyPath: abilities.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5275466657955505087, guid: 165c377d257b14348a60bbf16bdcf26c,
+        type: 3}
+      propertyPath: abilities.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 5964789fba75d9540a4e7626dd25d315,
+        type: 2}
+    - target: {fileID: 5275466657955505087, guid: 165c377d257b14348a60bbf16bdcf26c,
+        type: 3}
+      propertyPath: abilities.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: f1559ba6952a31a4c9acce2368bcedf5,
+        type: 2}
+    - target: {fileID: 5275466657955505087, guid: 165c377d257b14348a60bbf16bdcf26c,
+        type: 3}
+      propertyPath: abilities.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: d6f7dcbe336abf5429603340f6c4127a,
+        type: 2}
     - target: {fileID: 6272984446661205816, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_SortingOrder

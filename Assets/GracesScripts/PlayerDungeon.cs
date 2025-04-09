@@ -1,5 +1,6 @@
 using Assets.GracesScripts;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -366,10 +367,21 @@ public class PlayerDungeon : MonoBehaviour
         return isValid;
     }
 
-    private void TakeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         this.currentWellbeing -= damage;
-        this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
+        StartCoroutine(AnimateEnemyHealthLoss());
+    }
+
+    IEnumerator AnimateEnemyHealthLoss()
+    {
+        float damagePerSecond = 2f;
+
+        while (this.healthBarFillImage.fillAmount > (this.currentWellbeing / this.maxWellbeing))
+        {
+            this.healthBarFillImage.fillAmount -= (damagePerSecond / 100);
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     public void OnIKey(InputAction.CallbackContext context)

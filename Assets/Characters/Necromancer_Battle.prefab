@@ -722,7 +722,7 @@ MonoBehaviour:
   - {x: 0.20956945, y: -0.33007544, z: 0}
   m_ShapePathHash: -1879964053
   m_Mesh: {fileID: 0}
-  m_InstanceId: -16618
+  m_InstanceId: -5910
   m_LocalBounds:
     m_Center: {x: 0.0034968853, y: 0.12459642, z: 0}
     m_Extent: {x: 0.26178432, y: 0.5010983, z: 0}
@@ -751,6 +751,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fd0193ddc6ec404992335ec2fc0f088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentHealth: 100
+  maxHealth: 100
 --- !u!1 &8858369219727725448
 GameObject:
   m_ObjectHideFlags: 0

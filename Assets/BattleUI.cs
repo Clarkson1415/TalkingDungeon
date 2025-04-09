@@ -1,6 +1,8 @@
 using Assets.GracesScripts;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,7 +14,10 @@ public class BattleUI : MonoBehaviour
     private EventSystem evSys;
     [SerializeField] AudioSource buttonClickAudioSource;
     [SerializeField] Image enemyHealthFill;
-    private Enemy enemy;
+
+    private Enemy enemyYouFightin;
+
+    [SerializeField] private TMP_Text enemyNameField;
 
     /// <summary>
     /// like attack, talk, flee etc.
@@ -38,8 +43,8 @@ public class BattleUI : MonoBehaviour
     {
         evSys = FindObjectOfType<EventSystem>();
         player = FindObjectOfType<PlayerDungeon>();
-        enemy = FindObjectOfType<Enemy>();
-        if (enemy == null)
+        enemyYouFightin = FindObjectOfType<Enemy>();
+        if (enemyYouFightin == null)
         {
             throw new ArgumentNullException("enemy cannot be null in battle scene.");
         }
@@ -48,7 +53,30 @@ public class BattleUI : MonoBehaviour
 
         evSys.SetSelectedGameObject(ActionButtons[0]);
 
-        this.enemyHealthFill.fillAmount = this.enemy.currentHealth / this.enemy.maxHealth;
+        this.enemyHealthFill.fillAmount = this.enemyYouFightin.currentHealth / this.enemyYouFightin.maxHealth;
+
+        enemyNameField.text = this.enemyYouFightin.name;
+    }
+
+    private void DamageEnemy(float damage)
+    {
+        isEnemyTakingDamageHealthBarAnimPlaying = true;
+        this.enemyYouFightin.currentHealth -= damage;
+        StartCoroutine(AnimateEnemyHealthLoss());
+    }
+
+    IEnumerator AnimateEnemyHealthLoss()
+    {
+        float damagePerSecond = 2f;
+
+        while (this.enemyHealthFill.fillAmount > (this.enemyYouFightin.currentHealth / this.enemyYouFightin.maxHealth))
+        {
+            this.enemyHealthFill.fillAmount -= (damagePerSecond/100);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        yield return new WaitForSeconds(1f);
+        isEnemyTakingDamageHealthBarAnimPlaying = false;
     }
 
     private enum Battle
@@ -61,6 +89,8 @@ public class BattleUI : MonoBehaviour
         PlayerWon,
         PlayerLost,
     }
+
+    bool isEnemyTakingDamageHealthBarAnimPlaying;
 
     // Update is called once per frame
     void Update()
@@ -109,9 +139,9 @@ public class BattleUI : MonoBehaviour
                 {
                     this.abilityClickedFlag = false;
                     var abilityUsed = evSys.currentSelectedGameObject.GetComponent<TurnBasedAbilityButton>().Ability;
-                    Log.Print($"player used {abilityUsed.name} on {enemy.name} for {abilityUsed.attackPower}");
-                    this.enemy.currentHealth -= abilityUsed.attackPower;
-                    this.enemyHealthFill.fillAmount = this.enemy.currentHealth / this.enemy.maxHealth;
+                    Log.Print($"player used {abilityUsed.name} on {enemyYouFightin.name} for {abilityUsed.attackPower}");
+                    DamageEnemy(abilityUsed.attackPower);
+
                     this.state = Battle.PlayerExecuteAbility;
                 }
                 if (this.backButtonClicked)
@@ -125,11 +155,15 @@ public class BattleUI : MonoBehaviour
                 this.abilityButtonSceen.SetActive(false);
                 this.actionButtonScreen.SetActive(true);
                 this.evSys.SetSelectedGameObject(ActionButtons[0]);
-                state = Battle.PlayerPickActionTurn;
+                state = Battle.EnemyTurn;
                 break;
             case Battle.EnemyTurn:
-                break;
-            case Battle.EnemyExecuteAction:
+                if (!isEnemyTakingDamageHealthBarAnimPlaying) // wait until enemy health bar anim finished then take enemies turn
+                {
+                    Debug.Log("Enemy Used slap but not really");
+                    this.player.TakeDamage(15);
+                    state = Battle.PlayerPickActionTurn;
+                }
                 break;
             case Battle.PlayerWon:
                 break;
