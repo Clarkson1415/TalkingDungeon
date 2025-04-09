@@ -10,14 +10,20 @@ using UnityEngine.UI;
 public class BattleUI : MonoBehaviour
 {
     private Battle state;
-    PlayerDungeon player;
+    private PlayerDungeon player;
+    [SerializeField] private GameObject WellBeingObject;
+
     private EventSystem evSys;
-    [SerializeField] AudioSource buttonClickAudioSource;
+    [SerializeField] AudioSource buttonClickedAudioSource;
+    [SerializeField] AudioSource buttonChangedAudioSource;
+
     [SerializeField] Image enemyHealthFill;
 
     private Enemy enemyYouFightin;
 
     [SerializeField] private TMP_Text enemyNameField;
+
+    [SerializeField] private GameObject enemyHealthBarAndNameToShake;
 
     /// <summary>
     /// like attack, talk, flee etc.
@@ -61,6 +67,7 @@ public class BattleUI : MonoBehaviour
     private void DamageEnemy(float damage)
     {
         isEnemyTakingDamageHealthBarAnimPlaying = true;
+        enemyHealthBarAndNameToShake.GetComponent<shakeObject>().StartShake(1f, 5f);
         this.enemyYouFightin.currentHealth -= damage;
         StartCoroutine(AnimateEnemyHealthLoss());
     }
@@ -92,9 +99,30 @@ public class BattleUI : MonoBehaviour
 
     bool isEnemyTakingDamageHealthBarAnimPlaying;
 
-    // Update is called once per frame
+    private GameObject currentSelectedButton;
+
+    // Update is called once per frame 
     void Update()
     {
+        var highlighted = this.evSys.currentSelectedGameObject;
+
+        if (highlighted == null)
+        {
+            // do nothing
+        }
+        else if (highlighted != currentSelectedButton)
+        {
+            if(currentSelectedButton != null)
+            {
+                if (!this.buttonClickedAudioSource.isPlaying) // if the button clicked sound is playing don't play button changed also
+                {
+                    this.buttonChangedAudioSource.Play();
+                }
+            }
+
+            currentSelectedButton = highlighted;
+        }
+
         switch (state)
         {
             case Battle.PlayerPickActionTurn:
@@ -162,6 +190,7 @@ public class BattleUI : MonoBehaviour
                 {
                     Debug.Log("Enemy Used slap but not really");
                     this.player.TakeDamage(15);
+                    WellBeingObject.GetComponent<shakeObject>().StartShake(1f, 5f);
                     state = Battle.PlayerPickActionTurn;
                 }
                 break;
@@ -175,18 +204,18 @@ public class BattleUI : MonoBehaviour
     public void OnActionButtonClicked()
     {
         this.actionClickedFlag = true;
-        buttonClickAudioSource.Play();
+        buttonClickedAudioSource.Play();
     }
 
     public void OnAbilityButtonClicked()
     {
         this.abilityClickedFlag = true;
-        buttonClickAudioSource.Play();
+        buttonClickedAudioSource.Play();
     }
 
     public void OnBackButtonClicked()
     {
         backButtonClicked = true;
-        buttonClickAudioSource.Play();
+        buttonClickedAudioSource.Play();
     }
 }
