@@ -16,9 +16,9 @@ public class Dog1 : WalkingBackAndForth, IHasDialogue
     void Start()
     {
         // Slide 1
-        var Slide1 = this.gameObject.AddComponent<DialogueSlide>();
-        Slide1.SetValues(GetComponent<UsesProfilePic>().ProfilePic, "Must._____ Catch._____ Bug.");
+        //var Slide1 = this.gameObject.AddComponent<DialogueSlide>();
+        //Slide1.SetValues(GetComponent<UsesProfilePic>().ProfilePic, "Must._____ Catch._____ Bug.");
 
-        this.FirstDialogue = Slide1;
+        //this.FirstDialogue = Slide1;
     }
 }

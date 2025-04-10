@@ -126,8 +126,7 @@ public class DialogueTextBox : MonoBehaviour
                 if (this.PlayerInteractFlagSet)
                 {
                     this.PlayerInteractFlagSet = false;
-                    MyGuard.IsNotNull(this.CurrentSlide);
-                    if (this.CurrentSlide.islastSlideInSequence)
+                    if (this.UIEventSystem.currentSelectedGameObject == null)
                     {
                         UpdateCurrentSlide(null);
                         //Log.Print("state INVIS INACTIVE");
@@ -137,27 +136,34 @@ public class DialogueTextBox : MonoBehaviour
                         Debug.Log("Box in Set to waiting for interaction");
                         this.gameObject.SetActive(false);
                     }
-                    else
+                    else // a button was clicked
                     {
-                        if (this.CurrentSlide.options.Count == 0)
+                        var selected = this.UIEventSystem.currentSelectedGameObject;
+                        if (!selected.TryGetComponent<DialogueOptionButton>(out var buttonOption))
                         {
-                            MyGuard.IsNotNull(this.CurrentSlide.nextSlide);
-                            this.UpdateCurrentSlide(this.CurrentSlide.nextSlide);
+                            Debug.Log("could not deg a dialouge option button component");
+                        }
+
+                        if (buttonOption.NextDialogueSlide == null)
+                        {
+                            // end converstiona
+                            // TODO THIS AS A FUCNTION USED ABOVE
+                            UpdateCurrentSlide(null);
+                            //Log.Print("state INVIS INACTIVE");
+                            this.speakersPicRenderer.sprite = null;
+                            finishedInteractionFlag = true;
+                            this.State = BoxState.WAITINGFORINTERACTION;
+                            Debug.Log("Box in Set to waiting for interaction");
+                            this.gameObject.SetActive(false);
                         }
                         else
                         {
-                            var selectedDiaOption = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
-                            if (selectedDiaOption.GetComponent<DialogueOptionButton>().NextDialogueSlide == null)
-                            {
-                                Log.Print("next dialogue slide null did you mean to finish conversation?");
-                            }
-
-                            this.UpdateCurrentSlide(selectedDiaOption.GetComponent<DialogueOptionButton>().NextDialogueSlide);
+                            // var selectedDiaOption = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
+                            this.UpdateCurrentSlide(buttonOption.NextDialogueSlide);
+                            this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
+                            //Log.Print("state writing after waiting");
+                            this.State = BoxState.WRITINGSLIDE;
                         }
-
-                        this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
-                        //Log.Print("state writing after waiting");
-                        this.State = BoxState.WRITINGSLIDE;
                     }
                 }
                 break;
@@ -186,25 +192,28 @@ public class DialogueTextBox : MonoBehaviour
         this.TMPTextBox.text = parsedString;
     }
 
+    /// <summary>
+    /// Draws buttons i.e. instantiates them in the button locations. TODO: change this to not instantiate but to populate values of already loaded button objects.
+    /// </summary>
     private void DrawButtons()
     {
-        if (this.CurrentSlide?.options == null || this.CurrentSlide.options.Count == 0)
+        if (this.CurrentSlide?.dialogueOptions == null || this.CurrentSlide.dialogueOptions.Count == 0)
         {
             return;
         }
 
-        if (this.CurrentSlide.options.Count > 0)
+        if (this.CurrentSlide.dialogueOptions.Count > 0)
         {
             Vector3 positionVector = new Vector3(0, 0, 0);
 
-            for (int i = 0; i < this.CurrentSlide.options.Count; i++)
+            for (int i = 0; i < this.CurrentSlide.dialogueOptions.Count; i++)
             {
                 // Instantiate new button with that gameobject as parent.
                 var buttonGameObj = Instantiate(this.prefabButton, this.buttonPositionsTopToBottom[i].transform);
 
                 // set button Dialogue Option to the Dialogue Option.
                 // REMEBER THIS IS NOT THE SAME OBJECT AS IN THE CURRENT SLIDE.OPTIONS
-                buttonGameObj.GetComponent<DialogueOptionButton>().SetValues(this.CurrentSlide.options[i]);
+                buttonGameObj.GetComponent<DialogueOptionButton>().SetValues(this.CurrentSlide.dialogueOptions[i].optionText, this.CurrentSlide.dialogueOptions[i].nextSlide);
                 this.buttons.Add(buttonGameObj);
             }
 
@@ -251,10 +260,13 @@ public class DialogueTextBox : MonoBehaviour
             }
 
             // play dialogue text sound effect
-            if (!this.audioSource.isPlaying)
-            {
-                this.PlayDialoguePrintAudio();
-            }
+
+            // this was in here for the writing loop but idk if ill use it
+            //if (!this.audioSource.isPlaying)
+            //{
+            //    this.PlayDialoguePrintAudio();
+            //}
+            this.PlayDialoguePrintAudio();
 
             if (i == 0) // set first letter if this is the first letter.
             {

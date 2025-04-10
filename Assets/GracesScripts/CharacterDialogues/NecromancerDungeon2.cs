@@ -11,24 +11,24 @@ public class NecromancerDungeon2 : UsesProfilePic, IHasDialogue, IInteracble
     }
 
     // Start is called before the first frame update
-    void Start()
-    {
-        //Slide1Option1_NextSlide
-        var Slide1Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
-        Slide1Option1_NextSlide.SetValues(this.profilePic, ".___ .___ .___ shop?", new List<DialogueOptionButton>() { });
+    void Start() { 
+    //{
+    //    //Slide1Option1_NextSlide
+    //    var Slide1Option1_NextSlide = gameObject.AddComponent<DialogueSlide>();
+    //    Slide1Option1_NextSlide.SetValues(this.profilePic, ".___ .___ .___ shop?", new List<DialogueOptionButton>() { });
 
-        // Slide 1 Options
-        var Slide1Option1 = gameObject.AddComponent<DialogueOptionButton>();
-        Slide1Option1.SetValues("*stay silent*", Slide1Option1_NextSlide);
+    //    // Slide 1 Options
+    //    var Slide1Option1 = gameObject.AddComponent<DialogueOptionButton>();
+    //    Slide1Option1.SetValues("*stay silent*", Slide1Option1_NextSlide);
 
-        var Slide1Option3 = gameObject.AddComponent<DialogueOptionButton>();
-        Slide1Option3.SetValues("what?", Slide1Option1_NextSlide);
+    //    var Slide1Option3 = gameObject.AddComponent<DialogueOptionButton>();
+    //    Slide1Option3.SetValues("what?", Slide1Option1_NextSlide);
 
-        // Slide 1
-        var Slide1 = gameObject.AddComponent<DialogueSlide>();
-        Slide1.SetValues(this.profilePic, "you here to buy or sell? I can never tell!", new List<DialogueOptionButton>() { Slide1Option1, Slide1Option3 });
+    //    // Slide 1
+    //    var Slide1 = gameObject.AddComponent<DialogueSlide>();
+    //    Slide1.SetValues(this.profilePic, "you here to buy or sell? I can never tell!", new List<DialogueOptionButton>() { Slide1Option1, Slide1Option3 });
 
-        this.FirstDialogue = Slide1;
+    //    this.FirstDialogue = Slide1;
     }
 
     // Update is called once per frame

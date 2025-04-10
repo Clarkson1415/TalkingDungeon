@@ -2,7 +2,6 @@ using Assets.GracesScripts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,22 +9,13 @@ using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour
 {
-    private Battle state;
+    [Header("Player")]
     private PlayerDungeon player;
     [SerializeField] private GameObject WellBeingObject;
 
-    private EventSystem evSys;
+    [Header("UI")]
     [SerializeField] AudioSource buttonClickedAudioSource;
     [SerializeField] AudioSource buttonChangedAudioSource;
-
-    [SerializeField] Image enemyHealthFill;
-
-    private Enemy enemyYouFightin;
-
-    [SerializeField] private TMP_Text enemyNameField;
-
-    [SerializeField] private GameObject enemyHealthBarAndNameToShake;
-
     /// <summary>
     /// like attack, talk, flee etc.
     /// </summary>
@@ -35,27 +25,34 @@ public class BattleUI : MonoBehaviour
     /// player abilities to use. UP TO 3 FOR NOW
     /// </summary>
     [SerializeField] private List<GameObject> AbilityButtonLocations;
-
     [SerializeField] private GameObject abilityButtonPrefab;
+
+    [SerializeField] GameObject actionButtonScreen;
+    [SerializeField] GameObject abilityButtonSceen;
+    [SerializeField] private GameObject battleDialogueBox;
+    [SerializeField] private GameObject DeathScreen;
+
+    [Header("Enemy")]
+    [SerializeField] Image enemyHealthFill;
+    private Unit enemyYouFightin;
+    [SerializeField] private TMP_Text enemyNameField;
+    [SerializeField] private GameObject enemyHealthBarAndNameToShake;
+
+    private Battle state;
+    private EventSystem evSys;
 
     private bool actionClickedFlag;
     private bool abilityClickedFlag;
     private bool backButtonClicked;
 
-    [SerializeField] GameObject actionButtonScreen;
-    [SerializeField] GameObject abilityButtonSceen;
-
     private bool isPlayerTakingDamage;
     private bool isDialoguePrinting;
-    [SerializeField] private GameObject DialogueBox;
-
-    [SerializeField] private GameObject DeathScreen;
 
     IEnumerator TestDialogueBox(string text)
     {
         this.isDialoguePrinting = true;
         Debug.Log("... printing text...");
-        this.DialogueBox.GetComponentInChildren<TMP_Text>().text = text;
+        this.battleDialogueBox.GetComponentInChildren<TMP_Text>().text = text;
         yield return new WaitForSeconds(2f);
         this.isDialoguePrinting = false;
     }
@@ -65,7 +62,7 @@ public class BattleUI : MonoBehaviour
     {
         evSys = FindObjectOfType<EventSystem>();
         player = FindObjectOfType<PlayerDungeon>();
-        enemyYouFightin = FindObjectOfType<Enemy>();
+        enemyYouFightin = FindObjectOfType<Unit>();
         if (enemyYouFightin == null)
         {
             throw new ArgumentNullException("enemy cannot be null in battle scene.");
@@ -80,7 +77,7 @@ public class BattleUI : MonoBehaviour
         enemyNameField.text = this.enemyYouFightin.name;
 
         // TODO do i want the dialogue box to maybe say stuff on opening, like enemy approached...
-        this.DialogueBox.SetActive(false);
+        this.battleDialogueBox.SetActive(false);
         this.abilityButtonSceen.SetActive(false);
         this.actionButtonScreen.SetActive(true);
     }
@@ -123,6 +120,38 @@ public class BattleUI : MonoBehaviour
 
     private GameObject currentSelectedButton;
 
+
+    private void SetupAbilityButtons()
+    {
+        this.abilityButtonSceen.SetActive(true);
+
+        // TODO setup ability buttons
+        // idk if this will change mid battle otherwise can do on start in an ability UI class on the ability UI object. or in here on start would be better maybe?
+        if (player.abilities.Count > 3)
+        {
+            throw new ArgumentException("abilities is more than supported in battle UI");
+        }
+
+        for (int i = 0; i < player.abilities.Count; i++)
+        {
+            var abilityButton = AbilityButtonLocations[i].GetComponentInChildren<TurnBasedAbilityButton>();
+
+            if (abilityButton == null)
+            {
+                var abButtonPrefab = Instantiate(abilityButtonPrefab, AbilityButtonLocations[i].transform);
+                abilityButton = abButtonPrefab.GetComponent<TurnBasedAbilityButton>();
+
+                // TODO test this
+                abilityButton.GetComponent<Button>().onClick.AddListener(OnAbilityButtonClicked);
+            }
+
+            abilityButton.SetAbility(player.abilities[i]);
+        }
+
+        // set active the game object the turn based ability is added to
+        this.evSys.SetSelectedGameObject(AbilityButtonLocations[0].GetComponentInChildren<TurnBasedAbilityButton>().gameObject);
+    }
+
     // Update is called once per frame 
     void Update()
     {
@@ -152,36 +181,34 @@ public class BattleUI : MonoBehaviour
                 {
                     this.actionClickedFlag = false;
 
-                    this.abilityButtonSceen.SetActive(true);
+                    TurnBasedActions? action = null;
+                    if (this.evSys.currentSelectedGameObject.TryGetComponent<TurnBasedActionButton>(out var turnBasedButton))
+                    {
+                        action = turnBasedButton.Action;
+                    }
+
+                    if (action == null)
+                    {
+                        throw new ArgumentNullException("Action was null in battle UI this is not meant to happen.");
+                    }
+
                     this.actionButtonScreen.SetActive(false);
 
-                    // TODO setup ability buttons
-                    // idk if this will change mid battle otherwise can do on start in an ability UI class on the ability UI object. or in here on start would be better maybe?
-                    if (player.abilities.Count > 3)
+                    switch (action)
                     {
-                        throw new ArgumentException("abilities is more than supported in battle UI");
+                        case TurnBasedActions.ATTACK:
+                            SetupAbilityButtons();
+                            this.state = Battle.PlayerPickAbilityTurn;
+                            break;
+                        case TurnBasedActions.RUN:
+                            // TODO idk what will actually happen if you run yet
+                            QuitBattle();
+                            break;
+                        case TurnBasedActions.TALK:
+                            // TODO 
+                            StartDialogue(this.enemyYouFightin.firstDialogueSlide);
+                            break;
                     }
-
-                    for (int i = 0; i < player.abilities.Count; i++)
-                    {
-                        var abilityButton = AbilityButtonLocations[i].GetComponentInChildren<TurnBasedAbilityButton>();
-
-                        if (abilityButton == null)
-                        {
-                            var abButtonPrefab = Instantiate(abilityButtonPrefab, AbilityButtonLocations[i].transform);
-                            abilityButton = abButtonPrefab.GetComponent<TurnBasedAbilityButton>();
-
-                            // TODO test this
-                            abilityButton.GetComponent<Button>().onClick.AddListener(OnAbilityButtonClicked);
-                        }
-
-                        abilityButton.SetAbility(player.abilities[i]);
-                    }
-
-                    // set active the game object the turn based ability is added to
-                    this.evSys.SetSelectedGameObject(AbilityButtonLocations[0].GetComponentInChildren<TurnBasedAbilityButton>().gameObject);
-
-                    this.state = Battle.PlayerPickAbilityTurn;
                 }
                 break;
             case Battle.PlayerPickAbilityTurn:
@@ -194,7 +221,7 @@ public class BattleUI : MonoBehaviour
 
                     // TODO set dialoge box to active true
                     this.abilityButtonSceen.SetActive(false);
-                    this.DialogueBox.SetActive(true);
+                    this.battleDialogueBox.SetActive(true);
                     // TODO start coroutine printdialogue
                     StartCoroutine(TestDialogueBox($"player damaged enemy for {abilityUsed.attackPower}"));
                     this.state = Battle.ExecutePlayerAbilityShowText;
@@ -234,7 +261,7 @@ public class BattleUI : MonoBehaviour
             case Battle.ExecuteEnemyMoveAndPrintingText:
                 if (!isPlayerTakingDamage &&  !isDialoguePrinting) // when dialogue not printing and player animation finished  
                 {
-                    this.DialogueBox.SetActive(false);
+                    this.battleDialogueBox.SetActive(false);
                     this.actionButtonScreen.SetActive(true);
                     this.evSys.SetSelectedGameObject(ActionButtons[0]);
                     this.state = Battle.PlayerPickActionTurn;
@@ -262,6 +289,16 @@ public class BattleUI : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private void QuitBattle()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void StartDialogue(DialogueSlide dialogue)
+    {
+        throw new NotImplementedException();
     }
 
     [SerializeField] AudioSource SceneMusic;
