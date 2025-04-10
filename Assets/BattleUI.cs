@@ -2,6 +2,7 @@ using Assets.GracesScripts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -44,6 +45,21 @@ public class BattleUI : MonoBehaviour
     [SerializeField] GameObject actionButtonScreen;
     [SerializeField] GameObject abilityButtonSceen;
 
+    private bool isPlayerTakingDamage;
+    private bool isDialoguePrinting;
+    [SerializeField] private GameObject DialogueBox;
+
+    [SerializeField] private GameObject DeathScreen;
+
+    IEnumerator TestDialogueBox(string text)
+    {
+        this.isDialoguePrinting = true;
+        Debug.Log("... printing text...");
+        this.DialogueBox.GetComponentInChildren<TMP_Text>().text = text;
+        yield return new WaitForSeconds(2f);
+        this.isDialoguePrinting = false;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -62,6 +78,11 @@ public class BattleUI : MonoBehaviour
         this.enemyHealthFill.fillAmount = this.enemyYouFightin.currentHealth / this.enemyYouFightin.maxHealth;
 
         enemyNameField.text = this.enemyYouFightin.name;
+
+        // TODO do i want the dialogue box to maybe say stuff on opening, like enemy approached...
+        this.DialogueBox.SetActive(false);
+        this.abilityButtonSceen.SetActive(false);
+        this.actionButtonScreen.SetActive(true);
     }
 
     private void DamageEnemy(float damage)
@@ -90,11 +111,12 @@ public class BattleUI : MonoBehaviour
     {
         PlayerPickActionTurn,
         PlayerPickAbilityTurn,
-        PlayerExecuteAbility,
+        ExecutePlayerAbilityShowText,
         EnemyTurn,
-        EnemyExecuteAction,
+        ExecuteEnemyMoveAndPrintingText,
         PlayerWon,
         PlayerLost,
+        WaitOnDeathScreen,
     }
 
     bool isEnemyTakingDamageHealthBarAnimPlaying;
@@ -170,36 +192,80 @@ public class BattleUI : MonoBehaviour
                     Log.Print($"player used {abilityUsed.name} on {enemyYouFightin.name} for {abilityUsed.attackPower}");
                     DamageEnemy(abilityUsed.attackPower);
 
-                    this.state = Battle.PlayerExecuteAbility;
+                    // TODO set dialoge box to active true
+                    this.abilityButtonSceen.SetActive(false);
+                    this.DialogueBox.SetActive(true);
+                    // TODO start coroutine printdialogue
+                    StartCoroutine(TestDialogueBox($"player damaged enemy for {abilityUsed.attackPower}"));
+                    this.state = Battle.ExecutePlayerAbilityShowText;
                 }
                 if (this.backButtonClicked)
                 {
+                    // TODO this later when everything else working
                     this.backButtonClicked = false;
-                    state = Battle.PlayerPickActionTurn;
                 }
                 break;
-            case Battle.PlayerExecuteAbility:
+            case Battle.ExecutePlayerAbilityShowText:
                 // if animation finished or some delay go to action turn
-                this.abilityButtonSceen.SetActive(false);
-                this.actionButtonScreen.SetActive(true);
-                this.evSys.SetSelectedGameObject(ActionButtons[0]);
-                state = Battle.EnemyTurn;
-                break;
-            case Battle.EnemyTurn:
-                if (!isEnemyTakingDamageHealthBarAnimPlaying) // wait until enemy health bar anim finished then take enemies turn
+                if(!isEnemyTakingDamageHealthBarAnimPlaying && !isDialoguePrinting) // wait until enemy health bar anim finished then take enemies turn
                 {
-                    Debug.Log("Enemy Used slap but not really");
-                    this.player.TakeDamage(15);
+                    // when finished showing player move text go to enemy move
+
+                    // TODO this properly idk
+                    isPlayerTakingDamage = true;
+                    this.player.TakeDamage(40);
+                    isPlayerTakingDamage = false;
                     WellBeingObject.GetComponent<shakeObject>().StartShake(1f, 5f);
-                    state = Battle.PlayerPickActionTurn;
+                    
+                    // TODO start coroutine print dialogue
+                    StartCoroutine(TestDialogueBox("hit for 15"));
+
+                    if (this.player.currentWellbeing < 0)
+                    {
+                        // TODO note this will not take into account the animation perhaps I could speed it up if the player health will be dead
+                        state = Battle.PlayerLost;
+                    }
+                    else
+                    {
+                        state = Battle.ExecuteEnemyMoveAndPrintingText;
+                    }
+                }
+                break;
+            case Battle.ExecuteEnemyMoveAndPrintingText:
+                if (!isPlayerTakingDamage &&  !isDialoguePrinting) // when dialogue not printing and player animation finished  
+                {
+                    this.DialogueBox.SetActive(false);
+                    this.actionButtonScreen.SetActive(true);
+                    this.evSys.SetSelectedGameObject(ActionButtons[0]);
+                    this.state = Battle.PlayerPickActionTurn;
                 }
                 break;
             case Battle.PlayerWon:
                 break;
             case Battle.PlayerLost:
+                if (!isDialoguePrinting) // when dialogue finished printing display death
+                {
+                    // TODO death dialogue Box instead of the main one.
+                    // animate opacity to fade in on load. just add an anmiator with opacity easy.
+                    this.DeathScreen.SetActive(true);
+
+                    // stop music
+                    this.SceneMusic.Stop();
+                    // play death sound
+                    this.DeathSFX.Play();
+                    // fade to greyscale 
+                    state = Battle.WaitOnDeathScreen;
+                }
+                break;
+            case Battle.WaitOnDeathScreen:
+                break;
+            default:
                 break;
         }
     }
+
+    [SerializeField] AudioSource SceneMusic;
+    [SerializeField] AudioSource DeathSFX;
 
     public void OnActionButtonClicked()
     {

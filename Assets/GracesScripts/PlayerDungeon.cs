@@ -141,6 +141,8 @@ public class PlayerDungeon : MonoBehaviour
         switch (this.state)
         {
             case KnightState.PLAYERCANMOVE:
+                this.rb.velocity = direction * movementSpeed;
+
                 if (escKeyFlag)
                 {
                     escKeyFlag = false;
@@ -166,7 +168,6 @@ public class PlayerDungeon : MonoBehaviour
                     StopMovement();
                     this.state = KnightState.ININVENTORY;
                 }
-                this.rb.velocity = direction * movementSpeed;
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
@@ -179,6 +180,7 @@ public class PlayerDungeon : MonoBehaviour
                     StartInteraction();
                 }
                 break;
+            case KnightState.INDIALOGUE: // TODO TEST this state I think i fucked it
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
@@ -370,17 +372,30 @@ public class PlayerDungeon : MonoBehaviour
     public void TakeDamage(float damage)
     {
         this.currentWellbeing -= damage;
-        StartCoroutine(AnimateEnemyHealthLoss());
+        // if current damage will kill player make it go fast
+        if(this.currentWellbeing <= 0)
+        {
+            StartCoroutine(AnimateEnemyHealthLoss(0.1f, damage));
+        }
+        else
+        {
+            StartCoroutine(AnimateEnemyHealthLoss(0.5f, damage));
+        }
     }
 
-    IEnumerator AnimateEnemyHealthLoss()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="speedToFinish">seconds time for health bar to go to where after damage puts it</param>
+    /// <returns></returns>
+    IEnumerator AnimateEnemyHealthLoss(float speedToFinish, float damage)
     {
-        float damagePerSecond = 2f;
-
+        var timeIncrement = 0.1f;
+        var damagePerTimeIncrement = damage / (speedToFinish/timeIncrement);
         while (this.healthBarFillImage.fillAmount > (this.currentWellbeing / this.maxWellbeing))
         {
-            this.healthBarFillImage.fillAmount -= (damagePerSecond / 100);
-            yield return new WaitForSeconds(0.1f);
+            this.healthBarFillImage.fillAmount -= (damagePerTimeIncrement / 100);
+            yield return new WaitForSeconds(timeIncrement);
         }
     }
 
