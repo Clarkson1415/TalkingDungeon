@@ -16,17 +16,17 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : MonoBehaviour
 {
-    
+
     [Header("REMEMBER PLAYER STUFF IS LOADED FROM SAVE DATA MODIFY THAT")]
 
     [Header("Menus")]
-    [SerializeField] DialogueTextBox dialogueBox;
-    [SerializeField] ContainerMenu ContainerMenu;
-    [SerializeField] PauseMenu pauseMenu;
+    private DialogueTextBox dialogueBox;
+    private ContainerMenu ContainerMenu;
+    private PauseMenu pauseMenu;
     private GameObject currentMenuOpen;
 
     [Header("Inventory")]
-    [SerializeField] InventoryMenu inventoryMenu;
+    private InventoryMenu inventoryMenu;
     [SerializeField] AudioClip InventoryOpenSound;
     [SerializeField] AudioClip InventoryClosedSound;
     public List<Item> Inventory;
@@ -70,23 +70,74 @@ public class PlayerDungeon : MonoBehaviour
 
     private void Awake()
     {
+        // has to be active to find it so set all menus active then off saves setting player serialised files in every scene and idk if it i could even do that now I have persistant data 
+        var canvas = FindFirstObjectByType<Canvas>();
+
+        foreach (Transform child in canvas.transform)
+        {
+            child.gameObject.SetActive(true);
+        }
+
+        this.dialogueBox = FindFirstObjectByType<DialogueTextBox>();
+        this.dialogueBox.gameObject.SetActive(false);
+
+        this.ContainerMenu = FindFirstObjectByType<ContainerMenu>();
+        this.ContainerMenu.gameObject.SetActive(false);
+
+        pauseMenu = FindFirstObjectByType<PauseMenu>();
+        this.pauseMenu.gameObject.SetActive(false);
+
+        inventoryMenu = FindFirstObjectByType<InventoryMenu>();
+        this.inventoryMenu.gameObject.SetActive(false);
+
+        var deathScreen = FindFirstObjectByType<DeathScreen>();
+        deathScreen.gameObject.SetActive(false);
+
         animatedLayers = GetComponent<UseAnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
         footstepsSound = GetComponentInChildren<AudioSource>();
         this.currentMenuOpen = this.pauseMenu.gameObject;
+
+        this.healthBarFillImage = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
     }
 
     // Start is called before the first frame update
     private void Start()
     {
-        var saveData = FindObjectOfType<PersistanctSaveData>();
+        // on awake see if there is another save data in the scene (if there is more than 1) this one also counts
+        // if there is than this one called awake and is the duplicate set in the future scene that is now loaded
+        // and destroy this object. and the save data from previous level should be used.
+        // all levels have one of these so that I can playtest from each level.
+        var saveDataObjects = FindObjectsByType<PersistanctSaveData>(FindObjectsSortMode.None);
 
-        this.currentWellbeing = saveData.currentWellbeing;
-        this.maxWellbeing = saveData.maxWellbeing;
-        this.abilities = saveData.abilities;
-        this.power = saveData.power;
-        this.defence = saveData.defence;
-        this.Inventory = saveData.Inventory;
+        // if only 1 then it's fine to load save data onto player it means I started in the scene if thers only 1 saveData upon start()
+        if (saveDataObjects.Count() == 1)
+        {
+            return;
+        }
+
+        // keep the saveD with the highest scene load count - that is the one that's been used since started this playthough
+        var orderedByLeastToMost = saveDataObjects.OrderBy(x => x.scenesGoneThrough);
+
+        // lowest scenes gone though is first, and highest last
+        var toKeep = orderedByLeastToMost.Last();
+        foreach (var item in orderedByLeastToMost)
+        {
+            if (item != toKeep)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+
+        this.currentWellbeing = toKeep.currentWellbeing;
+        this.maxWellbeing = toKeep.maxWellbeing;
+        this.abilities = toKeep.abilities;
+        this.power = toKeep.power;
+        this.defence = toKeep.defence;
+        this.Inventory = toKeep.Inventory;
+        this.equippedClothing = toKeep.equippedClothing;
+        this.equippedSpecialItem = toKeep.equippedSpecialItem;
+        this.equippedWeapon = toKeep.equippedWeapon;
 
         this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
     }
@@ -217,13 +268,17 @@ public class PlayerDungeon : MonoBehaviour
                         return;
                     }
 
+                    if (itemOpButton.Item == null)
+                    {
+                        return;
+                    }
+
                     if (this.interactableInRange is ItemContainer chest && chest != null)
                     {
                         chest.loot.Remove(itemOpButton.Item);
                         this.Inventory.Add(itemOpButton.Item);
                     }
 
-                    Debug.Log($"selected {itemOpButton.Item.Name}");
                     this.ContainerMenu.RemoveOldItem(itemOpButton);
                 }
                 break;
@@ -269,6 +324,7 @@ public class PlayerDungeon : MonoBehaviour
 
                     if (selectedItemOp.Item == null)
                     {
+                        return;
                         // nothing happens if empty square selected.
                     }
                     else if (this.equippedItems.Contains(selectedItemOp.Item))
@@ -286,6 +342,7 @@ public class PlayerDungeon : MonoBehaviour
                     else
                     {
                         Log.Print("can't equip that");
+                        return;
                     }
 
                     // need to store in this script for battles
@@ -373,7 +430,7 @@ public class PlayerDungeon : MonoBehaviour
     {
         this.currentWellbeing -= damage;
         // if current damage will kill player make it go fast
-        if(this.currentWellbeing <= 0)
+        if (this.currentWellbeing <= 0)
         {
             StartCoroutine(AnimateEnemyHealthLoss(0.1f, damage));
         }
@@ -391,7 +448,7 @@ public class PlayerDungeon : MonoBehaviour
     IEnumerator AnimateEnemyHealthLoss(float speedToFinish, float damage)
     {
         var timeIncrement = 0.1f;
-        var damagePerTimeIncrement = damage / (speedToFinish/timeIncrement);
+        var damagePerTimeIncrement = damage / (speedToFinish / timeIncrement);
         while (this.healthBarFillImage.fillAmount > (this.currentWellbeing / this.maxWellbeing))
         {
             this.healthBarFillImage.fillAmount -= (damagePerTimeIncrement / 100);

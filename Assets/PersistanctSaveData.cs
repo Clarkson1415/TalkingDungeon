@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PersistanctSaveData : MonoBehaviour
@@ -16,17 +17,14 @@ public class PersistanctSaveData : MonoBehaviour
     public Item? equippedClothing;
     public Item? equippedSpecialItem;
 
+    /// <summary>
+    /// Keeps track of what scenes have been loaded this playthough
+    /// </summary>
+    public int scenesGoneThrough = 0;
+
     private void Awake()
     {
-        // on awake see if there is another save data in the scene
-        // if there is than this one called awake and is the duplicate set in the future scene that is now loaded
-        // and destroy this object. and the save data from previous level should be used.
-        // all levels have one of these so that I can playtest from each level.
-        var saveDataObjects = FindObjectsByType<PersistanctSaveData>(FindObjectsSortMode.None);
-        if(saveDataObjects.Count() > 0)
-        {
-            Destroy(this.gameObject);
-        }
+        
     }
 
     public void SavePlayerData()
@@ -42,12 +40,5 @@ public class PersistanctSaveData : MonoBehaviour
         this.equippedClothing = player.equippedClothing;
         this.equippedSpecialItem = player.equippedSpecialItem;
         this.equippedWeapon = player.equippedWeapon;
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -7.209, y: -12.6669}
+  m_AnchoredPosition: {x: -13, y: -91}
   m_SizeDelta: {x: 736.9783, y: 253.8291}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7786475130185546081
@@ -68,16 +68,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: You Died
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3fb1560187c4586429fae89d10d353b9, type: 2}
-  m_sharedMaterial: {fileID: -4576902391450975989, guid: 3fb1560187c4586429fae89d10d353b9,
+  m_fontAsset: {fileID: 11400000, guid: e9d1e2c557e6a6e4fa5ad6ffc1520fd7, type: 2}
+  m_sharedMaterial: {fileID: -4576902391450975989, guid: e9d1e2c557e6a6e4fa5ad6ffc1520fd7,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190335
+  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -94,8 +94,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 86.26
-  m_fontSizeBase: 86.26
+  m_fontSize: 131.95
+  m_fontSizeBase: 131.95
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -200,7 +200,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6951025995399451592
 RectTransform:
   m_ObjectHideFlags: 0
@@ -644,9 +644,6 @@ MonoBehaviour:
   WellBeingObject: {fileID: 3110583144207763601}
   buttonClickedAudioSource: {fileID: 596485581537191017}
   buttonChangedAudioSource: {fileID: 5491596987007436057}
-  enemyHealthFill: {fileID: 1044970093639107727}
-  enemyNameField: {fileID: 6027650397673167284}
-  enemyHealthBarAndNameToShake: {fileID: 8776290770138209542}
   ActionButtons:
   - {fileID: 8668568626740002876}
   - {fileID: 2382491441447161972}
@@ -659,8 +656,13 @@ MonoBehaviour:
     type: 3}
   actionButtonScreen: {fileID: 2235529874962207185}
   abilityButtonSceen: {fileID: 8886954357998691764}
-  DialogueBox: {fileID: 586534862061512538}
-  DeathScreen: {fileID: 0}
+  battleDialogueBox: {fileID: 586534862061512538}
+  DeathScreen: {fileID: 1116209093596543398}
+  enemyHealthFill: {fileID: 1044970093639107727}
+  enemyNameField: {fileID: 6027650397673167284}
+  enemyHealthBarAndNameToShake: {fileID: 8776290770138209542}
+  SceneMusic: {fileID: 0}
+  DeathSFX: {fileID: 0}
 --- !u!1 &3548600743835750309
 GameObject:
   m_ObjectHideFlags: 0
@@ -1465,7 +1467,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 461.1975, y: 917.9244}
+  m_SizeDelta: {x: 549.8362, y: 1054.9121}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1316432014550497683
 CanvasRenderer:
@@ -1488,7 +1490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9528302, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2488,6 +2490,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -6.7753
+      objectReference: {fileID: 0}
+    - target: {fileID: 7436456934788568149, guid: e6981a79dcb5ae64f88e7279661acdf3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8627199501919130234, guid: e6981a79dcb5ae64f88e7279661acdf3,
         type: 3}

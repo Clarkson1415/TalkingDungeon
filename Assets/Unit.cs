@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class Unit : MonoBehaviour, IInteracble, IHasDialogue
 {
-    public float currentHealth;
+    public float currentHealth = 100;
     public float maxHealth = 100;
 
     public DialogueSlide firstDialogueSlide;

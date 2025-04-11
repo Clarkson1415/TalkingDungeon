@@ -13,22 +13,16 @@ public class LoadNextScene : MonoBehaviour
     public TransitionSettings transition;
     [SerializeField] private string nextScene;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        var saveData = FindObjectOfType<PersistanctSaveData>();
+        var saveData = FindFirstObjectByType<PersistanctSaveData>();
         saveData.SavePlayerData();
+        saveData.scenesGoneThrough += 1;
 
         // using transition package
         TransitionManager.Instance().Transition(nextScene, transition, 0f);

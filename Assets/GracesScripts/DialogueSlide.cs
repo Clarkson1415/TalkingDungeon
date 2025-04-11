@@ -24,6 +24,14 @@ public class DialogueSlide : ScriptableObject
     /// </summary>
     static private int MaxChars = 212;
 
+    private void Awake()
+    {
+        if (dialogueOptions.Count() > 4)
+        {
+            throw new NotImplementedException($"dialouge text box does not have more than 4 positions!!! check dialogue slide {this.dialogue}");
+        }
+    }
+
     ///// <summary>
     ///// Must pass in either options, last slideInSequence or nextSlide which is the slide played if there are no options.
     ///// TODO: make other a few, more restrictive  SetValue functions to restrict me putting in the wrong values.

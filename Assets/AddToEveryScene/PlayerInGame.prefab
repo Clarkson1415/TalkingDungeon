@@ -195,11 +195,18 @@ MonoBehaviour:
   Inventory:
   - {fileID: 11400000, guid: 317e86fca9d6252438408716fe48e52d, type: 2}
   audioSourceForInventorySounds: {fileID: 5318926167875360859}
+  equippedWeapon: {fileID: 0}
+  equippedClothing: {fileID: 0}
+  equippedSpecialItem: {fileID: 0}
   movementSpeed: 3
+  state: 1
   maxWellbeing: 100
   currentWellbeing: 80
-  healthBarImage: {fileID: 0}
-  abilites: []
+  healthBarFillImage: {fileID: 0}
+  abilities:
+  - {fileID: 11400000, guid: 5964789fba75d9540a4e7626dd25d315, type: 2}
+  power: 0
+  defence: 0
 --- !u!114 &3267450824328115795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,7 +468,7 @@ MonoBehaviour:
   - {x: 0.20983553, y: -0.3487284, z: 0}
   m_ShapePathHash: 1112366633
   m_Mesh: {fileID: 0}
-  m_InstanceId: -2830
+  m_InstanceId: -3056558
   m_LocalBounds:
     m_Center: {x: -0.008348465, y: 0.12563252, z: 0}
     m_Extent: {x: 0.22360897, y: 0.49217469, z: 0}
