@@ -21,7 +21,7 @@ PrefabInstance:
     - target: {fileID: 2041469104691919694, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_InstanceId
-      value: -5826
+      value: -8851208
       objectReference: {fileID: 0}
     - target: {fileID: 2041469104691919694, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
@@ -31,27 +31,27 @@ PrefabInstance:
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.8132
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.8132
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.8132
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.747
+      value: -0.73
       objectReference: {fileID: 0}
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.292
+      value: 0.68
       objectReference: {fileID: 0}
     - target: {fileID: 5138187135076222957, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
@@ -103,6 +103,12 @@ PrefabInstance:
       propertyPath: currentWellbeing
       value: 80
       objectReference: {fileID: 0}
+    - target: {fileID: 5275466657955505087, guid: 165c377d257b14348a60bbf16bdcf26c,
+        type: 3}
+      propertyPath: deathScreenPrefab
+      value: 
+      objectReference: {fileID: 3716218083612978094, guid: 4af77ded6b806af42911a80999ee1106,
+        type: 3}
     - target: {fileID: 5275466657955505087, guid: 165c377d257b14348a60bbf16bdcf26c,
         type: 3}
       propertyPath: abilities.Array.size

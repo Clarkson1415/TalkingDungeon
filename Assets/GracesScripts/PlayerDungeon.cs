@@ -20,6 +20,7 @@ public class PlayerDungeon : MonoBehaviour
     [Header("REMEMBER PLAYER STUFF IS LOADED FROM SAVE DATA MODIFY THAT")]
 
     [Header("Menus")]
+    [SerializeField] GameObject deathScreenPrefab; 
     private DialogueTextBox dialogueBox;
     private ContainerMenu ContainerMenu;
     private PauseMenu pauseMenu;
@@ -53,6 +54,8 @@ public class PlayerDungeon : MonoBehaviour
     public int power = 0;
     public int defence = 0;
 
+    [SerializeField] AudioSource DeathSFX;
+
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
     /// </summary>
@@ -75,6 +78,11 @@ public class PlayerDungeon : MonoBehaviour
 
         foreach (Transform child in canvas.transform)
         {
+            if (child?.gameObject == null)
+            {
+                continue;
+            }
+
             child.gameObject.SetActive(true);
         }
 
@@ -89,9 +97,6 @@ public class PlayerDungeon : MonoBehaviour
 
         inventoryMenu = FindFirstObjectByType<InventoryMenu>();
         this.inventoryMenu.gameObject.SetActive(false);
-
-        var deathScreen = FindFirstObjectByType<DeathScreen>();
-        deathScreen.gameObject.SetActive(false);
 
         animatedLayers = GetComponent<UseAnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
@@ -426,17 +431,23 @@ public class PlayerDungeon : MonoBehaviour
         return isValid;
     }
 
+    public bool isHealthBarDoingAnim;
+
     public void TakeDamage(float damage)
     {
         this.currentWellbeing -= damage;
         // if current damage will kill player make it go fast
         if (this.currentWellbeing <= 0)
         {
-            StartCoroutine(AnimateEnemyHealthLoss(0.1f, damage));
+            StartCoroutine(animateHealthLoss(0.1f, damage));
+            var canvas = FindObjectOfType<Canvas>();
+            Instantiate(this.deathScreenPrefab, canvas.transform);
+            // play death sound
+            this.DeathSFX.Play();
         }
         else
         {
-            StartCoroutine(AnimateEnemyHealthLoss(0.5f, damage));
+            StartCoroutine(animateHealthLoss(0.5f, damage));
         }
     }
 
@@ -445,15 +456,20 @@ public class PlayerDungeon : MonoBehaviour
     /// </summary>
     /// <param name="speedToFinish">seconds time for health bar to go to where after damage puts it</param>
     /// <returns></returns>
-    IEnumerator AnimateEnemyHealthLoss(float speedToFinish, float damage)
+    IEnumerator animateHealthLoss(float speedToFinish, float damage)
     {
+        Log.Print("started animating health loss player");
+        this.isHealthBarDoingAnim = true;
         var timeIncrement = 0.1f;
         var damagePerTimeIncrement = damage / (speedToFinish / timeIncrement);
-        while (this.healthBarFillImage.fillAmount > (this.currentWellbeing / this.maxWellbeing))
+        while (this.healthBarFillImage.fillAmount > Mathf.Clamp((this.currentWellbeing / this.maxWellbeing), 0, 1))
         {
             this.healthBarFillImage.fillAmount -= (damagePerTimeIncrement / 100);
             yield return new WaitForSeconds(timeIncrement);
         }
+
+        this.isHealthBarDoingAnim = false;
+        Log.Print("finished animating health loss player");
     }
 
     public void OnIKey(InputAction.CallbackContext context)

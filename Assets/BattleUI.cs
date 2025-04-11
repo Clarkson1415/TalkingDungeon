@@ -30,13 +30,14 @@ public class BattleUI : MonoBehaviour
     [SerializeField] GameObject actionButtonScreen;
     [SerializeField] GameObject abilityButtonSceen;
     [SerializeField] private GameObject battleDialogueBox;
-    [SerializeField] private GameObject DeathScreen;
 
     [Header("Enemy")]
     [SerializeField] Image enemyHealthFill;
     private Unit enemyYouFightin;
     [SerializeField] private TMP_Text enemyNameField;
     [SerializeField] private GameObject enemyHealthBarAndNameToShake;
+
+    [SerializeField] AudioSource SceneMusic;
 
     private Battle state;
     private EventSystem evSys;
@@ -45,16 +46,16 @@ public class BattleUI : MonoBehaviour
     private bool abilityClickedFlag;
     private bool backButtonClicked;
 
-    private bool isPlayerTakingDamage;
     private bool isDialoguePrinting;
 
-    IEnumerator TestDialogueBox(string text)
+    private IEnumerator TestDialogueBox(string text)
     {
         this.isDialoguePrinting = true;
         Debug.Log("... printing text...");
         this.battleDialogueBox.GetComponentInChildren<TMP_Text>().text = text;
         yield return new WaitForSeconds(2f);
         this.isDialoguePrinting = false;
+        Debug.Log("dialogue not printing anymore");
     }
 
     // Start is called before the first frame update
@@ -90,7 +91,7 @@ public class BattleUI : MonoBehaviour
         StartCoroutine(AnimateEnemyHealthLoss());
     }
 
-    IEnumerator AnimateEnemyHealthLoss()
+    private IEnumerator AnimateEnemyHealthLoss()
     {
         float damagePerSecond = 2f;
 
@@ -239,15 +240,15 @@ public class BattleUI : MonoBehaviour
                     // when finished showing player move text go to enemy move
 
                     // TODO this properly idk
-                    isPlayerTakingDamage = true;
-                    this.player.TakeDamage(40);
-                    isPlayerTakingDamage = false;
+                    this.player.TakeDamage(90);
+                    Log.Print("damage taken" + 90);
+                    Log.Print("current wellbeing " + this.player.currentWellbeing);
                     WellBeingObject.GetComponent<shakeObject>().StartShake(1f, 5f);
                     
                     // TODO start coroutine print dialogue
                     StartCoroutine(TestDialogueBox("hit for 15"));
 
-                    if (this.player.currentWellbeing < 0)
+                    if (this.player.currentWellbeing <= 0)
                     {
                         // TODO note this will not take into account the animation perhaps I could speed it up if the player health will be dead
                         state = Battle.PlayerLost;
@@ -259,7 +260,7 @@ public class BattleUI : MonoBehaviour
                 }
                 break;
             case Battle.ExecuteEnemyMoveAndPrintingText:
-                if (!isPlayerTakingDamage &&  !isDialoguePrinting) // when dialogue not printing and player animation finished  
+                if (!this.player.isHealthBarDoingAnim &&  !isDialoguePrinting) // when dialogue not printing and player animation finished  
                 {
                     this.battleDialogueBox.SetActive(false);
                     this.actionButtonScreen.SetActive(true);
@@ -270,16 +271,13 @@ public class BattleUI : MonoBehaviour
             case Battle.PlayerWon:
                 break;
             case Battle.PlayerLost:
-                if (!isDialoguePrinting) // when dialogue finished printing display death
+                if (!this.player.isHealthBarDoingAnim && !isDialoguePrinting) // when dialogue finished printing display death
                 {
-                    // TODO death dialogue Box instead of the main one.
-                    // animate opacity to fade in on load. just add an anmiator with opacity easy.
-                    this.DeathScreen.SetActive(true);
-
+                    Debug.Log("in playerlost goto wait");
+                    // TODO this is actually not getting hit i dont think
                     // stop music
                     this.SceneMusic.Stop();
-                    // play death sound
-                    this.DeathSFX.Play();
+
                     // fade to greyscale 
                     state = Battle.WaitOnDeathScreen;
                 }
@@ -300,9 +298,6 @@ public class BattleUI : MonoBehaviour
     {
         throw new NotImplementedException();
     }
-
-    [SerializeField] AudioSource SceneMusic;
-    [SerializeField] AudioSource DeathSFX;
 
     public void OnActionButtonClicked()
     {
