@@ -51,8 +51,8 @@ public class PlayerDungeon : MonoBehaviour
     public float currentWellbeing;
     public Image healthBarFillImage;
     public List<Ability> abilities;
-    public int power = 0;
-    public int defence = 0;
+    public float power => this.equippedItems.Contains(null) ? 0 : this.equippedItems.Sum(x => x.PowerStat);
+    public float defence => this.equippedItems.Contains(null) ? 0 : this.equippedItems.Sum(x => x.DefenceStat);
 
     [SerializeField] AudioSource DeathSFX;
 
@@ -113,7 +113,7 @@ public class PlayerDungeon : MonoBehaviour
         // if there is than this one called awake and is the duplicate set in the future scene that is now loaded
         // and destroy this object. and the save data from previous level should be used.
         // all levels have one of these so that I can playtest from each level.
-        var saveDataObjects = FindObjectsByType<PersistanctSaveData>(FindObjectsSortMode.None);
+        var saveDataObjects = FindObjectsByType<PersistantSaveData>(FindObjectsSortMode.None);
 
         // if only 1 then it's fine to load save data onto player it means I started in the scene if thers only 1 saveData upon start()
         if (saveDataObjects.Count() == 1)
@@ -137,8 +137,6 @@ public class PlayerDungeon : MonoBehaviour
         this.currentWellbeing = toKeep.currentWellbeing;
         this.maxWellbeing = toKeep.maxWellbeing;
         this.abilities = toKeep.abilities;
-        this.power = toKeep.power;
-        this.defence = toKeep.defence;
         this.Inventory = toKeep.Inventory;
         this.equippedClothing = toKeep.equippedClothing;
         this.equippedSpecialItem = toKeep.equippedSpecialItem;
@@ -153,7 +151,7 @@ public class PlayerDungeon : MonoBehaviour
         {
             // if the object you start talking to is moving it can move out of range and causes on trigger exit player wont be able to spacebar out of dialogue.
             // stop moving on start interaction and finish on end interaction
-            if (this.interactableInRange is WalkingBackAndForth movingNPC)
+            if (this.interactableInRange is WalkingBackAndForthUnit movingNPC)
             {
                 movingNPC.IsInDialogue = true;
             }
@@ -217,7 +215,6 @@ public class PlayerDungeon : MonoBehaviour
                     audioSourceForInventorySounds.clip = this.InventoryOpenSound;
                     audioSourceForInventorySounds.Play();
 
-                    UpdateStats();
                     this.inventoryMenu.UpdatePlayerStatsDisplay(this.power, this.defence);
                     this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
 
@@ -351,7 +348,6 @@ public class PlayerDungeon : MonoBehaviour
                     }
 
                     // need to store in this script for battles
-                    UpdateStats();
                     this.inventoryMenu.UpdatePlayerStatsDisplay(this.power, this.defence);
                     this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
                 }
@@ -362,23 +358,6 @@ public class PlayerDungeon : MonoBehaviour
             default:
                 this.state = KnightState.PLAYERCANMOVE;
                 break;
-        }
-    }
-
-    private void UpdateStats()
-    {
-        this.power = 0;
-        this.defence = 0;
-
-        foreach (var item in this.equippedItems)
-        {
-            if (item == null)
-            {
-                continue;
-            }
-
-            power += item.PowerStat;
-            defence += item.DefenceStat;
         }
     }
 
@@ -506,7 +485,7 @@ public class PlayerDungeon : MonoBehaviour
     {
         // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
         // this is to allow it to go back to moving state again.
-        if (this.interactableInRange is WalkingBackAndForth movingNPC)
+        if (this.interactableInRange is WalkingBackAndForthUnit movingNPC)
         {
             movingNPC.IsInDialogue = false;
         }

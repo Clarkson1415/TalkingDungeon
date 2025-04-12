@@ -48,7 +48,7 @@ public class PlayerCharacterKnight : MonoBehaviour
                         // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
                         try
                         {
-                            var movingNPC = (WalkingBackAndForth)this.interactableInRange;
+                            var movingNPC = (WalkingBackAndForthUnit)this.interactableInRange;
                             movingNPC.IsInDialogue = true;
                         }
                         catch (Exception ex)
@@ -91,7 +91,7 @@ public class PlayerCharacterKnight : MonoBehaviour
                     // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
                     try
                     {
-                        var movingNPC = (WalkingBackAndForth)this.interactableInRange;
+                        var movingNPC = (WalkingBackAndForthUnit)this.interactableInRange;
                         movingNPC.IsInDialogue = false;
                     }
                     catch (Exception ex)
