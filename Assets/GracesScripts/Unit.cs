@@ -14,6 +14,7 @@ public class Unit : MonoBehaviour, IInteracble, IHasDialogue
 
     public DialogueSlide GetFirstDialogueSlide()
     {
+        MyGuard.IsNotNull(this.firstDialogueSlide);
         return this.firstDialogueSlide;
     }
 

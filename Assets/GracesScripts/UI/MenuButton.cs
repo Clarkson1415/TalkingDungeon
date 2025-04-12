@@ -128,8 +128,6 @@ public class MenuButton : DungeonButton
         {
             player.equippedSpecialItem = Resources.Load<Item>(PlayerPrefs.GetString(SaveKeys.EquippedItemPath));
         }
-
-
     }
 
     private List<T> DeserializeSavedStrings<T>(string json) where T : ScriptableObject

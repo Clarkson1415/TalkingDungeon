@@ -1,6 +1,7 @@
 using Assets.GracesScripts;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -19,12 +20,12 @@ public class DialogueTextBox : MonoBehaviour
     public DialogueSlide? CurrentSlide { get; private set; }
 
     public BoxState State { get; private set; } = BoxState.WAITINGFORINTERACTION;
-    public bool PlayerInteractFlagSet;
+    [HideInInspector] public bool PlayerInteractFlagSet;
     readonly List<GameObject> buttons = new();
     [SerializeField] private float textspeed = 0.1f;
     [SerializeField] private float underscorePauseTime = 0.01f;
     [SerializeField] GameObject prefabButton;
-    [SerializeField] EventSystem UIEventSystem;
+    [SerializeField] private EventSystem UIEventSystem;
     [SerializeField] AudioSource audioSource;
     [SerializeField] List<GameObject> buttonPositionsTopToBottom;
     [SerializeField] Image speakersPicRenderer;
@@ -33,7 +34,7 @@ public class DialogueTextBox : MonoBehaviour
     /// <summary>
     /// for the player statemachine to recognise the interaction has finished.
     /// </summary>
-    public bool finishedInteractionFlag;
+    [HideInInspector] public bool finishedInteractionFlag;
 
     private void PlayDialoguePrintAudio()
     {

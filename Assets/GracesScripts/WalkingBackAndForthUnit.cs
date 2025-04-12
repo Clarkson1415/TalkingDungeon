@@ -12,12 +12,11 @@ using UnityEngine;
 /// ALSO: uses bools specific for the animation layer: the bool string is "Running"
 /// </summary>
 [RequireComponent(typeof(UseAnimatedLayers))]
-public abstract class WalkingBackAndForthUnit : Unit
+public class WalkingBackAndForthUnit : Unit
 {
     [SerializeField] int runSpeed = 6;
     [SerializeField] int runTime = 3;
     [SerializeField] int idleWaitTime = 2;
-    private Coroutine currentRoutine;
     private Vector2 velocity = new(1, 0);
     MovingDialogueNPCState state;
     public bool IsInDialogue { get; set; } = false;

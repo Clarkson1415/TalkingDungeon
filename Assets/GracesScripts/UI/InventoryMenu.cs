@@ -22,17 +22,15 @@ public class InventoryMenu : Menu
 
 
     [Header("Item UI description")]
-    [SerializeField] private Image ItemTypeIndicatorImage;
+    [SerializeField] private Image ItemTypeIndicatorImageSlot;
     [SerializeField] private Sprite specialItemImage;
     [SerializeField] private Sprite ArmourItemImage;
     [SerializeField] private Sprite WeaponItemImage;
 
-    [SerializeField] GameObject ItemDescriptionLoc;
-    [SerializeField] GameObject ItemNameLoc;
     [SerializeField] private GameObject descriptionContainer;
     [SerializeField] private GameObject nameContainer;
-    [SerializeField] private TMP_Text powerValue;
-    [SerializeField] private TMP_Text defenceValue;
+    [SerializeField] private TMP_Text powerValueLoc;
+    [SerializeField] private TMP_Text defenceValueLoc;
 
     [Header("player Stats")]
     [SerializeField] private TMP_Text playerPowerStatText;
@@ -104,18 +102,18 @@ public class InventoryMenu : Menu
             descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
             nameContainer.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
 
-            this.powerValue.text = "0";
-            this.defenceValue.text = "0";
+            this.powerValueLoc.text = "0";
+            this.defenceValueLoc.text = "0";
 
-            this.ItemTypeIndicatorImage.sprite = emptySlotImage;
+            this.ItemTypeIndicatorImageSlot.sprite = emptySlotImage;
             return;
         }
 
         descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
         nameContainer.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
 
-        this.powerValue.text = itemButtonComp.Item.PowerStat.ToString();
-        this.defenceValue.text = itemButtonComp.Item.DefenceStat.ToString();
+        this.powerValueLoc.text = itemButtonComp.Item.PowerStat.ToString();
+        this.defenceValueLoc.text = itemButtonComp.Item.DefenceStat.ToString();
 
         Sprite typeSprite = itemButtonComp.Item.Type switch
         {
@@ -125,7 +123,7 @@ public class InventoryMenu : Menu
             _ => throw new ArgumentOutOfRangeException($"no Item Type found {itemButtonComp.Item.Type}")
         };
 
-        this.ItemTypeIndicatorImage.sprite = typeSprite;
+        this.ItemTypeIndicatorImageSlot.sprite = typeSprite;
     }
 
     public void RemoveEquippedItem(Item item)

@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: quit
+  m_text: save
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3fb1560187c4586429fae89d10d353b9, type: 2}
   m_sharedMaterial: {fileID: -4576902391450975989, guid: 3fb1560187c4586429fae89d10d353b9,
@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 7364230801008828774}
   - component: {fileID: 3958694887541357737}
   - component: {fileID: 7474577270245274550}
-  - component: {fileID: 4111609299070222743}
+  - component: {fileID: 2569158982266183899}
   m_Layer: 5
   m_Name: MainMenuButton
   m_TagString: Untagged
@@ -504,7 +504,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4677676696315859013}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2569158982266183899}
+        m_TargetAssemblyTypeName: MenuButton, Assembly-CSharp
+        m_MethodName: SaveGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3958694887541357737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -543,7 +555,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8511486851896126929}
   m_CullTransparentMesh: 1
---- !u!114 &4111609299070222743
+--- !u!114 &2569158982266183899
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -552,11 +564,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8511486851896126929}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d705d1fbec242944a1eb0f43a044a6d, type: 3}
+  m_Script: {fileID: 11500000, guid: d2b9d9cd3b4912440884980b932e573e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightSound: {fileID: 0}
-  selectedSound: {fileID: 0}
-  audioSource: {fileID: 5511591401307005313}
+  highlightSound: {fileID: 8300000, guid: 782eec1bfc660704387355bd0d7d4f6f, type: 3}
+  selectedSound: {fileID: 8300000, guid: 782eec1bfc660704387355bd0d7d4f6f, type: 3}
+  audioSource: {fileID: 0}
   isSelected: 0
-  buttonAction: 2
+  transition: {fileID: 11400000, guid: 57d2dee28715fc6499379ee5905b3caf, type: 2}

@@ -116,10 +116,10 @@ GameObject:
   - component: {fileID: 4635935716896736137}
   - component: {fileID: 5052251207285840319}
   - component: {fileID: 6442349929291215041}
-  - component: {fileID: 3413966089556866495}
   - component: {fileID: 5248205103992981256}
   - component: {fileID: 3541662899459934815}
   - component: {fileID: 6517312234352692054}
+  - component: {fileID: 1540098263188141664}
   m_Layer: 0
   m_Name: Chest 1 Back
   m_TagString: Untagged
@@ -216,22 +216,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3413966089556866495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3162665467859295585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f9e9ad1415ba8f4199ee0584ff8c565, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loot:
-  - {fileID: 11400000, guid: 15fea498f1b9d7a4c94e58daaaed64c7, type: 2}
-  chestOpenSound: {fileID: 8300000, guid: a1829c72a9d01b247ad45708f698f21f, type: 3}
-  chestClosedSound: {fileID: 8300000, guid: 4ea97ffab600bbd45af0fe816f4c93d0, type: 3}
 --- !u!61 &5248205103992981256
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -399,7 +383,23 @@ MonoBehaviour:
   - {x: 0.325508, y: -0.36622274, z: 0}
   m_ShapePathHash: 902949349
   m_Mesh: {fileID: 0}
-  m_InstanceId: -2896
+  m_InstanceId: 91928
   m_LocalBounds:
     m_Center: {x: 0.0029081106, y: -0.06688863, z: 0}
     m_Extent: {x: 0.3225999, y: 0.2993341, z: 0}
+--- !u!114 &1540098263188141664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3162665467859295585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd2bfcd488a5e3a43a595c8eb8273ce0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loot:
+  - {fileID: 11400000, guid: 47bab93e098afa24d99a6e9ec6a89a82, type: 2}
+  chestOpenSound: {fileID: 8300000, guid: a1829c72a9d01b247ad45708f698f21f, type: 3}
+  chestClosedSound: {fileID: 8300000, guid: 4ea97ffab600bbd45af0fe816f4c93d0, type: 3}

@@ -143,7 +143,7 @@ MonoBehaviour:
   - {x: 0.25845656, y: -0.75404835, z: 0}
   m_ShapePathHash: 2079163617
   m_Mesh: {fileID: 0}
-  m_InstanceId: -1571726
+  m_InstanceId: 173170
   m_LocalBounds:
     m_Center: {x: 0.047599077, y: -0.4151888, z: 0}
     m_Extent: {x: 0.38318327, y: 0.33885956, z: 0}
@@ -157,11 +157,10 @@ GameObject:
   m_Component:
   - component: {fileID: 18650803052867351}
   - component: {fileID: 9818271762182236}
-  - component: {fileID: 5599655447959867759}
   - component: {fileID: 2054179943603568676}
   - component: {fileID: 8819741282109172404}
-  - component: {fileID: 8953397240105698129}
   - component: {fileID: 4965706431304121352}
+  - component: {fileID: 1848055260819544179}
   m_Layer: 0
   m_Name: DOG_Complete
   m_TagString: Untagged
@@ -215,23 +214,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &5599655447959867759
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1763470606553408635}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38daec49cf9f4fd41b1a6b5a0dbf9405, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  runSpeed: 3
-  runTime: 6
-  idleWaitTime: 2
-  leftBound: -3
-  rightBound: 5
 --- !u!61 &2054179943603568676
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -289,19 +271,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 482b993c101a12e4f8df333c28753ca6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8953397240105698129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1763470606553408635}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5bf189b1513fa74788013b57be36474, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  profilePic: {fileID: -2136400985, guid: 2cae6f126a784f4448939fb1bea04c6b, type: 3}
 --- !u!210 &4965706431304121352
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -314,6 +283,26 @@ SortingGroup:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_SortAtRoot: 0
+--- !u!114 &1848055260819544179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763470606553408635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb24d40ec2c98e948a8ed27002710b24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 100
+  maxHealth: 100
+  firstDialogueSlide: {fileID: 0}
+  runSpeed: 6
+  runTime: 3
+  idleWaitTime: 2
+  leftBound: -36
+  rightBound: -22
 --- !u!1 &4130495732460270338
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4159955719616564016}
   - component: {fileID: 2877791920165645065}
-  - component: {fileID: 9043955121096224424}
+  - component: {fileID: 6225587364182729109}
   m_Layer: 0
   m_Name: SceneToScenePersistantSaveData
   m_TagString: Untagged
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db463a53945f8764eb6a8ce3815e125f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &9043955121096224424
+--- !u!114 &6225587364182729109
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -54,7 +54,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7187714958281857835}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b02aeb657032fb941ba2ec46277659f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 6d2cc2f7456f0644f97f1511f5201cdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currentWellbeing: 100
@@ -62,3 +62,8 @@ MonoBehaviour:
   abilities: []
   power: 0
   defence: 0
+  Inventory: []
+  equippedWeapon: {fileID: 0}
+  equippedClothing: {fileID: 0}
+  equippedSpecialItem: {fileID: 0}
+  scenesGoneThrough: 0

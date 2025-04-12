@@ -60,11 +60,6 @@ public class ContainerMenu : Menu
         UpdateItemView();
     }
 
-    private void Awake()
-    {
-        UpdateItemView();
-    }
-
     private void UpdateItemView()
     {
         this.currentlyShownItem = this.UIEventSystem.currentSelectedGameObject;

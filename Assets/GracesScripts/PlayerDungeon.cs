@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -20,7 +19,7 @@ public class PlayerDungeon : MonoBehaviour
     [Header("REMEMBER PLAYER STUFF IS LOADED FROM SAVE DATA MODIFY THAT")]
 
     [Header("Menus")]
-    [SerializeField] GameObject deathScreenPrefab; 
+    [SerializeField] GameObject deathScreenPrefab;
     private DialogueTextBox dialogueBox;
     private ContainerMenu ContainerMenu;
     private PauseMenu pauseMenu;
