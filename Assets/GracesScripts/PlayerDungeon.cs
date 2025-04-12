@@ -290,7 +290,7 @@ public class PlayerDungeon : MonoBehaviour
                     this.InteractFlagSet = false;
                     var button = this.pauseMenu.GetSelectedButton();
 
-                    var option = button.GetComponent<ButtonMenuOption>();
+                    var option = button.GetComponent<MenuButton>();
 
                     Debug.Log($"selected {option}");
                 }

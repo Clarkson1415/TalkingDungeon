@@ -28,7 +28,7 @@ public class PauseMenu : Menu
 
         if (highlightedMenuItem != currentHighlighted && currentHighlighted != null)
         {
-            if (highlightedMenuItem.TryGetComponent<ButtonMenuOption>(out var button))
+            if (highlightedMenuItem.TryGetComponent<MenuButton>(out var button))
             {
                 button.PlayHighlightOptionChangedSound();
                 currentHighlighted = this.UIEventSystem.currentSelectedGameObject;

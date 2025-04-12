@@ -10,6 +10,7 @@ public class Ability : ScriptableObject
 {
     public string Name;
     public string description;
+    public string Path => $"Abilities/{this.Name}";
 
     /// <summary>
     /// todo: resize to fit the menu screen of objects and do this for profile pic too
