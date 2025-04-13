@@ -1,9 +1,4 @@
-using Assets.GracesScripts;
-using JetBrains.Annotations;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
@@ -21,7 +16,7 @@ public class UseAnimatedLayers : MonoBehaviour
 
     public void SetBools(string paramName, bool value)
     {
-        foreach(var anim in this.animators)
+        foreach (var anim in this.animators)
         {
             anim.SetBool(paramName, value);
         }

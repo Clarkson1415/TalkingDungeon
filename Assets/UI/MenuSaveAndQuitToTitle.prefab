@@ -88,9 +88,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6911014087979831753}
         m_TargetAssemblyTypeName: MenuButton, Assembly-CSharp
-        m_MethodName: QuitGame
+        m_MethodName: SaveAndQuitToTitle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6911014087979831753}
+        m_TargetAssemblyTypeName: DungeonButton, Assembly-CSharp
+        m_MethodName: ClickButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -150,7 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2b9d9cd3b4912440884980b932e573e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightSound: {fileID: 8300000, guid: 782eec1bfc660704387355bd0d7d4f6f, type: 3}
+  highlightSound: {fileID: 8300000, guid: 202afd3d8de66434aa2b52aa2430f1f7, type: 3}
   selectedSound: {fileID: 8300000, guid: 782eec1bfc660704387355bd0d7d4f6f, type: 3}
   audioSource: {fileID: 3473047052235608211}
   isSelected: 0
@@ -471,8 +483,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 43.6, y: 1.381}
-  m_SizeDelta: {x: 307.4662, y: 51.0506}
+  m_AnchoredPosition: {x: 47, y: -4.0509033}
+  m_SizeDelta: {x: 282.0239, y: 75.86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6463697217078556100
 CanvasRenderer:
@@ -502,7 +514,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: quit
+  m_text: save n quit
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3fb1560187c4586429fae89d10d353b9, type: 2}
   m_sharedMaterial: {fileID: -4576902391450975989, guid: 3fb1560187c4586429fae89d10d353b9,

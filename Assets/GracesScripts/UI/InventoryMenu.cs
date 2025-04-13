@@ -1,13 +1,9 @@
 using Assets.GracesScripts;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using Unity.Loading;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]

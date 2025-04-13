@@ -6,7 +6,6 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.Android;
 using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour
@@ -98,7 +97,7 @@ public class BattleUI : MonoBehaviour
 
         while (this.enemyHealthFill.fillAmount > (this.enemyYouFightin.currentHealth / this.enemyYouFightin.maxHealth))
         {
-            this.enemyHealthFill.fillAmount -= (damagePerSecond/100);
+            this.enemyHealthFill.fillAmount -= (damagePerSecond / 100);
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -179,7 +178,7 @@ public class BattleUI : MonoBehaviour
         }
         else if (highlighted != currentSelectedButton)
         {
-            if(currentSelectedButton != null)
+            if (currentSelectedButton != null)
             {
                 if (!this.buttonClickedAudioSource.isPlaying) // if the button clicked sound is playing don't play button changed also
                 {
@@ -273,7 +272,7 @@ public class BattleUI : MonoBehaviour
                 break;
             case Battle.ExecutePlayerAbilityShowText:
                 // if animation finished or some delay go to action turn
-                if(!isEnemyTakingDamageHealthBarAnimPlaying && !isDialoguePrinting) // wait until enemy health bar anim finished then take enemies turn
+                if (!isEnemyTakingDamageHealthBarAnimPlaying && !isDialoguePrinting) // wait until enemy health bar anim finished then take enemies turn
                 {
                     // when finished showing player move text go to enemy move
 
@@ -285,7 +284,7 @@ public class BattleUI : MonoBehaviour
                     // TODO do i want the player to shake it in the normal scene? or only in battle idk yet 
                     // if in player it should go in player Script
                     WellBeingObject.GetComponent<shakeObject>().StartShake(1f, 5f);
-                    
+
                     // TODO start coroutine print dialogue
                     StartCoroutine(TestDialogueBox("hit for 15"));
 
@@ -301,7 +300,7 @@ public class BattleUI : MonoBehaviour
                 }
                 break;
             case Battle.ExecuteEnemyMoveAndPrintingText:
-                if (!this.player.isHealthBarDoingAnim &&  !isDialoguePrinting) // when dialogue not printing and player animation finished  
+                if (!this.player.isHealthBarDoingAnim && !isDialoguePrinting) // when dialogue not printing and player animation finished  
                 {
                     this.battleDialogueBox.SetActive(false);
                     this.actionButtonScreen.SetActive(true);
@@ -323,7 +322,7 @@ public class BattleUI : MonoBehaviour
 
                     var allButtons = FindObjectsByType<Button>(FindObjectsSortMode.None);
 
-                    foreach(var button in allButtons)
+                    foreach (var button in allButtons)
                     {
                         if (!buttonsOnDeathScreen.Contains(button))
                         {

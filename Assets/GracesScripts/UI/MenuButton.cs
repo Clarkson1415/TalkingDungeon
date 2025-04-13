@@ -13,6 +13,11 @@ public class MenuButton : DungeonButton
 {
     public TransitionSettings transition;
 
+    public void StartNewGame()
+    {
+        TransitionManager.Instance().Transition("Dungeon1", transition, 0f);
+    }
+
     public void SaveGame()
     {
         var player = FindObjectOfType<PlayerDungeon>();
@@ -147,8 +152,6 @@ public class MenuButton : DungeonButton
         {
             player.equippedSpecialItem = Resources.Load<Item>(PlayerPrefs.GetString(SaveKeys.EquippedItemPath));
         }
-
-
     }
 
     private List<T> DeserializeSavedStrings<T>(string json) where T : ScriptableObject

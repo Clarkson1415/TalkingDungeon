@@ -1,12 +1,5 @@
-using Assets.GracesScripts;
 using EasyTransition;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class LoadNextScene : MonoBehaviour
 {
