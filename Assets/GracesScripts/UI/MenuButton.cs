@@ -166,6 +166,12 @@ public class MenuButton : DungeonButton
         return loadedItems;
     }
 
+    public void SaveAndQuitToTitle()
+    {
+        this.SaveGame();
+        TransitionManager.Instance().Transition("TitleScreen", transition, 0f);
+    }
+
     public void QuitGame()
     {
         #if UNITY_EDITOR

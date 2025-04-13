@@ -7323,11 +7323,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2575205610381290350, guid: 46d85ed7a412dd14782c8e6b52667a76,
+        type: 3}
+      propertyPath: m_Name
+      value: MenuQuitToTitle
+      objectReference: {fileID: 0}
     - target: {fileID: 3715776510178404313, guid: 46d85ed7a412dd14782c8e6b52667a76,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7031789186840561817}
+    - target: {fileID: 3715776510178404313, guid: 46d85ed7a412dd14782c8e6b52667a76,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SaveAndQuitToTitle
+      objectReference: {fileID: 0}
     - target: {fileID: 3729990209772423766, guid: 46d85ed7a412dd14782c8e6b52667a76,
         type: 3}
       propertyPath: UIEventSystem
@@ -7337,6 +7347,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7096761207036038946, guid: 46d85ed7a412dd14782c8e6b52667a76,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8504321748828251748, guid: 46d85ed7a412dd14782c8e6b52667a76,
         type: 3}
