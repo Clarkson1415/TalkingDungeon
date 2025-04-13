@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 #nullable enable
 
@@ -15,7 +16,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : MonoBehaviour
 {
-
     [Header("REMEMBER PLAYER STUFF IS LOADED FROM SAVE DATA MODIFY THAT")]
 
     [Header("Menus")]
@@ -25,11 +25,16 @@ public class PlayerDungeon : MonoBehaviour
     private PauseMenu pauseMenu;
     private GameObject currentMenuOpen;
 
+    [Header("Death")]
+    [SerializeField] AudioSource LevelMusic;
+    [SerializeField] AudioSource DeathSFX;
+
+
     [Header("Inventory")]
     private InventoryMenu inventoryMenu;
     [SerializeField] AudioClip InventoryOpenSound;
     [SerializeField] AudioClip InventoryClosedSound;
-    public List<Item> Inventory;
+    public List<Item?> Inventory = new();
     [SerializeField] private AudioSource audioSourceForInventorySounds;
     private List<Item?> equippedItems => new() { this.equippedClothing, this.equippedWeapon, this.equippedSpecialItem };
     public Item? equippedWeapon;
@@ -49,11 +54,9 @@ public class PlayerDungeon : MonoBehaviour
     public float maxWellbeing;
     public float currentWellbeing;
     public Image healthBarFillImage;
-    public List<Ability> abilities;
+    public List<Ability> abilities = new();
     public float power => this.equippedItems.Contains(null) ? 0 : this.equippedItems.Sum(x => x.PowerStat);
     public float defence => this.equippedItems.Contains(null) ? 0 : this.equippedItems.Sum(x => x.DefenceStat);
-
-    [SerializeField] AudioSource DeathSFX;
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
@@ -72,7 +75,58 @@ public class PlayerDungeon : MonoBehaviour
 
     private void Awake()
     {
-        // has to be active to find it so set all menus active then off saves setting player serialised files in every scene and idk if it i could even do that now I have persistant data 
+        this.SetupPlayer();
+    }
+
+    private Coroutine? LoadingCoroutine; 
+    public void SetupPlayer()
+    {
+        LoadingCoroutine = StartCoroutine(WaitForSceneLoadedThenSetup());
+    }
+
+    IEnumerator WaitForSceneLoadedThenSetup()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        var dialogueBox = FindObjectOfType<DialogueTextBox>();
+
+        while ((currentScene.name != "TurnBased") && dialogueBox == null)
+        {
+            if (currentScene.name == "TurnBased")
+            {
+                yield return null;
+                break;
+            }
+
+            // if loading from save the dialogue Box will be null in awake. and if loading for the first time for a player playing the game it will not be null and can continue;
+            ActivateAllCanvasObjects();
+            dialogueBox = FindObjectOfType<DialogueTextBox>();
+            // if it is a turn based scene we should load everything as turn based scenes are alwyas loaded from another scene before not save data
+            yield return null;
+        }
+
+        this.InitializeMenus();
+        this.LoadPlayer();
+    }
+
+    /// <summary>
+    /// If the scene was loaded from a save when update runs rb will still be null beacuse setupPlayer hasnt been called in awake. so wait for this to be true to do update stuff. As setupPlayer will be aclled y menubutton after scene has loaded.
+    /// </summary>
+    /// <returns></returns>
+    private bool ShouldUpdateRun()
+    {
+        if (this.rb == null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private void ActivateAllCanvasObjects()
+    {
         var canvas = FindFirstObjectByType<Canvas>();
 
         foreach (Transform child in canvas.transform)
@@ -84,30 +138,62 @@ public class PlayerDungeon : MonoBehaviour
 
             child.gameObject.SetActive(true);
         }
+    }
+
+    private void InitializeMenus()
+    {
+        // has to be active to find it so set all menus active then off saves setting player serialised files in every scene and idk if it i could even do that now I have persistant data 
+        ActivateAllCanvasObjects();
+
+        Scene currentScene = SceneManager.GetActiveScene();
 
         this.dialogueBox = FindFirstObjectByType<DialogueTextBox>();
-        this.dialogueBox.gameObject.SetActive(false);
+        if (this.dialogueBox == null && (currentScene.name == "TurnBased"))
+        {
+            Debug.Log("no Inventory Menu in Turn Based Scene");
+        }
+        else
+        {
+            MyGuard.IsNotNull(this.dialogueBox);
+            this.dialogueBox.gameObject.SetActive(false);
+        }
 
         this.ContainerMenu = FindFirstObjectByType<ContainerMenu>();
-        this.ContainerMenu.gameObject.SetActive(false);
+        if (this.ContainerMenu == null && (currentScene.name == "TurnBased"))
+        {
+            Debug.Log("no Inventory Menu in Turn Based Scene");
+        }
+        else
+        {
+            MyGuard.IsNotNull(this.ContainerMenu);
+            this.ContainerMenu.gameObject.SetActive(false);
+        }
 
         pauseMenu = FindFirstObjectByType<PauseMenu>();
         this.pauseMenu.gameObject.SetActive(false);
 
         inventoryMenu = FindFirstObjectByType<InventoryMenu>();
-        this.inventoryMenu.gameObject.SetActive(false);
+        if (inventoryMenu == null && (currentScene.name == "TurnBased"))
+        {
+            Debug.Log("no Inventory Menu in Turn Based Scene");
+        }
+        else
+        {
+            MyGuard.IsNotNull(this.inventoryMenu);
+            this.inventoryMenu.gameObject.SetActive(false);
+        }
+    }
 
+    // Start is called before the first frame update
+    private void LoadPlayer()
+    {
         animatedLayers = GetComponent<UseAnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
         footstepsSound = GetComponentInChildren<AudioSource>();
         this.currentMenuOpen = this.pauseMenu.gameObject;
 
         this.healthBarFillImage = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
-    }
 
-    // Start is called before the first frame update
-    private void Start()
-    {
         // on awake see if there is another save data in the scene (if there is more than 1) this one also counts
         // if there is than this one called awake and is the duplicate set in the future scene that is now loaded
         // and destroy this object. and the save data from previous level should be used.
@@ -142,6 +228,11 @@ public class PlayerDungeon : MonoBehaviour
         this.equippedWeapon = toKeep.equippedWeapon;
 
         this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
+
+        if (abilities.Count < 1)
+        {
+            Debug.LogError("cannot have less than 1 ability at least have basic push");
+        }
     }
 
     private void StartInteraction()
@@ -191,6 +282,11 @@ public class PlayerDungeon : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!ShouldUpdateRun())
+        {
+            return;
+        }
+
         switch (this.state)
         {
             case KnightState.PLAYERCANMOVE:
@@ -352,7 +448,14 @@ public class PlayerDungeon : MonoBehaviour
                 }
                 break;
             case KnightState.InTurnBased:
-
+                // controlled by BattleUI and never exits. We change states when the next scene after the battle is loaded and the player in that scene will be used with its starting state.
+                if (escKeyFlag)
+                {
+                    escKeyFlag = false;
+                    var BattleUI = FindObjectOfType<BattleUI>();
+                    MyGuard.IsNotNull(BattleUI);
+                    BattleUI.PlayerEscKeyFlag = true;
+                }
                 break;
             default:
                 this.state = KnightState.PLAYERCANMOVE;
@@ -420,8 +523,10 @@ public class PlayerDungeon : MonoBehaviour
             StartCoroutine(animateHealthLoss(0.1f, damage));
             var canvas = FindObjectOfType<Canvas>();
             Instantiate(this.deathScreenPrefab, canvas.transform);
+
             // play death sound
             this.DeathSFX.Play();
+            this.LevelMusic.Stop();
         }
         else
         {

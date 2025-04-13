@@ -2,9 +2,11 @@ using Assets.GracesScripts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.Android;
 using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour
@@ -12,6 +14,7 @@ public class BattleUI : MonoBehaviour
     [Header("Player")]
     private PlayerDungeon player;
     [SerializeField] private GameObject WellBeingObject;
+    public bool PlayerEscKeyFlag;
 
     [Header("UI")]
     [SerializeField] AudioSource buttonClickedAudioSource;
@@ -36,8 +39,6 @@ public class BattleUI : MonoBehaviour
     private Unit enemyYouFightin;
     [SerializeField] private TMP_Text enemyNameField;
     [SerializeField] private GameObject enemyHealthBarAndNameToShake;
-
-    [SerializeField] AudioSource SceneMusic;
 
     private Battle state;
     private EventSystem evSys;
@@ -115,6 +116,7 @@ public class BattleUI : MonoBehaviour
         PlayerWon,
         PlayerLost,
         WaitOnDeathScreen,
+        Paused,
     }
 
     bool isEnemyTakingDamageHealthBarAnimPlaying;
@@ -150,7 +152,20 @@ public class BattleUI : MonoBehaviour
         }
 
         // set active the game object the turn based ability is added to
-        this.evSys.SetSelectedGameObject(AbilityButtonLocations[0].GetComponentInChildren<TurnBasedAbilityButton>().gameObject);
+        var firstButton = AbilityButtonLocations[0].GetComponentInChildren<TurnBasedAbilityButton>().gameObject;
+        this.evSys.SetSelectedGameObject(firstButton);
+    }
+
+    private Battle cachedStateBeforePaused;
+    [SerializeField] GameObject mainMenu;
+    private Button[] ButtonsActiveBeforePaused;
+
+    private void ToggleButtonsNotOnPauseOrDeathScreen(bool onOff)
+    {
+        foreach (var button in ButtonsActiveBeforePaused)
+        {
+            button.gameObject.SetActive(onOff);
+        }
     }
 
     // Update is called once per frame 
@@ -175,8 +190,31 @@ public class BattleUI : MonoBehaviour
             currentSelectedButton = highlighted;
         }
 
+        if (this.PlayerEscKeyFlag && state != Battle.Paused)
+        {
+            PlayerEscKeyFlag = false;
+            cachedStateBeforePaused = this.state;
+            this.state = Battle.Paused;
+            // find all buttons in scene that are active then save them to reactivate when unpaused
+            ButtonsActiveBeforePaused = FindObjectsByType<Button>(FindObjectsSortMode.None);
+            ToggleButtonsNotOnPauseOrDeathScreen(false);
+            this.mainMenu.gameObject.SetActive(true);
+            this.mainMenu.GetComponent<PauseMenu>().StartPauseMenu();
+        }
+
         switch (state)
         {
+            case Battle.Paused:
+                if (this.PlayerEscKeyFlag)
+                {
+                    PlayerEscKeyFlag = false;
+                    state = cachedStateBeforePaused;
+                    ToggleButtonsNotOnPauseOrDeathScreen(true);
+                    this.mainMenu.GetComponent<PauseMenu>().Close();
+                    this.mainMenu.gameObject.SetActive(false);
+                    this.evSys.SetSelectedGameObject(this.ButtonsActiveBeforePaused[0].gameObject);
+                }
+                break;
             case Battle.PlayerPickActionTurn:
                 if (this.actionClickedFlag)
                 {
@@ -243,6 +281,9 @@ public class BattleUI : MonoBehaviour
                     this.player.TakeDamage(90);
                     Log.Print("damage taken" + 90);
                     Log.Print("current wellbeing " + this.player.currentWellbeing);
+
+                    // TODO do i want the player to shake it in the normal scene? or only in battle idk yet 
+                    // if in player it should go in player Script
                     WellBeingObject.GetComponent<shakeObject>().StartShake(1f, 5f);
                     
                     // TODO start coroutine print dialogue
@@ -274,12 +315,23 @@ public class BattleUI : MonoBehaviour
                 if (!this.player.isHealthBarDoingAnim && !isDialoguePrinting) // when dialogue finished printing display death
                 {
                     Debug.Log("in playerlost goto wait");
-                    // TODO this is actually not getting hit i dont think
-                    // stop music
-                    this.SceneMusic.Stop();
-
-                    // fade to greyscale 
                     state = Battle.WaitOnDeathScreen;
+
+                    // set the selected game object to the first button in the death screen and disable all other buttons not on the death screen
+                    var deathscreen = FindObjectOfType<DeathScreen>();
+                    var buttonsOnDeathScreen = deathscreen.gameObject.GetComponentsInChildren<Button>();
+
+                    var allButtons = FindObjectsByType<Button>(FindObjectsSortMode.None);
+
+                    foreach(var button in allButtons)
+                    {
+                        if (!buttonsOnDeathScreen.Contains(button))
+                        {
+                            button.gameObject.SetActive(false);
+                        }
+                    }
+
+                    this.evSys.SetSelectedGameObject(buttonsOnDeathScreen[0].gameObject);
                 }
                 break;
             case Battle.WaitOnDeathScreen:

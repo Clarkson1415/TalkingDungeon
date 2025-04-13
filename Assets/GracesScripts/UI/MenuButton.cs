@@ -5,6 +5,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class MenuButton : DungeonButton
 {
     public TransitionSettings transition;
@@ -24,15 +28,20 @@ public class MenuButton : DungeonButton
         PlayerPrefs.SetFloat(SaveKeys.MaxWellbeing, player.maxWellbeing);
 
         // save path of scriptableobjects
-        PlayerPrefs.SetString(SaveKeys.EquippedWeaponPath, player.equippedWeapon.Path);
-        PlayerPrefs.SetString(SaveKeys.EquippedClothingPath, player.equippedClothing.Path);
-        PlayerPrefs.SetString(SaveKeys.EquippedItemPath, player.equippedSpecialItem.Path);
+        string equippedWeaponPath = player.equippedWeapon?.Path ?? string.Empty;
+        PlayerPrefs.SetString(SaveKeys.EquippedWeaponPath, equippedWeaponPath);
 
-        List<string> InventoryItemsNames = player.Inventory.Select(item => item.Path).ToList();
+        string equippedClothingPath = player.equippedClothing?.Path ?? string.Empty;
+        PlayerPrefs.SetString(SaveKeys.EquippedClothingPath, equippedClothingPath);
+
+        string equippedItemPath = player.equippedSpecialItem?.Path ?? string.Empty;
+        PlayerPrefs.SetString(SaveKeys.EquippedItemPath, equippedItemPath);
+
+        List<string> InventoryItemsNames = player.Inventory.Select(item => item != null ? item.Path ?? string.Empty : string.Empty).ToList();
         string itemJson = JsonUtility.ToJson(new StringListWrapper { savedStrings = InventoryItemsNames });
         PlayerPrefs.SetString(SaveKeys.InventoryItemsPaths, itemJson);
 
-        List<string> AbilityNames = player.abilities.Select(ability => ability.Path).ToList();
+        List<string> AbilityNames = player.abilities.Select(ability => ability != null ? ability.Path ?? string.Empty : string.Empty).ToList();
         string abilitiesJson = JsonUtility.ToJson(new StringListWrapper { savedStrings = AbilityNames });
         PlayerPrefs.SetString(SaveKeys.AbilitiesPaths, abilitiesJson);
 
@@ -65,10 +74,10 @@ public class MenuButton : DungeonButton
 
     public void LoadGame()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-
         // if loading game need to wait for scene to be loaded then destroy iteself.
         DontDestroyOnLoad(this.gameObject);
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
 
         // load scene
         var scenePlayerSavedIn = PlayerPrefs.GetString(SaveKeys.Scene);
@@ -89,6 +98,16 @@ public class MenuButton : DungeonButton
         LoadSaveData(player);
 
         // then destroy this gameobject no longer needed in scene
+        if (this == null)
+        {
+            return;
+        }
+        
+        if (this.gameObject == null)
+        {
+            return;
+        }
+
         Destroy(this.gameObject);
     }
 
@@ -128,6 +147,8 @@ public class MenuButton : DungeonButton
         {
             player.equippedSpecialItem = Resources.Load<Item>(PlayerPrefs.GetString(SaveKeys.EquippedItemPath));
         }
+
+
     }
 
     private List<T> DeserializeSavedStrings<T>(string json) where T : ScriptableObject
@@ -147,6 +168,10 @@ public class MenuButton : DungeonButton
 
     public void QuitGame()
     {
-
+        #if UNITY_EDITOR
+                EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
     }
 }
