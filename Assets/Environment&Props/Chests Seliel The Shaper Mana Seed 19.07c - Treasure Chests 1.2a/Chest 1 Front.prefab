@@ -383,7 +383,7 @@ MonoBehaviour:
   - {x: 0.325508, y: -0.36622274, z: 0}
   m_ShapePathHash: 902949349
   m_Mesh: {fileID: 0}
-  m_InstanceId: 90658
+  m_InstanceId: -784146
   m_LocalBounds:
     m_Center: {x: 0.0029081106, y: -0.06688863, z: 0}
     m_Extent: {x: 0.3225999, y: 0.2993341, z: 0}
@@ -399,8 +399,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2bfcd488a5e3a43a595c8eb8273ce0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loot:
-  - {fileID: 11400000, guid: 048d8e33090a62944b2dbac92791c40f, type: 2}
-  - {fileID: 11400000, guid: 0430f97708329ad449c343e6026fdf03, type: 2}
+  Loot: []
   chestOpenSound: {fileID: 8300000, guid: a1829c72a9d01b247ad45708f698f21f, type: 3}
   chestClosedSound: {fileID: 8300000, guid: 4ea97ffab600bbd45af0fe816f4c93d0, type: 3}

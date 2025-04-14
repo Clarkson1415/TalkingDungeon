@@ -188,6 +188,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deathScreenPrefab: {fileID: 3716218083612978094, guid: 4af77ded6b806af42911a80999ee1106,
     type: 3}
+  LevelMusic: {fileID: 0}
+  DeathSFX: {fileID: 478475915473742463}
   InventoryOpenSound: {fileID: 8300000, guid: 657d0cdd3dc790f4dada693a4d399801, type: 3}
   InventoryClosedSound: {fileID: 8300000, guid: 1e8ee11b8a2353e408e2f50a02b0ec9c,
     type: 3}
@@ -202,8 +204,9 @@ MonoBehaviour:
   maxWellbeing: 100
   currentWellbeing: 80
   healthBarFillImage: {fileID: 0}
-  abilities: []
-  DeathSFX: {fileID: 478475915473742463}
+  abilities:
+  - {fileID: 11400000, guid: 5964789fba75d9540a4e7626dd25d315, type: 2}
+  scenesTraversed: []
   isHealthBarDoingAnim: 0
 --- !u!114 &3267450824328115795
 MonoBehaviour:
@@ -466,7 +469,7 @@ MonoBehaviour:
   - {x: 0.20983553, y: -0.3487284, z: 0}
   m_ShapePathHash: 1112366633
   m_Mesh: {fileID: 0}
-  m_InstanceId: -9644
+  m_InstanceId: -784300
   m_LocalBounds:
     m_Center: {x: -0.008348465, y: 0.12563252, z: 0}
     m_Extent: {x: 0.22360897, y: 0.49217469, z: 0}

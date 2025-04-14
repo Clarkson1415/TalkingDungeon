@@ -28,7 +28,6 @@ public class DialogueTextBox : MonoBehaviour
     [SerializeField] private EventSystem UIEventSystem;
     [SerializeField] AudioSource audioSource;
     [SerializeField] List<GameObject> buttonPositionsTopToBottom;
-    [SerializeField] Image speakersPicRenderer;
     [SerializeField] AudioClip dialoguePrintingAudio;
 
     /// <summary>
@@ -70,12 +69,10 @@ public class DialogueTextBox : MonoBehaviour
         if (newSlide == null)
         {
             this.CurrentSlide = null;
-            this.speakersPicRenderer.sprite = null;
         }
         else
         {
             this.CurrentSlide = newSlide;
-            this.speakersPicRenderer.sprite = newSlide.SpeakerPic;
         }
     }
 
@@ -131,7 +128,6 @@ public class DialogueTextBox : MonoBehaviour
                     {
                         UpdateCurrentSlide(null);
                         //Log.Print("state INVIS INACTIVE");
-                        this.speakersPicRenderer.sprite = null;
                         finishedInteractionFlag = true;
                         this.State = BoxState.WAITINGFORINTERACTION;
                         Debug.Log("Box in Set to waiting for interaction");
@@ -151,7 +147,6 @@ public class DialogueTextBox : MonoBehaviour
                             // TODO THIS AS A FUCNTION USED ABOVE
                             UpdateCurrentSlide(null);
                             //Log.Print("state INVIS INACTIVE");
-                            this.speakersPicRenderer.sprite = null;
                             finishedInteractionFlag = true;
                             this.State = BoxState.WAITINGFORINTERACTION;
                             Debug.Log("Box in Set to waiting for interaction");

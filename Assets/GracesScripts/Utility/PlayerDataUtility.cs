@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static MenuButton;
-using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 using UnityEngine;
-using EasyTransition;
+using UnityEngine.SceneManagement;
 public static class PlayerDataUtility
 {
     public static void SaveGame(PlayerDungeon player)
     {
+
+#if UNITY_EDITOR
+        PlayerPrefs.SetString(SaveKeys.Scene, SceneManager.GetActiveScene().name);
+# endif
+
         PlayerPrefs.SetString(SaveKeys.Scene, SceneManager.GetActiveScene().name);
         PlayerPrefs.SetFloat(SaveKeys.PlayerPosX, player.gameObject.transform.position.x);
         PlayerPrefs.SetFloat(SaveKeys.PlayerPosY, player.gameObject.transform.position.y);
@@ -52,6 +54,13 @@ public static class PlayerDataUtility
     public static class SaveKeys
     {
         public const string Scene = "Scene";
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Keep track of scenes in testing playthrough
+        /// </summary>
+        public const string ScenesTraversed = "ScenesTraversed";
+# endif
         public const string PlayerPosX = "PlayerPosX";
         public const string PlayerPosY = "PlayerPosY";
         public const string CurrentWellbeing = "CurrentWellbeing";
@@ -80,6 +89,11 @@ public static class PlayerDataUtility
 
     public static void LoadSaveDataOnPlayerNotPosition(PlayerDungeon player)
     {
+#if UNITY_EDITOR
+        var scenes = PlayerPrefs.GetString(SaveKeys.ScenesTraversed);
+        player.scenesTraversed.Add(scenes);
+# endif
+
         // deserialize saved items.
         string itemsJson = PlayerPrefs.GetString(SaveKeys.InventoryItemsPaths);
         player.Inventory = DeserializeSavedStrings<Item>(itemsJson);

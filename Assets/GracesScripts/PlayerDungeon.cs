@@ -68,6 +68,11 @@ public class PlayerDungeon : MonoBehaviour
     /// </summary>
     private bool InteractFlagSet;
 
+# if UNITY_EDITOR
+    [Header("For While Testing In Unity Editor")]
+    public List<string> scenesTraversed = new();
+# endif
+
     private enum KnightState
     {
         INDIALOGUE,
@@ -80,23 +85,23 @@ public class PlayerDungeon : MonoBehaviour
 
     private void Awake()
     {
-        // player is either loaded for the first time by MenuButton or loaded from save by Menu Button.cs
+        // in the built game, player is either loaded for the first time by MenuButton or loaded from save by Menu Button.cs
 
-        // could do if in unity editor
-        // but then when in unity editor and loading from title screen scene it will run twice.
-        // idk if ill be able to test from scene? 
-        // At the moment, always have to load from title screen.
-        // TODO 
+        // if starting from a scene thats not the title screen in the editor.
+#if UNITY_EDITOR
+        if(scenesTraversed.Count == 0)
+        {
+            SetupPlayer();
+        }
+#endif
     }
-
-    private Coroutine? LoadingCoroutine;
 
     /// <summary>
     /// Called after all the save data has been loaded.
     /// </summary>
     public void SetupPlayer()
     {
-        LoadingCoroutine = StartCoroutine(WaitForSceneLoadedThenSetup());
+        StartCoroutine(WaitForSceneLoadedThenSetup());
     }
 
     IEnumerator WaitForSceneLoadedThenSetup()
