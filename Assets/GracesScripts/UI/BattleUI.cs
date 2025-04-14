@@ -86,7 +86,7 @@ public class BattleUI : MonoBehaviour
     private void DamageEnemy(float damage)
     {
         isEnemyTakingDamageHealthBarAnimPlaying = true;
-        enemyHealthBarAndNameToShake.GetComponent<shakeObject>().StartShake(1f, 5f);
+        enemyHealthBarAndNameToShake.GetComponent<ShakeObject>().StartShake(1f, 5f);
         this.enemyYouFightin.currentHealth -= damage;
         StartCoroutine(AnimateEnemyHealthLoss());
     }
@@ -283,7 +283,7 @@ public class BattleUI : MonoBehaviour
 
                     // TODO do i want the player to shake it in the normal scene? or only in battle idk yet 
                     // if in player it should go in player Script
-                    WellBeingObject.GetComponent<shakeObject>().StartShake(1f, 5f);
+                    WellBeingObject.GetComponent<ShakeObject>().StartShake(1f, 5f);
 
                     // TODO start coroutine print dialogue
                     StartCoroutine(TestDialogueBox("hit for 15"));

@@ -37,6 +37,7 @@ public class ContainerMenu : Menu
     public void RemoveOldItem(ItemOptionButton itemToRemove)
     {
         itemToRemove.ReplaceItemWithBlank();
+        UpdateItemView();
     }
 
     public void PopulateContainer(List<Item> items)
@@ -121,7 +122,7 @@ public class ContainerMenu : Menu
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
 
         // on menu open after another has been open do onece
-        if (highlightedMenuItem == null)
+        if (highlightedMenuItem == null && this.Buttons.Count > 0)
         {
             this.UIEventSystem.SetSelectedGameObject(this.Buttons[0]);
             UpdateItemView();

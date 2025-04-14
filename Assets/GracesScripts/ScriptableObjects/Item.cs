@@ -11,7 +11,7 @@ public class Item : ScriptableObject
     public string Name;
     public string description;
 
-    public string Path => $"Items/{this.Name}";
+    public string Path => $"Items/{this.Type}/{this.Name}";
 
     /// <summary>
     /// todo: resize to fit the menu screen of objects and do this for profile pic too

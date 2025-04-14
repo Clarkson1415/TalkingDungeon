@@ -20,10 +20,10 @@ public class PlayerDungeon : MonoBehaviour
 
     [Header("Menus")]
     [SerializeField] GameObject deathScreenPrefab;
-    private DialogueTextBox dialogueBox;
-    private ContainerMenu ContainerMenu;
-    private PauseMenu pauseMenu;
-    private GameObject currentMenuOpen;
+    private DialogueTextBox? dialogueBox;
+    private ContainerMenu? ContainerMenu;
+    private PauseMenu? pauseMenu;
+    private GameObject? currentMenuOpen;
 
     [Header("Death")]
     [SerializeField] AudioSource LevelMusic;
@@ -31,12 +31,12 @@ public class PlayerDungeon : MonoBehaviour
 
 
     [Header("Inventory")]
-    private InventoryMenu inventoryMenu;
+    private InventoryMenu? inventoryMenu;
     [SerializeField] AudioClip InventoryOpenSound;
     [SerializeField] AudioClip InventoryClosedSound;
     public List<Item?> Inventory = new();
     [SerializeField] private AudioSource audioSourceForInventorySounds;
-    private List<Item?> equippedItems => new() { this.equippedClothing, this.equippedWeapon, this.equippedSpecialItem };
+    private List<Item?> EquippedItems => new() { this.equippedClothing, this.equippedWeapon, this.equippedSpecialItem };
     public Item? equippedWeapon;
     public Item? equippedClothing;
     public Item? equippedSpecialItem;
@@ -44,19 +44,24 @@ public class PlayerDungeon : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float movementSpeed = 1f;
     private IInteracble? interactableInRange = null;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    // reason: RB is located in setup.
     private Rigidbody2D rb;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+
     private Vector2 direction;
     [SerializeField] private KnightState state = KnightState.PLAYERCANMOVE;
-    private AudioSource footstepsSound;
-    private UseAnimatedLayers animatedLayers;
+    private AudioSource? footstepsSound;
+    private UseAnimatedLayers? animatedLayers;
 
     [Header("Stats")]
-    public float maxWellbeing;
-    public float currentWellbeing;
+    public float maxWellbeing = 100;
+    public float currentWellbeing = 100;
     public Image healthBarFillImage;
     public List<Ability> abilities = new();
-    public float power => this.equippedItems.Contains(null) ? 0 : this.equippedItems.Sum(x => x.PowerStat);
-    public float defence => this.equippedItems.Contains(null) ? 0 : this.equippedItems.Sum(x => x.DefenceStat);
+    public float Power => this.EquippedItems.Contains(null) ? 0 : this.EquippedItems.Sum(x => x != null ? x.PowerStat : 0);
+    public float Defence => this.EquippedItems.Contains(null) ? 0 : this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0);
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
@@ -75,10 +80,20 @@ public class PlayerDungeon : MonoBehaviour
 
     private void Awake()
     {
-        this.SetupPlayer();
+        // player is either loaded for the first time by MenuButton or loaded from save by Menu Button.cs
+
+        // could do if in unity editor
+        // but then when in unity editor and loading from title screen scene it will run twice.
+        // idk if ill be able to test from scene? 
+        // At the moment, always have to load from title screen.
+        // TODO 
     }
 
-    private Coroutine? LoadingCoroutine; 
+    private Coroutine? LoadingCoroutine;
+
+    /// <summary>
+    /// Called after all the save data has been loaded.
+    /// </summary>
     public void SetupPlayer()
     {
         LoadingCoroutine = StartCoroutine(WaitForSceneLoadedThenSetup());
@@ -131,11 +146,6 @@ public class PlayerDungeon : MonoBehaviour
 
         foreach (Transform child in canvas.transform)
         {
-            if (child?.gameObject == null)
-            {
-                continue;
-            }
-
             child.gameObject.SetActive(true);
         }
     }
@@ -190,48 +200,25 @@ public class PlayerDungeon : MonoBehaviour
         animatedLayers = GetComponent<UseAnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
         footstepsSound = GetComponentInChildren<AudioSource>();
+        MyGuard.IsNotNull(this.pauseMenu);
         this.currentMenuOpen = this.pauseMenu.gameObject;
-
         this.healthBarFillImage = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
-
-        // on awake see if there is another save data in the scene (if there is more than 1) this one also counts
-        // if there is than this one called awake and is the duplicate set in the future scene that is now loaded
-        // and destroy this object. and the save data from previous level should be used.
-        // all levels have one of these so that I can playtest from each level.
-        var saveDataObjects = FindObjectsByType<PersistantSaveData>(FindObjectsSortMode.None);
-
-        // if only 1 then it's fine to load save data onto player it means I started in the scene if thers only 1 saveData upon start()
-        if (saveDataObjects.Count() == 1)
-        {
-            return;
-        }
-
-        // keep the saveD with the highest scene load count - that is the one that's been used since started this playthough
-        var orderedByLeastToMost = saveDataObjects.OrderBy(x => x.scenesGoneThrough);
-
-        // lowest scenes gone though is first, and highest last
-        var toKeep = orderedByLeastToMost.Last();
-        foreach (var item in orderedByLeastToMost)
-        {
-            if (item != toKeep)
-            {
-                Destroy(item.gameObject);
-            }
-        }
-
-        this.currentWellbeing = toKeep.currentWellbeing;
-        this.maxWellbeing = toKeep.maxWellbeing;
-        this.abilities = toKeep.abilities;
-        this.Inventory = toKeep.Inventory;
-        this.equippedClothing = toKeep.equippedClothing;
-        this.equippedSpecialItem = toKeep.equippedSpecialItem;
-        this.equippedWeapon = toKeep.equippedWeapon;
 
         this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
 
         if (abilities.Count < 1)
         {
             Debug.LogError("cannot have less than 1 ability at least have basic push");
+        }
+
+        foreach (var item in this.EquippedItems)
+        {
+            if (item == null)
+            {
+                continue;
+            }
+
+            AddToPlayerEquipped(item);
         }
     }
 
@@ -246,6 +233,7 @@ public class PlayerDungeon : MonoBehaviour
                 movingNPC.IsInDialogue = true;
             }
 
+            MyGuard.IsNotNull(this.dialogueBox);
             currentMenuOpen = this.dialogueBox.gameObject;
             this.dialogueBox.gameObject.SetActive(true);
             dialogueBox.PlayerInteractFlagSet = true;
@@ -254,11 +242,12 @@ public class PlayerDungeon : MonoBehaviour
         }
         else if (this.interactableInRange is ItemContainer chest && chest != null)
         {
+            MyGuard.IsNotNull(ContainerMenu);
             currentMenuOpen = this.ContainerMenu.gameObject;
             this.ContainerMenu.gameObject.SetActive(true);
             chest.GetComponent<Animator>().SetTrigger("Opened");
             chest.PlayOpenSound();
-            this.ContainerMenu.PopulateContainer(chest.loot);
+            this.ContainerMenu.PopulateContainer(chest.Loot);
             this.state = KnightState.InItemContainer;
         }
 
@@ -270,11 +259,14 @@ public class PlayerDungeon : MonoBehaviour
     private void StopMovement()
     {
         // Stop animations
+        MyGuard.IsNotNull(animatedLayers);
         this.animatedLayers.SetFloats("YVel", 0);
         this.animatedLayers.SetFloats("XVel", 0);
         this.animatedLayers.SetBools("Moving", false);
 
         // stop movement
+        MyGuard.IsNotNull(footstepsSound);
+        MyGuard.IsNotNull(this.rb);
         footstepsSound.Stop();
         this.rb.velocity = Vector2.zero;
         this.direction = Vector2.zero;
@@ -295,6 +287,7 @@ public class PlayerDungeon : MonoBehaviour
                 if (escKeyFlag)
                 {
                     escKeyFlag = false;
+                    MyGuard.IsNotNull(this.pauseMenu);
                     this.pauseMenu.gameObject.SetActive(true);
                     this.pauseMenu.StartPauseMenu();
                     this.state = KnightState.INPAUSEMENU;
@@ -303,14 +296,17 @@ public class PlayerDungeon : MonoBehaviour
                 }
                 if (iKeyFlag)
                 {
+                    MyGuard.IsNotNull(this.inventoryMenu);
                     iKeyFlag = false;
                     this.currentMenuOpen = inventoryMenu.gameObject;
                     this.currentMenuOpen.SetActive(true);
+
                     inventoryMenu.OpenInventory(Inventory);
+
                     audioSourceForInventorySounds.clip = this.InventoryOpenSound;
                     audioSourceForInventorySounds.Play();
 
-                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.power, this.defence);
+                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.Power, this.Defence);
                     this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
 
                     StopMovement();
@@ -329,6 +325,7 @@ public class PlayerDungeon : MonoBehaviour
                 }
                 break;
             case KnightState.INDIALOGUE: // TODO TEST this state I think i fucked it
+                MyGuard.IsNotNull(dialogueBox);
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
@@ -341,6 +338,7 @@ public class PlayerDungeon : MonoBehaviour
                 }
                 break;
             case KnightState.InItemContainer:
+                MyGuard.IsNotNull(this.ContainerMenu);
                 if (escKeyFlag)
                 {
                     escKeyFlag = false;
@@ -353,6 +351,7 @@ public class PlayerDungeon : MonoBehaviour
                     }
 
                     this.state = KnightState.PLAYERCANMOVE;
+                    MyGuard.IsNotNull(this.pauseMenu);
                     this.currentMenuOpen = this.pauseMenu.gameObject;
                 }
                 else if (this.InteractFlagSet)
@@ -372,7 +371,7 @@ public class PlayerDungeon : MonoBehaviour
 
                     if (this.interactableInRange is ItemContainer chest && chest != null)
                     {
-                        chest.loot.Remove(itemOpButton.Item);
+                        chest.Loot.Remove(itemOpButton.Item);
                         this.Inventory.Add(itemOpButton.Item);
                     }
 
@@ -382,6 +381,8 @@ public class PlayerDungeon : MonoBehaviour
             case KnightState.INPAUSEMENU:
                 if (this.InteractFlagSet)
                 {
+                    MyGuard.IsNotNull(this.pauseMenu);
+
                     this.InteractFlagSet = false;
                     var button = this.pauseMenu.GetSelectedButton();
 
@@ -392,6 +393,7 @@ public class PlayerDungeon : MonoBehaviour
                 if (escKeyFlag)
                 {
                     escKeyFlag = false;
+                    MyGuard.IsNotNull(this.pauseMenu);
                     this.pauseMenu.gameObject.SetActive(false);
                     this.pauseMenu.Close();
                     this.state = KnightState.PLAYERCANMOVE;
@@ -406,6 +408,8 @@ public class PlayerDungeon : MonoBehaviour
                 if (escKeyFlag)
                 {
                     escKeyFlag = false;
+                    MyGuard.IsNotNull(currentMenuOpen);
+                    MyGuard.IsNotNull(pauseMenu);
                     this.currentMenuOpen.GetComponent<InventoryMenu>().Close();
                     audioSourceForInventorySounds.clip = this.InventoryClosedSound;
                     audioSourceForInventorySounds.Play();
@@ -416,6 +420,7 @@ public class PlayerDungeon : MonoBehaviour
                 if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
+                    MyGuard.IsNotNull(this.inventoryMenu);
                     var buttonGameObject = this.inventoryMenu.GetSelectedButton();
                     var selectedItemOp = buttonGameObject.GetComponent<ItemOptionButton>();
 
@@ -424,16 +429,12 @@ public class PlayerDungeon : MonoBehaviour
                         return;
                         // nothing happens if empty square selected.
                     }
-                    else if (this.equippedItems.Contains(selectedItemOp.Item))
+                    else if (this.EquippedItems.Contains(selectedItemOp.Item))
                     {
-                        selectedItemOp.ToggleEquipGraphic();
-                        this.inventoryMenu.RemoveEquippedItem(selectedItemOp.Item);
-                        RemoveFromPlayerEquipped(selectedItemOp.Item);
+                        RemoveFromPlayerEquipped(selectedItemOp);
                     }
                     else if (IsValidEquip(selectedItemOp.Item))
                     {
-                        selectedItemOp.ToggleEquipGraphic();
-                        this.inventoryMenu.AddOrReplaceEquipped(selectedItemOp.Item);
                         AddToPlayerEquipped(selectedItemOp.Item);
                     }
                     else
@@ -441,10 +442,6 @@ public class PlayerDungeon : MonoBehaviour
                         Log.Print("can't equip that");
                         return;
                     }
-
-                    // need to store in this script for battles
-                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.power, this.defence);
-                    this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
                 }
                 break;
             case KnightState.InTurnBased:
@@ -467,24 +464,41 @@ public class PlayerDungeon : MonoBehaviour
     /// Idk if comparing name string is neccessary though I
     /// </summary>
     /// <param name="itemToRemove"></param>
-    private void RemoveFromPlayerEquipped(Item itemToRemove)
+    private void RemoveFromPlayerEquipped(ItemOptionButton itemButton)
     {
-        if (itemToRemove.name == equippedWeapon?.name)
+        var itemToRemove = itemButton.Item;
+        MyGuard.IsNotNull(itemToRemove);
+        MyGuard.IsNotNull(inventoryMenu);
+        this.inventoryMenu.RemoveEquippedItem(itemToRemove);
+
+        if (equippedWeapon != null && (itemToRemove.name == equippedWeapon.name))
         {
             equippedWeapon = null;
         }
-        else if (itemToRemove.name == equippedClothing?.name)
+        else if (equippedClothing != null && (itemToRemove.name == equippedClothing.name))
         {
             equippedClothing = null;
         }
-        else if (itemToRemove.name == equippedSpecialItem?.name)
+        else if (equippedSpecialItem != null && (itemToRemove.name == equippedSpecialItem.name))
         {
             equippedSpecialItem = null;
         }
+
+        this.inventoryMenu.UpdatePlayerStatsDisplay(this.Power, this.Defence);
+        this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
     }
 
+    /// <summary>
+    /// TODO a better way for using this equipped items and inventory have a looksie
+    /// </summary>
+    /// <param name="itemToEquip"></param>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     private void AddToPlayerEquipped(Item itemToEquip)
     {
+        MyGuard.IsNotNull(this.inventoryMenu);
+
+        this.inventoryMenu.AddOrReplaceEquipped(itemToEquip);
+
         switch (itemToEquip.Type)
         {
             case ItemType.Weapon:
@@ -499,6 +513,9 @@ public class PlayerDungeon : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException("No type found fo add to player quip.");
         }
+
+        this.inventoryMenu.UpdatePlayerStatsDisplay(this.Power, this.Defence);
+        this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
     }
 
     /// <summary>
@@ -506,8 +523,9 @@ public class PlayerDungeon : MonoBehaviour
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    private bool IsValidEquip(Item? item)
+    private bool IsValidEquip(Item item)
     {
+        MyGuard.IsNotNull(item);
         bool isValid = true;
         return isValid;
     }
@@ -520,7 +538,7 @@ public class PlayerDungeon : MonoBehaviour
         // if current damage will kill player make it go fast
         if (this.currentWellbeing <= 0)
         {
-            StartCoroutine(animateHealthLoss(0.1f, damage));
+            StartCoroutine(AnimateHealthLoss(0.1f, damage));
             var canvas = FindObjectOfType<Canvas>();
             Instantiate(this.deathScreenPrefab, canvas.transform);
 
@@ -530,7 +548,7 @@ public class PlayerDungeon : MonoBehaviour
         }
         else
         {
-            StartCoroutine(animateHealthLoss(0.5f, damage));
+            StartCoroutine(AnimateHealthLoss(0.5f, damage));
         }
     }
 
@@ -539,7 +557,7 @@ public class PlayerDungeon : MonoBehaviour
     /// </summary>
     /// <param name="speedToFinish">seconds time for health bar to go to where after damage puts it</param>
     /// <returns></returns>
-    IEnumerator animateHealthLoss(float speedToFinish, float damage)
+    private IEnumerator AnimateHealthLoss(float speedToFinish, float damage)
     {
         Log.Print("started animating health loss player");
         this.isHealthBarDoingAnim = true;
@@ -611,6 +629,8 @@ public class PlayerDungeon : MonoBehaviour
         this.direction = context.ReadValue<Vector2>();
 
         // TODO for an Running as well. need to add an IsRunning boolean triggered in the OnRun function. do I want the player to have to be running first? then press sprint?
+        MyGuard.IsNotNull(footstepsSound);
+        MyGuard.IsNotNull(animatedLayers);
 
         if (context.started)
         {
@@ -640,6 +660,7 @@ public class PlayerDungeon : MonoBehaviour
 
     private void UpdateAnimationFloats()
     {
+        MyGuard.IsNotNull(animatedLayers);
         this.animatedLayers.SetFloats("YDir", direction.y);
         this.animatedLayers.SetFloats("XDir", direction.x);
     }
@@ -672,6 +693,7 @@ public class PlayerDungeon : MonoBehaviour
             Log.Print("Run cancelled");
         }
 
+        MyGuard.IsNotNull(animatedLayers);
         // true when started and in performed state, false on cancel (finish or relase key)
         this.animatedLayers.SetBools("Running", !context.canceled);
     }

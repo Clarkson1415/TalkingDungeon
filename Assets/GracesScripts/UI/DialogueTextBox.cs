@@ -198,15 +198,14 @@ public class DialogueTextBox : MonoBehaviour
     /// </summary>
     private void DrawButtons()
     {
-        if (this.CurrentSlide?.dialogueOptions == null || this.CurrentSlide.dialogueOptions.Count == 0)
+        MyGuard.IsNotNull(this.CurrentSlide);
+        if (this.CurrentSlide.dialogueOptions == null || this.CurrentSlide.dialogueOptions.Count == 0)
         {
             return;
         }
 
         if (this.CurrentSlide.dialogueOptions.Count > 0)
         {
-            Vector3 positionVector = new Vector3(0, 0, 0);
-
             for (int i = 0; i < this.CurrentSlide.dialogueOptions.Count; i++)
             {
                 // Instantiate new button with that gameobject as parent.

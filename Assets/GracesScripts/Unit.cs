@@ -17,17 +17,4 @@ public class Unit : MonoBehaviour, IInteracble, IHasDialogue
         MyGuard.IsNotNull(this.firstDialogueSlide);
         return this.firstDialogueSlide;
     }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

@@ -1,16 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class shakeObject : MonoBehaviour
+public class ShakeObject : MonoBehaviour
 {
-    private float elapsed = 0f;
-    private Vector3 initialPosition;
-
-    void Start()
-    {
-    }
-
     public void StartShake(float duration, float magnitude)
     {
         StartCoroutine(Shake(duration, magnitude));

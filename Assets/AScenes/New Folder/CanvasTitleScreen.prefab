@@ -262,15 +262,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69adae1b804159145853ffd0a9a30ec1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nameOfFirstGameScene: Dungeon1
   UIEventSystem: {fileID: 5047236835405977723}
   LoadLastSaveButton: {fileID: 6222943977393424854, guid: 88097f46e728f94459bc276945b45c36,
     type: 3}
   StartNewGameButton: {fileID: 6222943977393424854, guid: d9fce8e7528bd384e92b53a5f67fc0ad,
     type: 3}
   startLoadButtonLocation: {fileID: 7195400496524981735}
-  PretendFirstTimeBootDeleteSave: 0
-  buttonSwap: {fileID: 0}
-  buttonClicked: {fileID: 0}
+  PretendFirstTimeBootDeleteSave: 1
 --- !u!1 &7195400496524981735
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+#nullable enable
 
 public class ItemOptionButton : DungeonButton
 {
-    public Item Item;
+    public Item? Item;
     [SerializeField] Sprite equippedOverlayGraphic;
     [SerializeField] Sprite unequippedGraphic;
     [SerializeField] Image EquippedOverlayTargetImage;
-
-    public void SetItemAndImage(Item item)
+    public void SetItemAndImage(Item? item)
     {
+        if(item == null)
+        {
+            ReplaceItemWithBlank();
+            return;
+        }
+
         this.Item = item;
 
         var spriteImageComponent = this.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
@@ -32,15 +38,16 @@ public class ItemOptionButton : DungeonButton
         base.ClickButton();
     }
 
-    public void ToggleEquipGraphic()
+    public void ToggleEquipGraphic(bool isEquipped)
     {
-        if (EquippedOverlayTargetImage.sprite != equippedOverlayGraphic)
+        if (isEquipped)
         {
             EquippedOverlayTargetImage.sprite = equippedOverlayGraphic;
         }
         else
         {
             EquippedOverlayTargetImage.sprite = unequippedGraphic;
+
         }
     }
 

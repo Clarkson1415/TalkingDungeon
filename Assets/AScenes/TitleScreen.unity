@@ -601,6 +601,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5809327474196154, guid: 564b0ccb2bd4cb24fb0f6cd640e0d02f, type: 3}
+      propertyPath: PretendFirstTimeBootDeleteSave
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4966226729104749552, guid: 564b0ccb2bd4cb24fb0f6cd640e0d02f,
         type: 3}
       propertyPath: m_Pivot.x

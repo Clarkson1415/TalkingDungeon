@@ -2,6 +2,7 @@ using Assets.GracesScripts;
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 #nullable enable
@@ -44,7 +45,7 @@ public class InventoryMenu : Menu
     /// and this only needs to be initialised once.
     /// </summary>
     /// <param name="Items"></param>
-    public void OpenInventory(List<Item> Items)
+    public void OpenInventory(List<Item?> Items)
     {
         // todo instead of clearning juts add any enw items curreently it keeps equipped correct
         Buttons_NotIncludesEquippedITems.Clear();
@@ -64,8 +65,31 @@ public class InventoryMenu : Menu
         }
 
         UIEventSystem.SetSelectedGameObject(this.Buttons_NotIncludesEquippedITems[0]);
+
         UpdateItemView();
+
+        // make sure players equipped items have equipped highlight on and so does the corresponding inventory item.
+        foreach (var GO in this.equippedItemsSlots) 
+        {
+            var button = GO.GetComponentInChildren<ItemOptionButton>();
+            if (button.Item == null)
+            {
+                continue;
+            }
+
+            foreach(var inventoryButton in this.Buttons_NotIncludesEquippedITems)
+            {
+                var slot = inventoryButton.GetComponentInChildren<ItemOptionButton>();
+
+                if(button.Item == slot.Item)
+                {
+                    slot.ToggleEquipGraphic(true);
+                }
+            }
+        }
     }
+
+    private List<GameObject> equippedItemsSlots => new() { this.equippedWeaponSlot, this.equippedSpecialItemSlot, this.equippedClothingSlot};
 
     public void AddItem(Item item)
     {
@@ -133,46 +157,64 @@ public class InventoryMenu : Menu
         };
 
         var oldItem = equipmentSlot.GetComponentInChildren<ItemOptionButton>();
-        if (oldItem != null)
+        MyGuard.IsNotNull(oldItem);
+
+        // toggle graphic on the inventory slot
+        foreach (var thingo in this.Buttons_NotIncludesEquippedITems)
         {
-            oldItem.ReplaceItemWithBlank();
+            var itemOption = thingo.GetComponentInChildren<ItemOptionButton>();
+            if (itemOption.Item == oldItem.Item)
+            {
+                itemOption.ToggleEquipGraphic(false);
+            }
         }
+
+        oldItem.ReplaceItemWithBlank();
+        oldItem.ToggleEquipGraphic(false);
     }
 
     /// <summary>
-    /// TODO dont instantiate new one. add one in inspector then update the item instead.
+    /// add an item to its relevant equipped slot.
     /// </summary>
     /// <param name="newItem"></param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public void AddOrReplaceEquipped(Item newItem)
     {
-        GameObject equipmentSlot = newItem.Type switch
+        MyGuard.IsNotNull(newItem);
+        GameObject equippedSlot = newItem.Type switch
         {
             ItemType.Weapon => this.equippedWeaponSlot,
             ItemType.Clothing => this.equippedClothingSlot,
             ItemType.SpecialItem => this.equippedSpecialItemSlot,
-            _ => throw new ArgumentOutOfRangeException($"no Item Type found {newItem.Type.ToString()}")
+            _ => throw new ArgumentOutOfRangeException($"no Item Type found {newItem.Type}")
         };
 
-        var currentEquipped = equipmentSlot.GetComponentInChildren<ItemOptionButton>();
+        var currentEquipped = equippedSlot.GetComponentInChildren<ItemOptionButton>();
 
+        // if had item equipped before replacing, remove the equipped highlight from the inventory item
         if (currentEquipped.Item != null)
         {
-            // deselect old item UI Highlight
-            foreach (var button in this.Buttons_NotIncludesEquippedITems)
-            {
-                var itemOption = button.GetComponentInChildren<ItemOptionButton>();
-                if (itemOption.Item == currentEquipped.Item)
-                {
-                    itemOption.ToggleEquipGraphic();
-                }
-            }
-
-            currentEquipped.SetItemAndImage(newItem);
+            ToggleEquipImageOnInventoryItem(currentEquipped.Item, false);
         }
-        else
+
+        // set equipment slot and toggle graphic on the equipped item slot
+        currentEquipped.SetItemAndImage(newItem);
+        currentEquipped.ToggleEquipGraphic(true);
+
+        MyGuard.IsNotNull(currentEquipped.Item);
+        // toggle graphic on the inventory slot to true
+        ToggleEquipImageOnInventoryItem(currentEquipped.Item, true);
+    }
+
+    private void ToggleEquipImageOnInventoryItem(Item ItemToMatch, bool OnOff) 
+    {
+        foreach (var button in this.Buttons_NotIncludesEquippedITems)
         {
-            currentEquipped.SetItemAndImage(newItem);
+            var itemOption = button.GetComponentInChildren<ItemOptionButton>();
+            if (ItemToMatch == itemOption.Item)
+            {
+                itemOption.ToggleEquipGraphic(OnOff);
+            }
         }
     }
 
@@ -184,10 +226,15 @@ public class InventoryMenu : Menu
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
 
         // on menu open after another has been open do onece
-        if (highlightedMenuItem == null)
+        if (highlightedMenuItem == null && this.Buttons_NotIncludesEquippedITems.Count > 0)
         {
             this.UIEventSystem.SetSelectedGameObject(this.Buttons_NotIncludesEquippedITems[0]);
             UpdateItemView();
+            return;
+        }
+
+        if(highlightedMenuItem == null)
+        {
             return;
         }
 

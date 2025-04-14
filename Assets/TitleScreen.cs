@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static MenuButton;
 
 public class TitleScreen : MonoBehaviour
 {
+    [SerializeField] string nameOfFirstGameScene;
     [SerializeField] EventSystem UIEventSystem;
     [SerializeField] GameObject LoadLastSaveButton;
     [SerializeField] GameObject StartNewGameButton;
     [SerializeField] GameObject startLoadButtonLocation;
-    public bool PretendFirstTimeBootDeleteSave;
+    public bool PretendFirstTimeBootDeleteSave = false;
 
     // Start is called before the first frame update
     void Start()
@@ -19,11 +19,12 @@ public class TitleScreen : MonoBehaviour
             PlayerPrefs.DeleteAll();
         }
 
-        var savedScene = PlayerPrefs.GetString(SaveKeys.Scene);
+        var savedScene = PlayerPrefs.GetString(PlayerDataUtility.SaveKeys.Scene);
         if (string.IsNullOrEmpty(savedScene))
         {
             var topButton = Instantiate(StartNewGameButton, startLoadButtonLocation.transform);
             this.UIEventSystem.SetSelectedGameObject(topButton);
+            topButton.GetComponent<MenuButton>().firstSceneToLoad = nameOfFirstGameScene;
         }
         else
         {

@@ -10,7 +10,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "DialogueSlide", menuName = "ScriptableObjects/Dialogue/DialogueSlide", order = 1)]
 public class DialogueSlide : ScriptableObject
 {
-    public string? dialogue;
+    public string dialogue;
 
     public List<DialogueOption> dialogueOptions = new();
 
@@ -22,10 +22,15 @@ public class DialogueSlide : ScriptableObject
     /// TODO: change so this is this based on font size setting.
     /// max characters for text box
     /// </summary>
-    static private int MaxChars = 212;
+    private static readonly int MaxChars = 212;
 
     private void Awake()
     {
+        if(this.dialogue.Length > MaxChars)
+        {
+            Debug.LogError($"problem in slide {this.dialogue} too many characters");
+        }
+
         if (dialogueOptions.Count() > 4)
         {
             throw new NotImplementedException($"dialouge text box does not have more than 4 positions!!! check dialogue slide {this.dialogue}");
