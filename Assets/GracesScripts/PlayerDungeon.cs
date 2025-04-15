@@ -60,8 +60,8 @@ public class PlayerDungeon : MonoBehaviour
     public float currentWellbeing = 100;
     public Image healthBarFillImage;
     public List<Ability> abilities = new();
-    public float Power => this.EquippedItems.Contains(null) ? 0 : this.EquippedItems.Sum(x => x != null ? x.PowerStat : 0);
-    public float Defence => this.EquippedItems.Contains(null) ? 0 : this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0);
+    public float Power => this.EquippedItems.Sum(x => x != null ? x.PowerStat : 0);
+    public float Defence => this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0);
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
@@ -310,7 +310,7 @@ public class PlayerDungeon : MonoBehaviour
 
                     audioSourceForInventorySounds.clip = this.InventoryOpenSound;
                     audioSourceForInventorySounds.Play();
-
+                    
                     this.inventoryMenu.UpdatePlayerStatsDisplay(this.Power, this.Defence);
                     this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
 

@@ -124,7 +124,17 @@ public class DialogueTextBox : MonoBehaviour
                 if (this.PlayerInteractFlagSet)
                 {
                     this.PlayerInteractFlagSet = false;
-                    if (this.UIEventSystem.currentSelectedGameObject == null)
+                    // if its null no buttons so either go to next slide or exit dialogue
+
+                    if (this.UIEventSystem.currentSelectedGameObject == null && this.CurrentSlide.nextSlide != null)
+                    {
+                        // var selectedDiaOption = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
+                        this.UpdateCurrentSlide(CurrentSlide.nextSlide);
+                        this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
+                        //Log.Print("state writing after waiting");
+                        this.State = BoxState.WRITINGSLIDE;
+                    }
+                    else if (this.UIEventSystem.currentSelectedGameObject == null)
                     {
                         UpdateCurrentSlide(null);
                         //Log.Print("state INVIS INACTIVE");
