@@ -63,24 +63,27 @@ public class BattleUI : MonoBehaviour
     {
         evSys = FindObjectOfType<EventSystem>();
         player = FindObjectOfType<PlayerDungeon>();
+
+        state = Battle.PlayerPickActionTurn;
+
+        evSys.SetSelectedGameObject(ActionButtons[0]);
+
+        // TODO do i want the dialogue box to maybe say stuff on opening, like enemy approached...
+        this.battleDialogueBox.SetActive(false);
+        this.abilityButtonSceen.SetActive(false);
+        this.actionButtonScreen.SetActive(true);
+    }
+
+    public void SetupEnemyAfterSpawned()
+    {
         enemyYouFightin = FindObjectOfType<Unit>();
         if (enemyYouFightin == null)
         {
             throw new ArgumentNullException("enemy cannot be null in battle scene.");
         }
 
-        state = Battle.PlayerPickActionTurn;
-
-        evSys.SetSelectedGameObject(ActionButtons[0]);
-
         this.enemyHealthFill.fillAmount = this.enemyYouFightin.currentHealth / this.enemyYouFightin.maxHealth;
-
-        enemyNameField.text = this.enemyYouFightin.name;
-
-        // TODO do i want the dialogue box to maybe say stuff on opening, like enemy approached...
-        this.battleDialogueBox.SetActive(false);
-        this.abilityButtonSceen.SetActive(false);
-        this.actionButtonScreen.SetActive(true);
+        enemyNameField.text = this.enemyYouFightin.unitName;
     }
 
     private void DamageEnemy(float damage)
@@ -109,9 +112,9 @@ public class BattleUI : MonoBehaviour
     {
         PlayerPickActionTurn,
         PlayerPickAbilityTurn,
-        ExecutePlayerAbilityShowText,
+        ExecutingPlayerAbility,
         EnemyTurn,
-        ExecuteEnemyMoveAndPrintingText,
+        WaitForEnemyMoveToFinish,
         PlayerWon,
         PlayerLost,
         WaitOnDeathScreen,
@@ -254,7 +257,7 @@ public class BattleUI : MonoBehaviour
                 {
                     this.abilityClickedFlag = false;
                     var abilityUsed = evSys.currentSelectedGameObject.GetComponent<TurnBasedAbilityButton>().Ability;
-                    Log.Print($"player used {abilityUsed.name} on {enemyYouFightin.name} for {abilityUsed.attackPower}");
+                    Log.Print($"You used {abilityUsed.name} on {enemyYouFightin.unitName} for {abilityUsed.attackPower}");
                     DamageEnemy(abilityUsed.attackPower);
 
                     // TODO set dialoge box to active true
@@ -262,7 +265,7 @@ public class BattleUI : MonoBehaviour
                     this.battleDialogueBox.SetActive(true);
                     // TODO start coroutine printdialogue
                     StartCoroutine(TestDialogueBox($"player damaged enemy for {abilityUsed.attackPower}"));
-                    this.state = Battle.ExecutePlayerAbilityShowText;
+                    this.state = Battle.ExecutingPlayerAbility;
                 }
                 if (this.backButtonClicked)
                 {
@@ -270,37 +273,40 @@ public class BattleUI : MonoBehaviour
                     this.backButtonClicked = false;
                 }
                 break;
-            case Battle.ExecutePlayerAbilityShowText:
-                // if animation finished or some delay go to action turn
-                if (!isEnemyTakingDamageHealthBarAnimPlaying && !isDialoguePrinting) // wait until enemy health bar anim finished then take enemies turn
+            case Battle.ExecutingPlayerAbility:
+                // wait until enemy health bar anim finished then take enemies turn
+                // when finished showing player move text go to enemy move
+                if (!isEnemyTakingDamageHealthBarAnimPlaying && !isDialoguePrinting) 
                 {
-                    // when finished showing player move text go to enemy move
-
-                    // TODO this properly idk
-                    this.player.TakeDamage(90);
-                    Log.Print("damage taken" + 90);
-                    Log.Print("current wellbeing " + this.player.currentWellbeing);
-
-                    // TODO do i want the player to shake it in the normal scene? or only in battle idk yet 
-                    // if in player it should go in player Script
-                    WellBeingObject.GetComponent<ShakeObject>().StartShake(1f, 5f);
-
-                    // TODO start coroutine print dialogue
-                    StartCoroutine(TestDialogueBox("hit for 15"));
-
-                    if (this.player.currentWellbeing <= 0)
-                    {
-                        // TODO note this will not take into account the animation perhaps I could speed it up if the player health will be dead
-                        state = Battle.PlayerLost;
-                    }
-                    else
-                    {
-                        state = Battle.ExecuteEnemyMoveAndPrintingText;
-                    }
+                    this.state = Battle.EnemyTurn;
                 }
                 break;
-            case Battle.ExecuteEnemyMoveAndPrintingText:
-                if (!this.player.isHealthBarDoingAnim && !isDialoguePrinting) // when dialogue not printing and player animation finished  
+            case Battle.EnemyTurn:
+                // pick random enemy ability in range of his abilities, TODO and better ai later
+                var enemyAbility = this.enemyYouFightin.abilities[0];
+                // TODO take into account enemy power and defence and player power and defence into damage calculations will mayybe have damage calculator class that takes the Unit or the player and gets the power and defence and the attacking abilities power.
+                this.player.TakeDamage(enemyAbility.attackPower);
+                // TODO display damage turn text on screen
+                Log.Print($"{enemyYouFightin.unitName} used {enemyAbility.Name} for {enemyAbility.attackPower} damage!!");
+                Log.Print("current wellbeing " + this.player.currentWellbeing);
+                // TODO do i want the player to shake it in the normal scene? or only in battle idk yet 
+                // if in player it should go in player Script
+                WellBeingObject.GetComponent<ShakeObject>().StartShake(1f, 5f);
+                // TODO start coroutine print dialogue
+                StartCoroutine(TestDialogueBox("hit for 15"));
+                if (this.player.currentWellbeing <= 0)
+                {
+                    // TODO note this will not take into account the animation perhaps I could speed it up if the player health will be dead
+                    state = Battle.PlayerLost;
+                }
+                else
+                {
+                    state = Battle.WaitForEnemyMoveToFinish;
+                }
+                break;
+            case Battle.WaitForEnemyMoveToFinish:
+                // when dialogue not printing and player animation finished  
+                if (!this.player.isHealthBarDoingAnim && !isDialoguePrinting) 
                 {
                     this.battleDialogueBox.SetActive(false);
                     this.actionButtonScreen.SetActive(true);

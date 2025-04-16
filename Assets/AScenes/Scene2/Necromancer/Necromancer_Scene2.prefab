@@ -586,7 +586,7 @@ Transform:
   m_GameObject: {fileID: 5284427341177392897}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.08, y: 3.39, z: 0.0036361096}
+  m_LocalPosition: {x: 0, y: 0, z: 0.0036361096}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -737,6 +737,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db057ab8473bd4e4b812275ae5cdf7fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitName: 
+  prefabToUseInBattle: {fileID: 0}
   currentHealth: 100
   maxHealth: 100
   firstDialogueSlide: {fileID: 11400000, guid: 19b23432c0e231646a433f6eeab01a97, type: 2}

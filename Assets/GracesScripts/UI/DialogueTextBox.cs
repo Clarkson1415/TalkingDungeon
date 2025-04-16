@@ -83,18 +83,16 @@ public class DialogueTextBox : MonoBehaviour
     {
         // currentHighlightedbutton starts off null and i dont think i want the change selection sound to play when the buttons are instantiated.
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
-        if (highlightedMenuItem == null)
-        {
-            return;
-        }
 
         if (highlightedMenuItem != currentHighlightedbutton && currentHighlightedbutton != null)
         {
-            this.currentHighlightedbutton = highlightedMenuItem;
-
-            if (this.currentHighlightedbutton.TryGetComponent<DialogueOptionButton>(out var button))
+            if(highlightedMenuItem != null)
             {
-                button.PlayHighlightOptionChangedSound();
+                this.currentHighlightedbutton = highlightedMenuItem;
+                if (this.currentHighlightedbutton.TryGetComponent<DialogueOptionButton>(out var button))
+                {
+                    button.PlayHighlightOptionChangedSound();
+                }
             }
         }
 
@@ -135,8 +133,15 @@ public class DialogueTextBox : MonoBehaviour
                     if (this.CurrentSlide.startFight)
                     {
                         var player = FindObjectOfType<PlayerDungeon>();
+                        MyGuard.IsNotNull(player);
                         PlayerDataUtility.SaveGame(player);
-                        
+
+                        if (player.InteractableInRange is Unit enemy)
+                        {
+                            MyGuard.IsNotNull(enemy);
+                            player.enemyLoader.enemyStartingBattleWithsPrefab = enemy.prefabToUseInBattle;
+                        }
+
                         TransitionManager.Instance().Transition(GameScene.Battle, this.transitionForGoingToBattleScene, 0f);
                         return;
                     }

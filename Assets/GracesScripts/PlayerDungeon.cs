@@ -41,20 +41,6 @@ public class PlayerDungeon : MonoBehaviour
     public Item? equippedClothing;
     public Item? equippedSpecialItem;
 
-    [Header("Movement")]
-    [SerializeField] private float movementSpeed = 1f;
-    private IInteracble? interactableInRange = null;
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    // reason: RB is located in setup.
-    private Rigidbody2D rb;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-
-    private Vector2 direction;
-    [SerializeField] private KnightState state = KnightState.PLAYERCANMOVE;
-    private AudioSource? footstepsSound;
-    private UseAnimatedLayers? animatedLayers;
-
     [Header("Stats")]
     public float maxWellbeing = 100;
     public float currentWellbeing = 100;
@@ -63,15 +49,37 @@ public class PlayerDungeon : MonoBehaviour
     public float Power => this.EquippedItems.Sum(x => x != null ? x.PowerStat : 0);
     public float Defence => this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0);
 
-    /// <summary>
-    /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
-    /// </summary>
-    private bool InteractFlagSet;
-
 # if UNITY_EDITOR
     [Header("For While Testing In Unity Editor")]
     public List<string> scenesTraversed = new();
 # endif
+
+    [Header("Movement")]
+    [SerializeField] private float movementSpeed = 1f;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    // reason: RB is located in setup.
+    private Rigidbody2D rb;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+
+    private Vector2 direction;
+    [SerializeField] private KnightState startingState = KnightState.PLAYERCANMOVE;
+    [HideInInspector] private KnightState state = KnightState.PLAYERCANMOVE;
+    private AudioSource? footstepsSound;
+    private UseAnimatedLayers? animatedLayers;
+
+    [Header("Interactions")]
+    
+    /// <summary>
+    /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
+    /// </summary>
+    private bool InteractFlagSet;
+    [HideInInspector] public bool isHealthBarDoingAnim;
+    [HideInInspector] public IInteracble? InteractableInRange { get; private set; } = null;
+
+    [Header("EnemyBattleLoader")]
+    [SerializeField] private GameObject enemyLoaderPrefab;
+    public EnemyLoader enemyLoader;
 
     private enum KnightState
     {
@@ -85,6 +93,12 @@ public class PlayerDungeon : MonoBehaviour
 
     private void Awake()
     {
+        var enemyLoaders = FindObjectsByType<EnemyLoader>(FindObjectsSortMode.None);
+        if (enemyLoaders.Length == 0)
+        {
+            enemyLoader = Instantiate(enemyLoaderPrefab).GetComponent<EnemyLoader>();
+        }
+
         // in the built game, player compoents are got for the first time by MenuButton or loaded from save by Menu Button.cs
         // if starting from a scene thats not the title screen in the editor e.g. for me to player test. this is why this is inhere.
 #if UNITY_EDITOR
@@ -186,7 +200,7 @@ public class PlayerDungeon : MonoBehaviour
         this.ContainerMenu = FindFirstObjectByType<ContainerMenu>();
         if (this.ContainerMenu == null && (currentScene.name == "TurnBased"))
         {
-            Debug.Log("no Inventory Menu in Turn Based Scene");
+            Debug.Log("As expected no Inventory Menu in Turn Based Scene");
         }
         else
         {
@@ -239,11 +253,11 @@ public class PlayerDungeon : MonoBehaviour
 
     private void StartInteraction()
     {
-        if (this.interactableInRange is IHasDialogue interactableWithDialogue && interactableWithDialogue != null)
+        if (this.InteractableInRange is IHasDialogue interactableWithDialogue && interactableWithDialogue != null)
         {
             // if the object you start talking to is moving it can move out of range and causes on trigger exit player wont be able to spacebar out of dialogue.
             // stop moving on start interaction and finish on end interaction
-            if (this.interactableInRange is WalkingBackAndForthUnit movingNPC)
+            if (this.InteractableInRange is WalkingBackAndForthUnit movingNPC)
             {
                 movingNPC.IsInDialogue = true;
             }
@@ -255,7 +269,7 @@ public class PlayerDungeon : MonoBehaviour
             this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
             this.state = KnightState.INDIALOGUE;
         }
-        else if (this.interactableInRange is ItemContainer chest && chest != null)
+        else if (this.InteractableInRange is ItemContainer chest && chest != null)
         {
             MyGuard.IsNotNull(ContainerMenu);
             currentMenuOpen = this.ContainerMenu.gameObject;
@@ -265,8 +279,6 @@ public class PlayerDungeon : MonoBehaviour
             this.ContainerMenu.PopulateContainer(chest.Loot);
             this.state = KnightState.InItemContainer;
         }
-
-        // TODO: add more interactables here
 
         this.StopMovement();
     }
@@ -331,7 +343,7 @@ public class PlayerDungeon : MonoBehaviour
                 {
                     this.InteractFlagSet = false;
 
-                    if (this.interactableInRange == null)
+                    if (this.InteractableInRange == null)
                     {
                         return;
                     }
@@ -360,7 +372,7 @@ public class PlayerDungeon : MonoBehaviour
                     this.ContainerMenu.gameObject.SetActive(false);
                     this.ContainerMenu.Close();
 
-                    if (this.interactableInRange is ItemContainer chest && chest != null)
+                    if (this.InteractableInRange is ItemContainer chest && chest != null)
                     {
                         chest.PlayClosedSound();
                     }
@@ -384,7 +396,7 @@ public class PlayerDungeon : MonoBehaviour
                         return;
                     }
 
-                    if (this.interactableInRange is ItemContainer chest && chest != null)
+                    if (this.InteractableInRange is ItemContainer chest && chest != null)
                     {
                         chest.Loot.Remove(itemOpButton.Item);
                         this.Inventory.Add(itemOpButton.Item);
@@ -545,8 +557,6 @@ public class PlayerDungeon : MonoBehaviour
         return isValid;
     }
 
-    public bool isHealthBarDoingAnim;
-
     public void TakeDamage(float damage)
     {
         this.currentWellbeing -= damage;
@@ -622,7 +632,7 @@ public class PlayerDungeon : MonoBehaviour
     {
         // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
         // this is to allow it to go back to moving state again.
-        if (this.interactableInRange is WalkingBackAndForthUnit movingNPC)
+        if (this.InteractableInRange is WalkingBackAndForthUnit movingNPC)
         {
             movingNPC.IsInDialogue = false;
         }
@@ -723,16 +733,16 @@ public class PlayerDungeon : MonoBehaviour
         if (collision.TryGetComponent<IInteracble>(out var NPCWithDialogue))
         {
             Log.Print("can interact with" + collision.name);
-            this.interactableInRange = NPCWithDialogue;
+            this.InteractableInRange = NPCWithDialogue;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.TryGetComponent<IInteracble>(out var interactable) && (interactable == this.interactableInRange))
+        if (collision.TryGetComponent<IInteracble>(out var interactable) && (interactable == this.InteractableInRange))
         {
             // empty interactable so cant be retriggered when out of range.
-            this.interactableInRange = null;
+            this.InteractableInRange = null;
         }
     }
 
@@ -746,7 +756,7 @@ public class PlayerDungeon : MonoBehaviour
         Log.Print("Interact flag set");
         this.InteractFlagSet = true;
 
-        if (interactableInRange == null)
+        if (InteractableInRange == null)
         {
             return;
         }
