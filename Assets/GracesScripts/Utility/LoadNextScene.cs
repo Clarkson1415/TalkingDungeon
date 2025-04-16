@@ -48,7 +48,7 @@ public class LoadNextScene : MonoBehaviour
         }
 
         // load all saved values of like items and abilities and health etc.
-        PlayerDataUtility.LoadSaveDataOnPlayerNotPosition(player);
+        PlayerDataUtility.LoadSaveDataFromLastScene(player);
 
         // save ALL player data as now in new scene where position should be saved
         PlayerDataUtility.SaveGame(player);

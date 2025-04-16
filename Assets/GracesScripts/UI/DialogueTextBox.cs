@@ -1,27 +1,20 @@
-using Assets.GracesScripts;
+using EasyTransition;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]
 public class DialogueTextBox : MonoBehaviour
 {
-    private Coroutine? writeSlidesOverTimeCoroutine = null;
-    private bool newInteractionSetup;
-    private bool FinishedWritingSlideOverTime;
-    private const char pauseCharacterToNotPrint = '_';
-    private TMP_Text TMPTextBox;
-    public DialogueSlide? CurrentSlide { get; private set; }
+    [Header("Battle Stuff")]
+    public TransitionSettings transitionForGoingToBattleScene;
 
+    public DialogueSlide? CurrentSlide { get; private set; }
     public BoxState State { get; private set; } = BoxState.WAITINGFORINTERACTION;
-    [HideInInspector] public bool PlayerInteractFlagSet;
-    readonly List<GameObject> buttons = new();
     [SerializeField] private float textspeed = 0.1f;
     [SerializeField] private float underscorePauseTime = 0.01f;
     [SerializeField] GameObject prefabButton;
@@ -29,6 +22,14 @@ public class DialogueTextBox : MonoBehaviour
     [SerializeField] AudioSource audioSource;
     [SerializeField] List<GameObject> buttonPositionsTopToBottom;
     [SerializeField] AudioClip dialoguePrintingAudio;
+    
+    readonly List<GameObject> buttons = new();
+    [HideInInspector] public bool PlayerInteractFlagSet;
+    private Coroutine? writeSlidesOverTimeCoroutine = null;
+    private bool newInteractionSetup;
+    private bool FinishedWritingSlideOverTime;
+    private const char pauseCharacterToNotPrint = '_';
+    private TMP_Text TMPTextBox;
 
     /// <summary>
     /// for the player statemachine to recognise the interaction has finished.
@@ -82,10 +83,15 @@ public class DialogueTextBox : MonoBehaviour
     {
         // currentHighlightedbutton starts off null and i dont think i want the change selection sound to play when the buttons are instantiated.
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
-        if (highlightedMenuItem != currentHighlightedbutton && currentHighlightedbutton != null) 
+        if (highlightedMenuItem == null)
+        {
+            return;
+        }
+
+        if (highlightedMenuItem != currentHighlightedbutton && currentHighlightedbutton != null)
         {
             this.currentHighlightedbutton = highlightedMenuItem;
-            
+
             if (this.currentHighlightedbutton.TryGetComponent<DialogueOptionButton>(out var button))
             {
                 button.PlayHighlightOptionChangedSound();
@@ -124,6 +130,17 @@ public class DialogueTextBox : MonoBehaviour
                 if (this.PlayerInteractFlagSet)
                 {
                     this.PlayerInteractFlagSet = false;
+                    MyGuard.IsNotNull(this.CurrentSlide);
+                    
+                    if (this.CurrentSlide.startFight)
+                    {
+                        var player = FindObjectOfType<PlayerDungeon>();
+                        PlayerDataUtility.SaveGame(player);
+                        
+                        TransitionManager.Instance().Transition(GameScene.Battle, this.transitionForGoingToBattleScene, 0f);
+                        return;
+                    }
+
                     // if its null no buttons so either go to next slide or exit dialogue
 
                     if (this.UIEventSystem.currentSelectedGameObject == null && this.CurrentSlide.nextSlide != null)

@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
 #nullable enable
 [System.Serializable]
 
 [CreateAssetMenu(fileName = "DialogueSlide", menuName = "ScriptableObjects/Dialogue/DialogueSlide", order = 1)]
 public class DialogueSlide : ScriptableObject
 {
+    public bool startFight;
+
     public string dialogue;
 
     public List<DialogueOption> dialogueOptions = new();

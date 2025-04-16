@@ -38,7 +38,7 @@ public static class PlayerDataUtility
         PlayerPrefs.SetString(SaveKeys.AbilitiesPaths, abilitiesJson);
 
         // TODO save all ItemContainers in scene. they each will have their own save method to reutrn their json list of items. with by the key: sceneName/ChestName
-
+        // ItecmContainer.Save
 
         PlayerPrefs.Save();
 
@@ -78,7 +78,7 @@ public static class PlayerDataUtility
 
     public static void LoadFromSave(PlayerDungeon player)
     {
-        LoadSaveDataOnPlayerNotPosition(player);
+        LoadSaveDataFromLastScene(player);
 
         // the other stuff except scene already done
         player.gameObject.transform.position = new Vector3(
@@ -87,7 +87,11 @@ public static class PlayerDataUtility
             player.gameObject.transform.position.z);
     }
 
-    public static void LoadSaveDataOnPlayerNotPosition(PlayerDungeon player)
+    /// <summary>
+    /// Saved in scene 1 then loaded scene 2 then this is called before setupPlayer() to load all the player values inventory etc.
+    /// </summary>
+    /// <param name="player"></param>
+    public static void LoadSaveDataFromLastScene(PlayerDungeon player)
     {
 #if UNITY_EDITOR
         var scenes = PlayerPrefs.GetString(SaveKeys.ScenesTraversed);
