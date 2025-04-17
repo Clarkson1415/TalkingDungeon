@@ -31,7 +31,8 @@ Transform:
   m_LocalPosition: {x: 4.04, y: 3.889, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4660249923055259993}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8994540768216796090
@@ -72,9 +73,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 311312155
-  m_SortingLayer: -1
-  m_SortingOrder: -1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -1185450377, guid: 080665ffa9ada8448a4fa36d8626c51c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -102,17 +103,17 @@ MonoBehaviour:
   m_ComponentVersion: 1
   m_HasRenderer: 1
   m_UseRendererSilhouette: 1
-  m_CastsShadows: 1
+  m_CastsShadows: 0
   m_SelfShadows: 0
   m_ApplyToSortingLayers: 15d976ea1b3f8e12000000001f3cf206db29d549
   m_ShapePath:
-  - {x: -1, y: -1.0398009, z: 0}
+  - {x: -0.84781206, y: -1.0067165, z: 0}
   - {x: -1, y: 1.1875, z: 0}
   - {x: 1, y: 1.1875, z: 0}
   - {x: 1.01477, y: -1.0398009, z: 0}
-  m_ShapePathHash: 261419465
+  m_ShapePathHash: 96604719
   m_Mesh: {fileID: 0}
-  m_InstanceId: -101516
+  m_InstanceId: -769140
   m_LocalBounds:
     m_Center: {x: 0.0073850155, y: 0.07384956, z: 0}
     m_Extent: {x: 1.007385, y: 1.1136504, z: 0}
@@ -161,3 +162,111 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2, y: 2.2447252}
   m_EdgeRadius: 0
+--- !u!1 &7456606142716042378
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4660249923055259993}
+  - component: {fileID: 1331664716485556552}
+  - component: {fileID: 3946969615684363948}
+  m_Layer: 0
+  m_Name: SHADOWTOP
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4660249923055259993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7456606142716042378}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5626958519823124008}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1331664716485556552
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7456606142716042378}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.030281305, y: 0.9648123}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.0877385, y: 0.4057045}
+  m_EdgeRadius: 0
+--- !u!114 &3946969615684363948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7456606142716042378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 0
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 1
+  m_ApplyToSortingLayers: 15d976ea1b3f8e12000000001f3cf206db29d549
+  m_ShapePath:
+  - {x: -1.0917339, y: 0.90848505, z: 0}
+  - {x: -1.074151, y: 1.1676645, z: 0}
+  - {x: 1.013587, y: 1.1676645, z: 0}
+  - {x: 1.0110092, y: 0.90637577, z: 0}
+  m_ShapePathHash: -1530392411
+  m_Mesh: {fileID: 0}
+  m_InstanceId: -769150
+  m_LocalBounds:
+    m_Center: {x: -0.039073467, y: 1.0370202, z: 0}
+    m_Extent: {x: 1.0526605, y: 0.13064438, z: 0}
