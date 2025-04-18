@@ -79,7 +79,7 @@ public class PlayerDungeon : MonoBehaviour
 
     [Header("EnemyBattleLoader")]
     [SerializeField] private GameObject enemyLoaderPrefab;
-    public EnemyLoader enemyLoader;
+    [HideInInspector] public EnemyLoader enemyLoader;
 
     private enum KnightState
     {
@@ -679,7 +679,7 @@ public class PlayerDungeon : MonoBehaviour
         UpdateAnimationFloats();
 
         // true when started and in performed state, false on cancel (finish or relase key)
-        Log.Print($"context: {!context.canceled}");
+        //Log.Print($"context: {!context.canceled}");
         this.animatedLayers.SetBools("Moving", !context.canceled);
     }
 

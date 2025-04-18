@@ -17,8 +17,6 @@ public class DialogueSlide : ScriptableObject
 
     public DialogueSlide? nextSlide;
 
-    public Sprite? SpeakerPic;
-
     /// <summary>
     /// TODO: change so this is this based on font size setting.
     /// max characters for text box

@@ -162,7 +162,7 @@ public class DialogueTextBox : MonoBehaviour
                         //Log.Print("state INVIS INACTIVE");
                         finishedInteractionFlag = true;
                         this.State = BoxState.WAITINGFORINTERACTION;
-                        Debug.Log("Box in Set to waiting for interaction");
+                        Debug.Log("text box state set to waiting for interaction");
                         this.gameObject.SetActive(false);
                     }
                     else // a button was clicked

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 /// <summary>
@@ -25,9 +26,14 @@ public class Unit : MonoBehaviour, IInteracble, IHasDialogue
 
     private void Awake()
     {
+        if(this.unitName == null)
+        {
+            Debug.LogError($"this guy {this.gameObject.name} cannot have no Unitname on Unit.cs");
+        }
+
         if (this.abilities.Count == 0)
         {
-            Debug.LogError("cannot have no abilities at least have default Push ability assign in inspector");
+            Debug.LogError($"this guy: {this.gameObject.name} cannot have no abilities at least have default Push ability assign in inspector");
         }
     }
 
