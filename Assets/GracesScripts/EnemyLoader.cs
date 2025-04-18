@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class EnemyLoader : MonoBehaviour
 {
-    [HideInInspector] public GameObject enemyStartingBattleWithsPrefab;
+    [HideInInspector] public GameObject enemyWasTalkingTo;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +25,9 @@ public class EnemyLoader : MonoBehaviour
         }
 
         var enemyStartBattleLocation = FindObjectOfType<EnemyLocationInTurnBased>();
-        Instantiate(enemyStartingBattleWithsPrefab, enemyStartBattleLocation.transform);
+        MyGuard.IsNotNull(enemyStartBattleLocation);
+        Instantiate(enemyWasTalkingTo.GetComponent<Unit>().prefabToUseInBattle, enemyStartBattleLocation.transform);
+        Destroy(enemyWasTalkingTo);
 
         var battleUI = FindObjectOfType<BattleUI>();
         battleUI.SetupEnemyAfterSpawned();

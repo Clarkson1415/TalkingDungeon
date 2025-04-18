@@ -64,7 +64,7 @@ public class PlayerDungeon : MonoBehaviour
 
     private Vector2 direction;
     [SerializeField] private KnightState startingState = KnightState.PLAYERCANMOVE;
-    [HideInInspector] private KnightState state = KnightState.PLAYERCANMOVE;
+    [HideInInspector] private KnightState state;
     private AudioSource? footstepsSound;
     private UseAnimatedLayers? animatedLayers;
 
@@ -98,6 +98,12 @@ public class PlayerDungeon : MonoBehaviour
         {
             enemyLoader = Instantiate(enemyLoaderPrefab).GetComponent<EnemyLoader>();
         }
+        else
+        {
+            this.enemyLoader = enemyLoaders[0];
+        }
+
+        this.state = startingState;
 
         // in the built game, player compoents are got for the first time by MenuButton or loaded from save by Menu Button.cs
         // if starting from a scene thats not the title screen in the editor e.g. for me to player test. this is why this is inhere.

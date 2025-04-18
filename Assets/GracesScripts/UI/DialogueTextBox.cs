@@ -139,7 +139,10 @@ public class DialogueTextBox : MonoBehaviour
                         if (player.InteractableInRange is Unit enemy)
                         {
                             MyGuard.IsNotNull(enemy);
-                            player.enemyLoader.enemyStartingBattleWithsPrefab = enemy.prefabToUseInBattle;
+                            MyGuard.IsNotNull(player.enemyLoader);
+                            MyGuard.IsNotNull(enemy.prefabToUseInBattle);
+                            player.enemyLoader.enemyWasTalkingTo = enemy.gameObject;
+                            DontDestroyOnLoad(enemy.gameObject);
                         }
 
                         TransitionManager.Instance().Transition(GameScene.Battle, this.transitionForGoingToBattleScene, 0f);
