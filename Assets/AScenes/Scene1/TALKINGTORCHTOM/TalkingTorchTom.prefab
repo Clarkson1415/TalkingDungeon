@@ -5059,8 +5059,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 116538399
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -5140,13 +5140,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db057ab8473bd4e4b812275ae5cdf7fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitName: 
+  unitName: TalkingTorchTom
   prefabToUseInBattle: {fileID: 0}
   currentHealth: 100
   maxHealth: 100
   firstDialogueSlide: {fileID: 11400000, guid: ce0874126930a344385392d1ec0e1e60, type: 2}
   battleSceneDialogueSlide: {fileID: 0}
-  abilities: []
+  abilities:
+  - {fileID: 11400000, guid: 5964789fba75d9540a4e7626dd25d315, type: 2}
 --- !u!61 &1859165092951538369
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5204,6 +5205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38e92cd03915b62429e4fb6af54dcf05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 1912967461522423830}
 --- !u!95 &1912967461522423830
 Animator:
   serializedVersion: 5

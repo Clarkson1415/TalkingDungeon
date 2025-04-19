@@ -28,7 +28,10 @@ public class PlayAnimAfterDialogueSlide : MonoBehaviour
                 if (this.dialogueBox == null)
                 {
                     var diaBox = FindObjectOfType<DialogueTextBox>();
-                    this.dialogueBox = diaBox.gameObject;
+                    if(diaBox != null)
+                    {
+                        this.dialogueBox = diaBox.gameObject;
+                    }
                 }
                 else if (this.dialogueBox.activeSelf)
                 {

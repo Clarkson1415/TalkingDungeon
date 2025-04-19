@@ -264,7 +264,7 @@ public class BattleUI : MonoBehaviour
                     this.abilityButtonSceen.SetActive(false);
                     this.battleDialogueBox.SetActive(true);
                     // TODO start coroutine printdialogue
-                    StartCoroutine(TestDialogueBox($"player damaged enemy for {abilityUsed.attackPower}"));
+                    StartCoroutine(TestDialogueBox($"player used {abilityUsed.Name} for {abilityUsed.attackPower}"));
                     this.state = Battle.ExecutingPlayerAbility;
                 }
                 if (this.backButtonClicked)
@@ -282,18 +282,17 @@ public class BattleUI : MonoBehaviour
                 }
                 break;
             case Battle.EnemyTurn:
-                // pick random enemy ability in range of his abilities, TODO and better ai later
-                var enemyAbility = this.enemyYouFightin.abilities[0];
-                // TODO take into account enemy power and defence and player power and defence into damage calculations will mayybe have damage calculator class that takes the Unit or the player and gets the power and defence and the attacking abilities power.
+                var enemyAbility = this.enemyYouFightin.abilities[0]; // TODO PickRandomAbility(this.enemyYouFightin.abilities);
+
+                // TODO take into account attack power defence and units. 
+                // calculate damage = unit (necromancer) power * ability power
+                // player damage taken = damage - player defence
                 this.player.TakeDamage(enemyAbility.attackPower);
                 // TODO display damage turn text on screen
-                Log.Print($"{enemyYouFightin.unitName} used {enemyAbility.Name} for {enemyAbility.attackPower} damage!!");
                 Log.Print("current wellbeing " + this.player.currentWellbeing);
-                // TODO do i want the player to shake it in the normal scene? or only in battle idk yet 
-                // if in player it should go in player Script
+                // TODO do i want the player to shake it in the normal scene? or only in battle idk yet? if in player it should go in player Script
                 WellBeingObject.GetComponent<ShakeObject>().StartShake(1f, 5f);
-                // TODO start coroutine print dialogue
-                StartCoroutine(TestDialogueBox("hit for 15"));
+                StartCoroutine(TestDialogueBox($"{enemyYouFightin.unitName} used {enemyAbility.Name} for {enemyAbility.attackPower} damage!!"));
                 if (this.player.currentWellbeing <= 0)
                 {
                     // TODO note this will not take into account the animation perhaps I could speed it up if the player health will be dead
@@ -345,6 +344,11 @@ public class BattleUI : MonoBehaviour
                 break;
         }
     }
+
+    //private Ability PickRandomAbility(List<Ability> abilities)
+    //{
+
+    //}
 
     private void QuitBattle()
     {
