@@ -3,4 +3,5 @@
     ATTACK,
     TALK,
     RUN,
+    ITEM,
 }

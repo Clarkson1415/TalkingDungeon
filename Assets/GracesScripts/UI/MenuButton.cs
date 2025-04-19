@@ -53,7 +53,7 @@ public class MenuButton : DungeonButton
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        var scenePlayerSavedIn = PlayerPrefs.GetString(SaveKeys.Scene);
+        var scenePlayerSavedIn = PlayerPrefs.GetString(SaveKeys.LastScene);
         TransitionManager.Instance().Transition(scenePlayerSavedIn, transition, 0f);
     }
 

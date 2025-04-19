@@ -145,7 +145,7 @@ public class DialogueTextBox : MonoBehaviour
                             DontDestroyOnLoad(enemy.gameObject);
                         }
 
-                        TransitionManager.Instance().Transition(GameScene.Battle, this.transitionForGoingToBattleScene, 0f);
+                        TransitionManager.Instance().Transition(TalkingDungeonScenes.Battle, this.transitionForGoingToBattleScene, 0f);
                         return;
                     }
 

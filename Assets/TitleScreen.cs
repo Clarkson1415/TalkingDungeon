@@ -19,7 +19,7 @@ public class TitleScreen : MonoBehaviour
             PlayerPrefs.DeleteAll();
         }
 
-        var savedScene = PlayerPrefs.GetString(PlayerDataUtility.SaveKeys.Scene);
+        var savedScene = PlayerPrefs.GetString(PlayerDataUtility.SaveKeys.LastScene);
         if (string.IsNullOrEmpty(savedScene))
         {
             var topButton = Instantiate(StartNewGameButton, startLoadButtonLocation.transform);

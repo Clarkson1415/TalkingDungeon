@@ -8,12 +8,7 @@ public static class PlayerDataUtility
 {
     public static void SaveGame(PlayerDungeon player)
     {
-
-#if UNITY_EDITOR
-        PlayerPrefs.SetString(SaveKeys.Scene, SceneManager.GetActiveScene().name);
-# endif
-
-        PlayerPrefs.SetString(SaveKeys.Scene, SceneManager.GetActiveScene().name);
+        PlayerPrefs.SetString(SaveKeys.LastScene, SceneManager.GetActiveScene().name);
         PlayerPrefs.SetFloat(SaveKeys.PlayerPosX, player.gameObject.transform.position.x);
         PlayerPrefs.SetFloat(SaveKeys.PlayerPosY, player.gameObject.transform.position.y);
         PlayerPrefs.SetFloat(SaveKeys.CurrentWellbeing, player.currentWellbeing);
@@ -53,14 +48,7 @@ public static class PlayerDataUtility
 
     public static class SaveKeys
     {
-        public const string Scene = "Scene";
-
-#if UNITY_EDITOR
-        /// <summary>
-        /// Keep track of scenes in testing playthrough
-        /// </summary>
-        public const string ScenesTraversed = "ScenesTraversed";
-# endif
+        public const string LastScene = "Scene";
         public const string PlayerPosX = "PlayerPosX";
         public const string PlayerPosY = "PlayerPosY";
         public const string CurrentWellbeing = "CurrentWellbeing";
@@ -76,6 +64,10 @@ public static class PlayerDataUtility
         // public const string DialogueLog = "Dialogue";
     }
 
+    /// <summary>
+    /// Loads save from main menu loads the position player was saved in as well as all the stuff.
+    /// </summary>
+    /// <param name="player"></param>
     public static void LoadFromSave(PlayerDungeon player)
     {
         LoadSaveDataFromLastScene(player);
@@ -88,15 +80,16 @@ public static class PlayerDataUtility
     }
 
     /// <summary>
-    /// Saved in scene 1 then loaded scene 2 then this is called before setupPlayer() to load all the player values inventory etc.
+    /// Saved in scene 1 then loaded scene 2 then this is called before setupPlayer() to load all the player values inventory etc. but not the position.
     /// </summary>
     /// <param name="player"></param>
     public static void LoadSaveDataFromLastScene(PlayerDungeon player)
     {
-#if UNITY_EDITOR
-        var scenes = PlayerPrefs.GetString(SaveKeys.ScenesTraversed);
-        player.scenesTraversed.Add(scenes);
-# endif
+        var scenes = PlayerPrefs.GetString(SaveKeys.LastScene);
+        if (!string.IsNullOrEmpty(scenes))
+        {
+            player.scenesTraversed.Add(scenes);
+        }
 
         // deserialize saved items.
         string itemsJson = PlayerPrefs.GetString(SaveKeys.InventoryItemsPaths);

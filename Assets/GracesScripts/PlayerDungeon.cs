@@ -105,24 +105,13 @@ public class PlayerDungeon : MonoBehaviour
 
         this.state = startingState;
 
-        // in the built game, player compoents are got for the first time by MenuButton or loaded from save by Menu Button.cs
-        // if starting from a scene thats not the title screen in the editor e.g. for me to player test. this is why this is inhere.
-#if UNITY_EDITOR
+        SetupPlayer();
+        PlayerDataUtility.LoadSaveDataFromLastScene(this);
 
-        // TODO check this is as expected, and this setup player is only called once in the whole playthough. e.g. will it still be 0 if the battle scene is called in Dungeon1 or Intro??
-        if (scenesTraversed.Count == 0)
+        // do not save if in battle scene though
+        if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
         {
-            SetupPlayer();
-            return;
-        }
-#endif
-
-        // if a battle scene has loaded no other thing calls SetupPlayer() player calls it.
-        Scene currentScene = SceneManager.GetActiveScene();
-        if (currentScene.name == GameScene.Battle)
-        {
-            PlayerDataUtility.LoadSaveDataFromLastScene(this);
-            this.SetupPlayer();
+            PlayerDataUtility.SaveGame(this);
         }
     }
 

@@ -1,9 +1,11 @@
 using Assets.GracesScripts;
+using EasyTransition;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,6 +18,7 @@ public class BattleUI : MonoBehaviour
     public bool PlayerEscKeyFlag;
 
     [Header("UI")]
+    [SerializeField] TransitionSettings exitBattleTransition;
     [SerializeField] AudioSource buttonClickedAudioSource;
     [SerializeField] AudioSource buttonChangedAudioSource;
     /// <summary>
@@ -31,6 +34,8 @@ public class BattleUI : MonoBehaviour
 
     [SerializeField] GameObject actionButtonScreen;
     [SerializeField] GameObject abilityButtonSceen;
+    [SerializeField] GameObject itemScreen;
+
     [SerializeField] private GameObject battleDialogueBox;
 
     [Header("Enemy")]
@@ -48,13 +53,25 @@ public class BattleUI : MonoBehaviour
 
     private bool isDialoguePrinting;
 
+    /// <summary>
+    /// Screens that are in the bottom middle battle ui except for death that never needs to be turned off again.
+    /// </summary>
+    private List<GameObject> battleScreens => new() { this.actionButtonScreen, this.abilityButtonSceen };
+
     private IEnumerator TestDialogueBox(string text)
     {
+        foreach (var screen in this.battleScreens)
+        {
+            screen.SetActive(false);
+        }
+
+        this.battleDialogueBox.SetActive(true);
         this.isDialoguePrinting = true;
         Debug.Log("... printing text...");
         this.battleDialogueBox.GetComponentInChildren<TMP_Text>().text = text;
         yield return new WaitForSeconds(2f);
         this.isDialoguePrinting = false;
+        this.battleDialogueBox.SetActive(false);
         Debug.Log("dialogue not printing anymore");
     }
 
@@ -112,13 +129,16 @@ public class BattleUI : MonoBehaviour
     {
         PlayerPickActionTurn,
         PlayerPickAbilityTurn,
-        ExecutingPlayerAbility,
+        ExecutingPlayerTurn,
         EnemyTurn,
         WaitForEnemyMoveToFinish,
         PlayerWon,
         PlayerLost,
         WaitOnDeathScreen,
+        RunAwaySuccess,
+        TransitioningOutOfBattle,
         Paused,
+        inItemMenu,
     }
 
     bool isEnemyTakingDamageHealthBarAnimPlaying;
@@ -242,15 +262,36 @@ public class BattleUI : MonoBehaviour
                             this.state = Battle.PlayerPickAbilityTurn;
                             break;
                         case TurnBasedActions.RUN:
-                            // TODO idk what will actually happen if you run yet
-                            QuitBattle();
+                            bool runSuccesss = true;
+                            if (player.currentWellbeing <= (enemyYouFightin.currentHealth))
+                            {
+                                runSuccesss = false;
+                            }
+
+                            if (runSuccesss)
+                            {
+                                StartCoroutine(TestDialogueBox("you got away!"));
+                                this.state = Battle.RunAwaySuccess;
+                            }
+                            else
+                            {
+                                StartCoroutine(TestDialogueBox("your wounds are too great and the enemy is too strong. Failed to get away."));
+                                this.state = Battle.ExecutingPlayerTurn;
+                            }
+                            break;
+                        case TurnBasedActions.ITEM:
+                            itemScreen.SetActive(true);
+                            this.state = Battle.inItemMenu;
                             break;
                         case TurnBasedActions.TALK:
                             // TODO 
-                            StartDialogue(this.enemyYouFightin.firstDialogueSlide);
+                            StartDialogue(this.enemyYouFightin.battleSceneDialogueSlide);
                             break;
                     }
                 }
+                break;
+            case Battle.inItemMenu:
+
                 break;
             case Battle.PlayerPickAbilityTurn:
                 if (this.abilityClickedFlag)
@@ -259,31 +300,28 @@ public class BattleUI : MonoBehaviour
                     var abilityUsed = evSys.currentSelectedGameObject.GetComponent<TurnBasedAbilityButton>().Ability;
                     Log.Print($"You used {abilityUsed.name} on {enemyYouFightin.unitName} for {abilityUsed.attackPower}");
                     DamageEnemy(abilityUsed.attackPower);
-
-                    // TODO set dialoge box to active true
-                    this.abilityButtonSceen.SetActive(false);
-                    this.battleDialogueBox.SetActive(true);
-                    // TODO start coroutine printdialogue
                     StartCoroutine(TestDialogueBox($"player used {abilityUsed.Name} for {abilityUsed.attackPower}"));
-                    this.state = Battle.ExecutingPlayerAbility;
+                    this.state = Battle.ExecutingPlayerTurn;
                 }
                 if (this.backButtonClicked)
                 {
-                    // TODO this later when everything else working
                     this.backButtonClicked = false;
+                    this.abilityButtonSceen.SetActive(false);
+                    this.actionButtonScreen.SetActive(true);
+                    this.evSys.SetSelectedGameObject(this.ActionButtons[0]);
+                    this.state = Battle.PlayerPickActionTurn;
                 }
                 break;
-            case Battle.ExecutingPlayerAbility:
+            case Battle.ExecutingPlayerTurn:
                 // wait until enemy health bar anim finished then take enemies turn
                 // when finished showing player move text go to enemy move
-                if (!isEnemyTakingDamageHealthBarAnimPlaying && !isDialoguePrinting) 
+                if (!isEnemyTakingDamageHealthBarAnimPlaying && !isDialoguePrinting)
                 {
                     this.state = Battle.EnemyTurn;
                 }
                 break;
             case Battle.EnemyTurn:
-                var enemyAbility = this.enemyYouFightin.abilities[0]; // TODO PickRandomAbility(this.enemyYouFightin.abilities);
-
+                var enemyAbility = PickRandomAbility(this.enemyYouFightin.abilities);
                 // TODO take into account attack power defence and units. 
                 // calculate damage = unit (necromancer) power * ability power
                 // player damage taken = damage - player defence
@@ -305,9 +343,8 @@ public class BattleUI : MonoBehaviour
                 break;
             case Battle.WaitForEnemyMoveToFinish:
                 // when dialogue not printing and player animation finished  
-                if (!this.player.isHealthBarDoingAnim && !isDialoguePrinting) 
+                if (!this.player.isHealthBarDoingAnim && !isDialoguePrinting)
                 {
-                    this.battleDialogueBox.SetActive(false);
                     this.actionButtonScreen.SetActive(true);
                     this.evSys.SetSelectedGameObject(ActionButtons[0]);
                     this.state = Battle.PlayerPickActionTurn;
@@ -338,21 +375,31 @@ public class BattleUI : MonoBehaviour
                     this.evSys.SetSelectedGameObject(buttonsOnDeathScreen[0].gameObject);
                 }
                 break;
+            case Battle.RunAwaySuccess:
+                if (!this.isDialoguePrinting)
+                {
+                    PlayerDataUtility.SaveGame(this.player);
+                    // change scenes to scene was in before battle
+                    var sceneNameBeforeBattle = this.player.scenesTraversed[this.player.scenesTraversed.Count - 1];
+                    TransitionManager.Instance().Transition(sceneNameBeforeBattle, exitBattleTransition, 0f);
+                    this.state = Battle.TransitioningOutOfBattle;
+                }
+                break;
             case Battle.WaitOnDeathScreen:
+                break;
+            case Battle.TransitioningOutOfBattle:
                 break;
             default:
                 break;
         }
     }
 
-    //private Ability PickRandomAbility(List<Ability> abilities)
-    //{
+    private static System.Random Random = new System.Random();
 
-    //}
-
-    private void QuitBattle()
+    private Ability PickRandomAbility(List<Ability> abilities)
     {
-        throw new NotImplementedException();
+        var abilityIndex = Random.Next(0, this.enemyYouFightin.abilities.Count - 1);
+        return abilities[abilityIndex];
     }
 
     private void StartDialogue(DialogueSlide dialogue)

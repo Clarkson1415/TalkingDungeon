@@ -19,7 +19,7 @@ public class EnemyLoader : MonoBehaviour
 
     private void OnBattleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name != GameScene.Battle)
+        if (scene.name != TalkingDungeonScenes.Battle)
         {
             return;
         }
