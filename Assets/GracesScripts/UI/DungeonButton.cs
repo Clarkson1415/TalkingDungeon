@@ -10,9 +10,6 @@ public class DungeonButton : MonoBehaviour
     [SerializeField] AudioClip highlightSound;
     [SerializeField] AudioClip? selectedSound;
     [SerializeField] AudioSource audioSource;
-
-    public bool isSelected;
-
     public void PlayHighlightOptionChangedSound()
     {
         if (this.audioSource.clip != highlightSound)
@@ -28,8 +25,6 @@ public class DungeonButton : MonoBehaviour
     /// </summary>
     public virtual void ClickButton()
     {
-        isSelected = true;
-
         if (selectedSound == null)
         {
             // dialogue buttons wont have a selected sound;

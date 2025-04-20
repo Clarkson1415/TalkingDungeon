@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static PlayerDataUtility;
 #nullable enable
 
 /// <summary>
@@ -104,9 +105,13 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         this.state = startingState;
-
+        
         SetupPlayer();
-        PlayerDataUtility.LoadSaveDataFromLastScene(this);
+
+        if (!string.IsNullOrEmpty(PlayerPrefs.GetString(SaveKeys.LastScene))) // if loading from save load otherwise its not got player prefs for a new game
+        {
+            PlayerDataUtility.LoadSaveDataFromLastScene(this);
+        }
 
         // do not save if in battle scene though
         if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)

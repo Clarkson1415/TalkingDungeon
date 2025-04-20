@@ -121,22 +121,22 @@ public class ContainerMenu : Menu
     {
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
 
-        // on menu open after another has been open do onece
-        if (highlightedMenuItem == null && this.Buttons.Count > 0)
+        if (highlightedMenuItem == null)
         {
-            this.UIEventSystem.SetSelectedGameObject(this.Buttons[0]);
-            UpdateItemView();
             return;
         }
 
         // when it is open do this
-        if (highlightedMenuItem != currentlyShownItem && currentlyShownItem != null)
+        if (highlightedMenuItem != currentlyShownItem)
         {
-            if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var button))
+            if (currentlyShownItem != null)
             {
-                button.PlayHighlightOptionChangedSound();
+                if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var button))
+                {
+                    button.PlayHighlightOptionChangedSound();
+                }
             }
-
+            
             this.UpdateItemView();
         }
     }

@@ -26,21 +26,9 @@ public class DialogueOptionButton : DungeonButton
     /// Set all values in a dialogue option to the option passed in.
     /// </summary>
     /// <param name="option"></param>
-    public void SetValues(string text, DialogueSlide nextSlide, bool isSelected)
-    {
-        this.OptionText = text;
-        this.NextDialogueSlide = nextSlide;
-        this.isSelected = isSelected;
-    }
-
-    /// <summary>
-    /// Set all values in a dialogue option to the option passed in.
-    /// </summary>
-    /// <param name="option"></param>
     public void SetValues(string text, DialogueSlide nextSlide)
     {
         this.OptionText = text;
         this.NextDialogueSlide = nextSlide;
-        this.isSelected = false;
     }
 }

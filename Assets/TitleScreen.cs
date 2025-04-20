@@ -3,12 +3,12 @@ using UnityEngine.EventSystems;
 
 public class TitleScreen : MonoBehaviour
 {
-    [SerializeField] string nameOfFirstGameScene;
     [SerializeField] EventSystem UIEventSystem;
     [SerializeField] GameObject LoadLastSaveButton;
     [SerializeField] GameObject StartNewGameButton;
     [SerializeField] GameObject startLoadButtonLocation;
     public bool PretendFirstTimeBootDeleteSave = false;
+    public string sceneToLoad = TalkingDungeonScenes.Intro;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +24,7 @@ public class TitleScreen : MonoBehaviour
         {
             var topButton = Instantiate(StartNewGameButton, startLoadButtonLocation.transform);
             this.UIEventSystem.SetSelectedGameObject(topButton);
-            topButton.GetComponent<MenuButton>().firstSceneToLoad = nameOfFirstGameScene;
+            topButton.GetComponent<MenuButton>().sceneToLoad = TalkingDungeonScenes.Intro;
         }
         else
         {

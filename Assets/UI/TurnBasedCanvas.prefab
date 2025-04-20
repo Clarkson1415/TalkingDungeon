@@ -396,7 +396,7 @@ SortingGroup:
   m_GameObject: {fileID: 2649665320693761667}
   m_Enabled: 1
   m_SortingLayerID: 1238706651
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_SortAtRoot: 0
 --- !u!114 &2032613328532332509
@@ -2259,6 +2259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WellBeingObject: {fileID: 2649665320693761667}
   PlayerEscKeyFlag: 0
+  exitBattleTransition: {fileID: 0}
   buttonClickedAudioSource: {fileID: 1507779284572636278}
   buttonChangedAudioSource: {fileID: 48082493260428793}
   ActionButtons:
@@ -2273,6 +2274,7 @@ MonoBehaviour:
     type: 3}
   actionButtonScreen: {fileID: 8602389400675927781}
   abilityButtonSceen: {fileID: 3135537421445821044}
+  itemScreen: {fileID: 0}
   battleDialogueBox: {fileID: 3247641452819457187}
   enemyHealthFill: {fileID: 7339212080595936244}
   enemyNameField: {fileID: 5525444401396851331}

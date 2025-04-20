@@ -89,6 +89,7 @@ public class BattleUI : MonoBehaviour
         this.battleDialogueBox.SetActive(false);
         this.abilityButtonSceen.SetActive(false);
         this.actionButtonScreen.SetActive(true);
+        itemScreen.SetActive(false);
     }
 
     public void SetupEnemyAfterSpawned()
@@ -180,9 +181,13 @@ public class BattleUI : MonoBehaviour
 
     private Battle cachedStateBeforePaused;
     [SerializeField] GameObject mainMenu;
-    private Button[] ButtonsActiveBeforePaused;
 
-    private void ToggleButtonsNotOnPauseOrDeathScreen(bool onOff)
+    /// <summary>
+    /// All Buttons currently active on screen.
+    /// </summary>
+    private Button[] ButtonsActiveBeforePaused => FindObjectsByType<Button>(FindObjectsSortMode.None);
+
+    private void ToggleAllButtonsActive(bool onOff)
     {
         foreach (var button in ButtonsActiveBeforePaused)
         {
@@ -218,8 +223,7 @@ public class BattleUI : MonoBehaviour
             cachedStateBeforePaused = this.state;
             this.state = Battle.Paused;
             // find all buttons in scene that are active then save them to reactivate when unpaused
-            ButtonsActiveBeforePaused = FindObjectsByType<Button>(FindObjectsSortMode.None);
-            ToggleButtonsNotOnPauseOrDeathScreen(false);
+            ToggleAllButtonsActive(false);
             this.mainMenu.gameObject.SetActive(true);
             this.mainMenu.GetComponent<PauseMenu>().StartPauseMenu();
         }
@@ -231,7 +235,7 @@ public class BattleUI : MonoBehaviour
                 {
                     PlayerEscKeyFlag = false;
                     state = cachedStateBeforePaused;
-                    ToggleButtonsNotOnPauseOrDeathScreen(true);
+                    ToggleAllButtonsActive(true);
                     this.mainMenu.GetComponent<PauseMenu>().Close();
                     this.mainMenu.gameObject.SetActive(false);
                     this.evSys.SetSelectedGameObject(this.ButtonsActiveBeforePaused[0].gameObject);
@@ -280,7 +284,11 @@ public class BattleUI : MonoBehaviour
                             }
                             break;
                         case TurnBasedActions.ITEM:
+                            this.ToggleAllButtonsActive(false);
                             itemScreen.SetActive(true);
+                            this.itemScreen.GetComponentInChildren<Button>().gameObject.SetActive(true);
+                            itemScreen.GetComponent<ItemMenuBattle>().SlideIn();
+                            this.evSys.SetSelectedGameObject(this.itemScreen.GetComponentInChildren<Button>().gameObject);
                             this.state = Battle.inItemMenu;
                             break;
                         case TurnBasedActions.TALK:
@@ -291,7 +299,16 @@ public class BattleUI : MonoBehaviour
                 }
                 break;
             case Battle.inItemMenu:
-
+                if (this.backButtonClicked)
+                {
+                    this.backButtonClicked = false;
+                    this.itemScreen.GetComponent<ItemMenuBattle>().CloseItemMenu();
+                }
+                if (!this.itemScreen.activeSelf)
+                {
+                    this.state = Battle.EnemyTurn;
+                    this.evSys.SetSelectedGameObject(null);
+                }
                 break;
             case Battle.PlayerPickAbilityTurn:
                 if (this.abilityClickedFlag)
@@ -346,6 +363,7 @@ public class BattleUI : MonoBehaviour
                 if (!this.player.isHealthBarDoingAnim && !isDialoguePrinting)
                 {
                     this.actionButtonScreen.SetActive(true);
+                    this.ToggleAllButtonsActive(true);
                     this.evSys.SetSelectedGameObject(ActionButtons[0]);
                     this.state = Battle.PlayerPickActionTurn;
                 }

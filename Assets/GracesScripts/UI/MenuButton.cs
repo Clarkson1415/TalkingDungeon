@@ -11,7 +11,7 @@ using UnityEditor;
 public class MenuButton : DungeonButton
 {
     public TransitionSettings transition;
-    [HideInInspector] public string firstSceneToLoad;
+    [SerializeField] public string sceneToLoad;
 
     /// <summary>
     /// 
@@ -19,23 +19,8 @@ public class MenuButton : DungeonButton
     /// <param name="nameOfTheFirstScene">the name of the first scene in the whole game.</param>
     public void StartNewGame()
     {
-        TransitionManager.Instance().Transition(this.firstSceneToLoad, transition, 0f);
-        SceneManager.sceneLoaded += OnFirstSceneLoadedForTheFirstTime;
-    }
-
-    private void OnFirstSceneLoadedForTheFirstTime(Scene scene, LoadSceneMode mode)
-    {
-        SceneManager.sceneLoaded -= OnFirstSceneLoadedForTheFirstTime;
-
-        var player = FindObjectOfType<PlayerDungeon>();
-        if (player == null)
-        {
-            throw new ArgumentNullException("player not found cannot save");
-        }
-
-        player.SetupPlayer();
-
-        PlayerDataUtility.SaveGame(player);
+        TransitionManager.Instance().Transition(TalkingDungeonScenes.Intro, transition, 0f);
+        Debug.Log($"loading scene: {TalkingDungeonScenes.Intro} from menuButton.cs");
     }
 
     public void SaveGame()
@@ -52,7 +37,6 @@ public class MenuButton : DungeonButton
     public void LoadGameFromSave()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-
         var scenePlayerSavedIn = PlayerPrefs.GetString(SaveKeys.LastScene);
         TransitionManager.Instance().Transition(scenePlayerSavedIn, transition, 0f);
     }
@@ -67,8 +51,7 @@ public class MenuButton : DungeonButton
             throw new ArgumentNullException("player not found cannot save");
         }
 
-        PlayerDataUtility.LoadFromSave(player);
-        player.SetupPlayer();
+        PlayerDataUtility.LoadPositionFromSave(player);
     }
 
     public void SaveAndQuitToTitle()

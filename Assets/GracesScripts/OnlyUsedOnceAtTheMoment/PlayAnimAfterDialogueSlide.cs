@@ -7,6 +7,7 @@ public class PlayAnimAfterDialogueSlide : MonoBehaviour
     private GameObject? dialogueBox;
     [SerializeField] private Animator animator;
     private TorchState state = TorchState.waiting;
+    private bool playerInRange = false;
 
     private enum TorchState
     {
@@ -17,11 +18,19 @@ public class PlayAnimAfterDialogueSlide : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Torch touching player");
+        if (collision.gameObject.TryGetComponent<PlayerDungeon>(out var p))
+        {
+            playerInRange = true;
+        }
     }
 
     private void Update()
     {
+        if (!playerInRange)
+        {
+            return;
+        }
+
         switch (this.state)
         {
             case TorchState.waiting:

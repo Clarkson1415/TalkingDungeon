@@ -65,13 +65,11 @@ public static class PlayerDataUtility
     }
 
     /// <summary>
-    /// Loads save from main menu loads the position player was saved in as well as all the stuff.
+    /// Loads save from main menu loads the position player was saved in used when loading from save button. Player.cs loads all the other stuff in regular scene to scene transitions.
     /// </summary>
     /// <param name="player"></param>
-    public static void LoadFromSave(PlayerDungeon player)
+    public static void LoadPositionFromSave(PlayerDungeon player)
     {
-        LoadSaveDataFromLastScene(player);
-
         // the other stuff except scene already done
         player.gameObject.transform.position = new Vector3(
             PlayerPrefs.GetFloat(SaveKeys.PlayerPosX),

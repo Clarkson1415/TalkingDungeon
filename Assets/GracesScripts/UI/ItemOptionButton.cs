@@ -35,7 +35,10 @@ public class ItemOptionButton : DungeonButton
     /// </summary>
     public override void ClickButton()
     {
-        base.ClickButton();
+        if (this.Item != null)
+        {
+            base.ClickButton();
+        }
     }
 
     public void ToggleEquipGraphic(bool isEquipped)
