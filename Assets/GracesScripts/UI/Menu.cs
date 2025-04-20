@@ -9,6 +9,7 @@ abstract public class Menu : MonoBehaviour
     public virtual void Close()
     {
         this.UIEventSystem.SetSelectedGameObject(null);
+        this.gameObject.SetActive(false);
     }
 
     public GameObject GetSelectedButton()

@@ -1,8 +1,8 @@
 using Assets.GracesScripts;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 #nullable enable
@@ -36,8 +36,31 @@ public class InventoryMenu : Menu
 
     List<GameObject> Buttons_NotIncludesEquippedITems = new();
 
+    [Header("InventoryAnimation")]
+    [SerializeField] GameObject AnimatedBookInventoryBackground;
+    private Animator bookAnimator;
+    [SerializeField] GameObject Inventory;
+
     private void Awake()
     {
+        this.bookAnimator = this.AnimatedBookInventoryBackground.GetComponent<Animator>();
+    }
+
+    public override void Close()
+    {
+        this.bookAnimator.SetTrigger("Close");
+        this.Inventory.SetActive(false);
+        StartCoroutine(DisableInventoryAfterBookAnim());
+    }
+
+    private IEnumerator DisableInventoryAfterBookAnim()
+    {
+        while (!this.bookAnimator.GetCurrentAnimatorStateInfo(0).IsName("OffscreenClosed"))
+        {
+            yield return null;
+        }
+
+        base.Close();
     }
 
     /// <summary>
@@ -47,6 +70,10 @@ public class InventoryMenu : Menu
     /// <param name="Items"></param>
     public void OpenInventory(List<Item?> Items)
     {
+        this.Inventory.SetActive(false);
+        this.bookAnimator.SetTrigger("Open");
+        StartCoroutine(EnableInventoryAfterBookAnim());
+
         // todo instead of clearning juts add any enw items curreently it keeps equipped correct
         Buttons_NotIncludesEquippedITems.Clear();
 
@@ -69,7 +96,7 @@ public class InventoryMenu : Menu
         UpdateItemView();
 
         // make sure players equipped items have equipped highlight on and so does the corresponding inventory item.
-        foreach (var GO in this.equippedItemsSlots) 
+        foreach (var GO in this.equippedItemsSlots)
         {
             var button = GO.GetComponentInChildren<ItemOptionButton>();
             if (button.Item == null)
@@ -77,11 +104,11 @@ public class InventoryMenu : Menu
                 continue;
             }
 
-            foreach(var inventoryButton in this.Buttons_NotIncludesEquippedITems)
+            foreach (var inventoryButton in this.Buttons_NotIncludesEquippedITems)
             {
                 var slot = inventoryButton.GetComponentInChildren<ItemOptionButton>();
 
-                if(button.Item == slot.Item)
+                if (button.Item == slot.Item)
                 {
                     slot.ToggleEquipGraphic(true);
                 }
@@ -89,7 +116,17 @@ public class InventoryMenu : Menu
         }
     }
 
-    private List<GameObject> equippedItemsSlots => new() { this.equippedWeaponSlot, this.equippedSpecialItemSlot, this.equippedClothingSlot};
+    private IEnumerator EnableInventoryAfterBookAnim()
+    {
+        while (!this.bookAnimator.GetCurrentAnimatorStateInfo(0).IsName("StayOpen"))
+        {
+            yield return null;
+        }
+
+        this.Inventory.SetActive(true);
+    }
+
+    private List<GameObject> equippedItemsSlots => new() { this.equippedWeaponSlot, this.equippedSpecialItemSlot, this.equippedClothingSlot };
 
     public void AddItem(Item item)
     {
@@ -206,7 +243,7 @@ public class InventoryMenu : Menu
         ToggleEquipImageOnInventoryItem(currentEquipped.Item, true);
     }
 
-    private void ToggleEquipImageOnInventoryItem(Item ItemToMatch, bool OnOff) 
+    private void ToggleEquipImageOnInventoryItem(Item ItemToMatch, bool OnOff)
     {
         foreach (var button in this.Buttons_NotIncludesEquippedITems)
         {
@@ -233,7 +270,7 @@ public class InventoryMenu : Menu
             return;
         }
 
-        if(highlightedMenuItem == null)
+        if (highlightedMenuItem == null)
         {
             return;
         }

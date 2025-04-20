@@ -369,7 +369,6 @@ public class PlayerDungeon : MonoBehaviour
                 if (escKeyFlag)
                 {
                     escKeyFlag = false;
-                    this.ContainerMenu.gameObject.SetActive(false);
                     this.ContainerMenu.Close();
 
                     if (this.InteractableInRange is ItemContainer chest && chest != null)
@@ -421,7 +420,6 @@ public class PlayerDungeon : MonoBehaviour
                 {
                     escKeyFlag = false;
                     MyGuard.IsNotNull(this.pauseMenu);
-                    this.pauseMenu.gameObject.SetActive(false);
                     this.pauseMenu.Close();
                     this.state = KnightState.PLAYERCANMOVE;
                 }
@@ -440,7 +438,6 @@ public class PlayerDungeon : MonoBehaviour
                     this.currentMenuOpen.GetComponent<InventoryMenu>().Close();
                     audioSourceForInventorySounds.clip = this.InventoryClosedSound;
                     audioSourceForInventorySounds.Play();
-                    this.currentMenuOpen.SetActive(false);
                     this.currentMenuOpen = pauseMenu.gameObject;
                     this.state = KnightState.PLAYERCANMOVE;
                 }
