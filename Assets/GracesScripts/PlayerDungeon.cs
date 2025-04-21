@@ -288,8 +288,6 @@ public class PlayerDungeon : MonoBehaviour
     {
         // Stop animations
         MyGuard.IsNotNull(animatedLayers);
-        this.animatedLayers.SetFloats("YVel", 0);
-        this.animatedLayers.SetFloats("XVel", 0);
         this.animatedLayers.SetBools("Moving", false);
 
         // stop movement

@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 #nullable enable
 
@@ -154,7 +156,6 @@ public class InventoryMenu : Menu
         var newItemButtonComponent = this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
 
         MyGuard.IsNotNull(itemButtonComp);
-        MyGuard.IsNotNull(itemButtonComp.Item);
         if (itemButtonComp.Item == null)
         {
             descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
