@@ -92,7 +92,6 @@ public class InventoryMenu : Menu
         }
 
         UIEventSystem.SetSelectedGameObject(this.Buttons_NotIncludesEquippedITems[0]);
-
         UpdateItemView();
 
         // make sure players equipped items have equipped highlight on and so does the corresponding inventory item.
@@ -154,6 +153,8 @@ public class InventoryMenu : Menu
 
         var newItemButtonComponent = this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
 
+        MyGuard.IsNotNull(itemButtonComp);
+        MyGuard.IsNotNull(itemButtonComp.Item);
         if (itemButtonComp.Item == null)
         {
             descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
@@ -262,27 +263,26 @@ public class InventoryMenu : Menu
     {
         var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
 
-        // on menu open after another has been open do onece
-        if (highlightedMenuItem == null && this.Buttons_NotIncludesEquippedITems.Count > 0)
-        {
-            this.UIEventSystem.SetSelectedGameObject(this.Buttons_NotIncludesEquippedITems[0]);
-            UpdateItemView();
-            return;
-        }
-
         if (highlightedMenuItem == null)
         {
             return;
         }
 
-        // when it is open do this
-        if (highlightedMenuItem != currentlyShownItem && currentlyShownItem != null)
+        if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var thing))
         {
-            if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var button))
+            if (highlightedMenuItem != currentlyShownItem && currentlyShownItem != null)
             {
-                button.PlayHighlightOptionChangedSound();
+                if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var button))
+                {
+                    button.PlayHighlightOptionChangedSound();
+                }
+                this.UpdateItemView();
             }
-            this.UpdateItemView();
+        }
+        else
+        {
+            // tab item button was selected.
+            Debug.Log("tab item");
         }
     }
 }

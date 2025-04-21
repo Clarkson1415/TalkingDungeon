@@ -75,6 +75,7 @@ public class PlayerDungeon : MonoBehaviour
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
     /// </summary>
     private bool InteractFlagSet;
+
     [HideInInspector] public bool isHealthBarDoingAnim;
     [HideInInspector] public IInteracble? InteractableInRange { get; private set; } = null;
 
@@ -751,11 +752,18 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         Log.Print("Interact flag set");
+        
         this.InteractFlagSet = true;
+    }
 
-        if (InteractableInRange == null)
+    public void OnMouseClick(InputAction.CallbackContext context)
+    {
+        if (!context.started)
         {
             return;
         }
+
+        Log.Print("ClickFlagSet flag set");
+        this.InteractFlagSet = true;
     }
 }

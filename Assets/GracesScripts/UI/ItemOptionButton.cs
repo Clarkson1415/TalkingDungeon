@@ -35,6 +35,8 @@ public class ItemOptionButton : DungeonButton
     /// </summary>
     public override void ClickButton()
     {
+        Debug.Log("On Click");
+
         if (this.Item != null)
         {
             base.ClickButton();
