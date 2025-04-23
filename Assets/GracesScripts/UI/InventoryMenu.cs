@@ -2,23 +2,20 @@ using Assets.GracesScripts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]
-public class InventoryMenu : Menu
+public class InventoryMenu : Menu, IPointerEnterHandler
 {
-    [SerializeField] GameObject prefabItemButton;
-
     [SerializeField] List<GameObject> itemButtonLocations;
     [SerializeField] private GameObject equippedWeaponSlot;
     [SerializeField] private GameObject equippedClothingSlot;
     [SerializeField] private GameObject equippedSpecialItemSlot;
-
 
     [Header("Item UI description")]
     [SerializeField] private Image ItemTypeIndicatorImageSlot;
@@ -26,8 +23,12 @@ public class InventoryMenu : Menu
     [SerializeField] private Sprite ArmourItemImage;
     [SerializeField] private Sprite WeaponItemImage;
 
-    [SerializeField] private GameObject descriptionContainer;
-    [SerializeField] private GameObject nameContainer;
+    [SerializeField] GameObject itemDescriptionObject;
+    [SerializeField] GameObject nameContainerObject;
+
+    private ItemDescriptionContainer descriptionContainer;
+    private ItemNameContainer nameContainer;
+    
     [SerializeField] private TMP_Text powerValueLoc;
     [SerializeField] private TMP_Text defenceValueLoc;
 
@@ -46,6 +47,9 @@ public class InventoryMenu : Menu
     private void Awake()
     {
         this.bookAnimator = this.AnimatedBookInventoryBackground.GetComponent<Animator>();
+
+        descriptionContainer = this.itemDescriptionObject.GetComponent<ItemDescriptionContainer>();
+        nameContainer = this.nameContainerObject.GetComponent<ItemNameContainer>();
     }
 
     public override void Close()
@@ -53,6 +57,54 @@ public class InventoryMenu : Menu
         this.bookAnimator.SetTrigger("Close");
         this.Inventory.SetActive(false);
         StartCoroutine(DisableInventoryAfterBookAnim());
+    }
+
+    public void ChangeTabs(BookTab selectedTab)
+    {
+        selectedTab.PlayHighlightOptionChangedSound();
+        // TODO change sprite to the selected tab sprite so it stays (appearing) selected
+        selectedTab.SwapTabSprite(true);
+
+        // all other tabs false
+        var tabs = FindObjectsByType<BookTab>(FindObjectsSortMode.None);
+        var notSelectedTabs = tabs.Where(x => x != selectedTab);
+        foreach (var tab in notSelectedTabs)
+        {
+            tab.SwapTabSprite(false);
+        }
+
+        // TODO 
+        // swap shown inventory items to the right category.
+        // and highlight is by changeing the tab.SwapTabSprite() on it and all others false
+        // store as current selected tab to remember upon re opening inventory
+        // only show items in current selectd category e.g. weaponsb.
+    }
+
+    private GameObject lastHighlightedItem;
+
+    // When a raycast enabled image is highlighted with mouse.
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        var highlighted = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<ItemOptionButton>(out _));
+
+        if (highlighted == lastHighlightedItem)
+        {
+            return;
+        }
+
+        lastHighlightedItem = highlighted;
+
+        // only update item view if the mouse hovered over an item option button otherwise could have hovered over some other we dont care about and should be empty
+        if (highlighted != null)
+        {
+            var hasItemButtonComponent = highlighted.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
+            itemButtonComp.PlayHighlightOptionChangedSound();
+            UpdateItemView(itemButtonComp);
+        }
+        else
+        {
+            SetItemViewToEmptyItem();
+        }
     }
 
     private IEnumerator DisableInventoryAfterBookAnim()
@@ -76,6 +128,12 @@ public class InventoryMenu : Menu
         this.bookAnimator.SetTrigger("Open");
         StartCoroutine(EnableInventoryAfterBookAnim());
 
+        // TODO tab on opens to last open tab otherwise initiaalise to Items
+        // and highlight is by changeing the tab.SwapTabSprite() on it and all others false
+        // store as current selected tab to remember upon re opening inventory
+        // only show items in current selectd category e.g. weaponsb.
+
+
         // todo instead of clearning juts add any enw items curreently it keeps equipped correct
         Buttons_NotIncludesEquippedITems.Clear();
 
@@ -92,9 +150,6 @@ public class InventoryMenu : Menu
                 itemButtonOld.SetItemAndImage(Items[i]);
             }
         }
-
-        UIEventSystem.SetSelectedGameObject(this.Buttons_NotIncludesEquippedITems[0]);
-        UpdateItemView();
 
         // make sure players equipped items have equipped highlight on and so does the corresponding inventory item.
         foreach (var GO in this.equippedItemsSlots)
@@ -147,29 +202,27 @@ public class InventoryMenu : Menu
         this.playerWellBeingText.text = wellBeing.ToString();
     }
 
-    private void UpdateItemView()
+    private void SetItemViewToEmptyItem()
     {
-        this.currentlyShownItem = this.UIEventSystem.currentSelectedGameObject;
-        MyGuard.IsNotNull(descriptionContainer);
-        MyGuard.IsNotNull(nameContainer);
+        descriptionContainer.SetDescription("Blank");
+        nameContainer.SetName("Empty Slot");
 
-        var newItemButtonComponent = this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
+        this.powerValueLoc.text = "0";
+        this.defenceValueLoc.text = "0";
 
-        MyGuard.IsNotNull(itemButtonComp);
+        this.ItemTypeIndicatorImageSlot.sprite = emptySlotImage;
+    }
+
+    private void UpdateItemView(ItemOptionButton itemButtonComp)
+    {
         if (itemButtonComp.Item == null)
         {
-            descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
-            nameContainer.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
-
-            this.powerValueLoc.text = "0";
-            this.defenceValueLoc.text = "0";
-
-            this.ItemTypeIndicatorImageSlot.sprite = emptySlotImage;
+            SetItemViewToEmptyItem();
             return;
         }
 
-        descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
-        nameContainer.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
+        descriptionContainer.SetDescription(itemButtonComp.Item.description);
+        nameContainer.SetName(itemButtonComp.Item.name);
 
         this.powerValueLoc.text = itemButtonComp.Item.PowerStat.ToString();
         this.defenceValueLoc.text = itemButtonComp.Item.DefenceStat.ToString();
@@ -254,36 +307,6 @@ public class InventoryMenu : Menu
             {
                 itemOption.ToggleEquipGraphic(OnOff);
             }
-        }
-    }
-
-    private GameObject? currentlyShownItem;
-
-    // Update is called once per frame
-    void Update()
-    {
-        var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
-
-        if (highlightedMenuItem == null)
-        {
-            return;
-        }
-
-        if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var thing))
-        {
-            if (highlightedMenuItem != currentlyShownItem && currentlyShownItem != null)
-            {
-                if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var button))
-                {
-                    button.PlayHighlightOptionChangedSound();
-                }
-                this.UpdateItemView();
-            }
-        }
-        else
-        {
-            // tab item button was selected.
-            Debug.Log("tab item");
         }
     }
 }

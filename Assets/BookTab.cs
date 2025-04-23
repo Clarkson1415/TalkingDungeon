@@ -1,27 +1,30 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// To switch tab layout to tab selected. And pull the logo out into the correct position.
 /// </summary>
-public class BookTab : MonoBehaviour
+public class BookTab : DungeonButton
 {
-    [SerializeField] private BookTabCategory tabCategory;
+    [SerializeField] public BookTabCategory tabCategory;
 
-    private enum BookTabCategory
+    [SerializeField] Sprite uiUnselectedSprite;
+    [SerializeField] Sprite TabSelectedSprite;
+    [SerializeField] Image imageToSwitchSelectedTabSprite;
+
+    /// <summary>
+    /// used to keep the tab sprite the same. cannot use unity button selected as that changes when anotehr thing is selected in the menu 
+    /// </summary>
+    /// <param name="isSelected"></param>
+    public void SwapTabSprite(bool isSelected)
     {
-        Items,
-        Weapons,
-        Clothing,
-        Abilities,
-        // DialogueLog
-    }
-
-    // starting logo position (-4.4, 0)
-    // when clicked on move to 6.1, 0 
-    // add 10.5 to the x position.
-
-    public void NavigateToSelectedTabCategory()
-    {
-        Debug.Log($"to tab: {this.tabCategory}");
+        if (isSelected)
+        {
+            this.imageToSwitchSelectedTabSprite.sprite = TabSelectedSprite;
+        }
+        else
+        {
+            this.imageToSwitchSelectedTabSprite.sprite = uiUnselectedSprite;
+        }
     }
 }

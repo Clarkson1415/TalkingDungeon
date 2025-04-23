@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -75,6 +76,7 @@ public class PlayerDungeon : MonoBehaviour
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
     /// </summary>
     private bool InteractFlagSet;
+    private bool onPointerClick;
 
     [HideInInspector] public bool isHealthBarDoingAnim;
     [HideInInspector] public IInteracble? InteractableInRange { get; private set; } = null;
@@ -158,7 +160,7 @@ public class PlayerDungeon : MonoBehaviour
     /// If the scene was loaded from a save when update runs rb will still be null beacuse setupPlayer hasnt been called in awake. so wait for this to be true to do update stuff. As setupPlayer will be aclled y menubutton after scene has loaded.
     /// </summary>
     /// <returns></returns>
-    private bool ShouldUpdateRun()
+    private bool areComponentsLoaded()
     {
         if (this.rb == null)
         {
@@ -300,7 +302,7 @@ public class PlayerDungeon : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!ShouldUpdateRun())
+        if (!areComponentsLoaded())
         {
             return;
         }
@@ -379,9 +381,9 @@ public class PlayerDungeon : MonoBehaviour
                     MyGuard.IsNotNull(this.pauseMenu);
                     this.currentMenuOpen = this.pauseMenu.gameObject;
                 }
-                else if (this.InteractFlagSet)
+                else if (this.onPointerClick) // TODO TEST WITH ONPOINTER
                 {
-                    this.InteractFlagSet = false;
+                    this.onPointerClick = false;
                     var itemOpButton = this.ContainerMenu.GetCurrentSelected();
 
                     if (itemOpButton == null)
@@ -440,30 +442,43 @@ public class PlayerDungeon : MonoBehaviour
                     this.currentMenuOpen = pauseMenu.gameObject;
                     this.state = KnightState.PLAYERCANMOVE;
                 }
-                if (this.InteractFlagSet)
+                if (this.onPointerClick)
                 {
-                    this.InteractFlagSet = false;
+                    this.onPointerClick = false;
                     MyGuard.IsNotNull(this.inventoryMenu);
                     var buttonGameObject = this.inventoryMenu.GetSelectedButton();
-                    var selectedItemOp = buttonGameObject.GetComponent<ItemOptionButton>();
 
-                    if (selectedItemOp.Item == null)
+                    if (buttonGameObject == null)
                     {
+                        Debug.Log("clicked on nothing");
                         return;
-                        // nothing happens if empty square selected.
                     }
-                    else if (this.EquippedItems.Contains(selectedItemOp.Item))
+
+                    // TODO this better can this be done in Inventroy menu? 
+                    if (buttonGameObject.TryGetComponent<ItemOptionButton>(out var selectedItemOp))
                     {
-                        RemoveFromPlayerEquipped(selectedItemOp);
+                        if (selectedItemOp.Item == null)
+                        {
+                            return;
+                            // nothing happens if empty square selected.
+                        }
+                        else if (this.EquippedItems.Contains(selectedItemOp.Item))
+                        {
+                            RemoveFromPlayerEquipped(selectedItemOp);
+                        }
+                        else if (IsValidEquip(selectedItemOp.Item))
+                        {
+                            AddToPlayerEquipped(selectedItemOp.Item);
+                        }
+                        else
+                        {
+                            Log.Print("can't equip that");
+                            return;
+                        }
                     }
-                    else if (IsValidEquip(selectedItemOp.Item))
+                    else if (buttonGameObject.TryGetComponent<BookTab>(out var selectedTab))
                     {
-                        AddToPlayerEquipped(selectedItemOp.Item);
-                    }
-                    else
-                    {
-                        Log.Print("can't equip that");
-                        return;
+                        this.inventoryMenu.ChangeTabs(selectedTab.tabCategory);
                     }
                 }
                 break;
@@ -480,6 +495,12 @@ public class PlayerDungeon : MonoBehaviour
             default:
                 this.state = KnightState.PLAYERCANMOVE;
                 break;
+        }
+
+        // reset flags if not used this frame.
+        if (InteractFlagSet)
+        {
+            InteractFlagSet = false;
         }
     }
 
@@ -762,6 +783,6 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         Log.Print("ClickFlagSet flag set");
-        this.InteractFlagSet = true;
+        this.onPointerClick = true;
     }
 }

@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 #nullable enable
@@ -12,7 +12,7 @@ public class ItemOptionButton : DungeonButton
     [SerializeField] Image EquippedOverlayTargetImage;
     public void SetItemAndImage(Item? item)
     {
-        if(item == null)
+        if (item == null)
         {
             ReplaceItemWithBlank();
             return;
