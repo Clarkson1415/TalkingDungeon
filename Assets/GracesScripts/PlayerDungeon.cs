@@ -36,7 +36,7 @@ public class PlayerDungeon : MonoBehaviour
     private InventoryMenu? inventoryMenu;
     [SerializeField] AudioClip InventoryOpenSound;
     [SerializeField] AudioClip InventoryClosedSound;
-    public List<Item?> Inventory = new();
+    public List<Item> Inventory = new();
     [SerializeField] private AudioSource audioSourceForInventorySounds;
     private List<Item?> EquippedItems => new() { this.equippedClothing, this.equippedWeapon, this.equippedSpecialItem };
     public Item? equippedWeapon;
@@ -478,7 +478,7 @@ public class PlayerDungeon : MonoBehaviour
                     }
                     else if (buttonGameObject.TryGetComponent<BookTab>(out var selectedTab))
                     {
-                        this.inventoryMenu.ChangeTabs(selectedTab);
+                        this.inventoryMenu.SelectTab(selectedTab);
                     }
                 }
                 break;

@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]
@@ -28,7 +29,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     private ItemDescriptionContainer descriptionContainer;
     private ItemNameContainer nameContainer;
-    
+
     [SerializeField] private TMP_Text powerValueLoc;
     [SerializeField] private TMP_Text defenceValueLoc;
 
@@ -43,6 +44,11 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     [SerializeField] GameObject AnimatedBookInventoryBackground;
     private Animator bookAnimator;
     [SerializeField] GameObject Inventory;
+
+    [Header("Book Tabs")]
+    private List<Item> AllInventoryItems = new();
+    private BookTab selectedTab;
+    [SerializeField] BookTab OnFirstOpenInventorySelectedTab;
 
     private void Awake()
     {
@@ -59,25 +65,31 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         StartCoroutine(DisableInventoryAfterBookAnim());
     }
 
-    public void ChangeTabs(BookTab selectedTab)
+    public void SelectTab(BookTab selectedTab)
     {
-        selectedTab.PlayHighlightOptionChangedSound();
-        // TODO change sprite to the selected tab sprite so it stays (appearing) selected
-        selectedTab.SwapTabSprite(true);
+        this.selectedTab = selectedTab;
+
+        MyGuard.IsNotNull(selectedTab);
+
+        // change sprite to the selected tab sprite so it stays (appearing) selected when selecting items.
+        selectedTab.ForceTabSelectionAnim(true);
 
         // all other tabs false
         var tabs = FindObjectsByType<BookTab>(FindObjectsSortMode.None);
         var notSelectedTabs = tabs.Where(x => x != selectedTab);
         foreach (var tab in notSelectedTabs)
         {
-            tab.SwapTabSprite(false);
+            tab.ForceTabSelectionAnim(false);
         }
 
         // TODO 
+        Debug.Log("todo change inventory screen shown and play page turn animation");
+
         // swap shown inventory items to the right category.
         // and highlight is by changeing the tab.SwapTabSprite() on it and all others false
         // store as current selected tab to remember upon re opening inventory
         // only show items in current selectd category e.g. weaponsb.
+        this.UpdateItemsButtons();
     }
 
     private GameObject lastHighlightedItem;
@@ -85,25 +97,36 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     // When a raycast enabled image is highlighted with mouse.
     public void OnPointerEnter(PointerEventData eventData)
     {
-        var highlighted = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<ItemOptionButton>(out _));
+        var highlightedWithItem = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<ItemOptionButton>(out _));
 
-        if (highlighted == lastHighlightedItem)
+        var highlightedWithTab = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<ItemOptionButton>(out _));
+
+
+        if (highlightedWithItem != null)
         {
-            return;
+            if (highlightedWithItem == lastHighlightedItem)
+            {
+                return;
+            }
+
+            lastHighlightedItem = highlightedWithItem;
+
+            var itemButtonComp = highlightedWithItem.GetComponent<ItemOptionButton>();
+
+            if (itemButtonComp.Item != null)
+            {
+                itemButtonComp.PlayHighlightOptionChangedSound();
+                UpdateItemView(itemButtonComp);
+            }
+            else
+            {
+                SetItemViewToEmptyItem();
+            }
         }
-
-        lastHighlightedItem = highlighted;
-
-        // only update item view if the mouse hovered over an item option button otherwise could have hovered over some other we dont care about and should be empty
-        if (highlighted != null)
+        else if (highlightedWithTab != null)
         {
-            var hasItemButtonComponent = highlighted.TryGetComponent<ItemOptionButton>(out var itemButtonComp);
-            itemButtonComp.PlayHighlightOptionChangedSound();
-            UpdateItemView(itemButtonComp);
-        }
-        else
-        {
-            SetItemViewToEmptyItem();
+            var bookTab = highlightedWithTab.GetComponent<BookTab>();
+            bookTab.PlayHighlightOptionChangedSound();
         }
     }
 
@@ -122,19 +145,24 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     /// and this only needs to be initialised once.
     /// </summary>
     /// <param name="Items"></param>
-    public void OpenInventory(List<Item?> Items)
+    public void OpenInventory(List<Item> playerItems)
     {
+        AllInventoryItems = playerItems;
         this.Inventory.SetActive(false);
         this.bookAnimator.SetTrigger("Open");
+        Debug.Log("todo add book slide and open sound effect. then close then slide sfx also");
+
         StartCoroutine(EnableInventoryAfterBookAnim());
+    }
 
-        // TODO tab on opens to last open tab otherwise initiaalise to Items
-        // and highlight is by changeing the tab.SwapTabSprite() on it and all others false
-        // store as current selected tab to remember upon re opening inventory
-        // only show items in current selectd category e.g. weaponsb.
+    /// <summary>
+    /// Updates item buttons to current category selected from this.selectedTab
+    /// </summary>
+    private void UpdateItemsButtons()
+    {
+        // get all items matching selected tabs type
+        var Items = AllInventoryItems.Where(x => x.Type == this.selectedTab.Category).ToList();
 
-
-        // todo instead of clearning juts add any enw items curreently it keeps equipped correct
         Buttons_NotIncludesEquippedITems.Clear();
 
         for (int i = 0; i < itemButtonLocations.Count; i++)
@@ -180,6 +208,19 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         }
 
         this.Inventory.SetActive(true);
+
+        // TODO tab on opens to last open tab otherwise initiaalise to Items
+        // and highlight is by changeing the tab.SwapTabSprite() on it and all others false
+        // store as current selected tab to remember upon re opening inventory
+        // only show items in current selectd category e.g. weaponsb.
+
+        if (this.selectedTab == null)
+        {
+            this.selectedTab = this.OnFirstOpenInventorySelectedTab;
+        }
+
+        SelectTab(selectedTab);
+        UpdateItemsButtons();
     }
 
     private List<GameObject> equippedItemsSlots => new() { this.equippedWeaponSlot, this.equippedSpecialItemSlot, this.equippedClothingSlot };
