@@ -478,7 +478,7 @@ public class PlayerDungeon : MonoBehaviour
                     }
                     else if (buttonGameObject.TryGetComponent<BookTab>(out var selectedTab))
                     {
-                        this.inventoryMenu.ChangeTabs(selectedTab.tabCategory);
+                        this.inventoryMenu.ChangeTabs(selectedTab);
                     }
                 }
                 break;
