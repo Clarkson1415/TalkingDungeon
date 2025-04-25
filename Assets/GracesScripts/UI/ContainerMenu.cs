@@ -25,18 +25,18 @@ public class ContainerMenu : Menu
     /// <summary>
     /// returns selected and removed item image and item data from the Item slot.
     /// </summary>
-    public ItemOptionButton GetCurrentSelected()
+    public InventorySlot GetCurrentSelected()
     {
         var selected = this.UIEventSystem.currentSelectedGameObject;
 
-        var itemToReturn = selected.GetComponent<ItemOptionButton>();
+        var itemToReturn = selected.GetComponent<InventorySlot>();
 
         return itemToReturn;
     }
 
-    public void RemoveOldItem(ItemOptionButton itemToRemove)
+    public void RemoveOldItem(InventorySlot itemToRemove)
     {
-        itemToRemove.ReplaceItemWithBlank();
+        itemToRemove.ReplaceSlotWithBlanks();
         UpdateItemView();
     }
 
@@ -47,7 +47,7 @@ public class ContainerMenu : Menu
         for (int i = 0; i < itemButtonLocations.Count; i++)
         {
             // add all buttons
-            var buttonObj = itemButtonLocations[i].GetComponentInChildren<ItemOptionButton>();
+            var buttonObj = itemButtonLocations[i].GetComponentInChildren<InventorySlot>();
             Buttons.Add(buttonObj.gameObject);
 
             // add items to buttons if there is an item in that slot
@@ -72,7 +72,7 @@ public class ContainerMenu : Menu
             return;
         }
 
-        if (!this.currentlyShownItem.TryGetComponent<ItemOptionButton>(out var itemButtonComp))
+        if (!this.currentlyShownItem.TryGetComponent<InventorySlot>(out var itemButtonComp))
         {
             descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription("Blank");
             nameContainer.GetComponentInChildren<ItemNameContainer>().SetName("Empty Slot");
@@ -131,7 +131,7 @@ public class ContainerMenu : Menu
         {
             if (currentlyShownItem != null)
             {
-                if (highlightedMenuItem.TryGetComponent<ItemOptionButton>(out var button))
+                if (highlightedMenuItem.TryGetComponent<InventorySlot>(out var button))
                 {
                     button.PlayHighlightOptionChangedSound();
                 }

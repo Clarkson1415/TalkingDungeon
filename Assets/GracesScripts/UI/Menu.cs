@@ -16,4 +16,9 @@ abstract public class Menu : MonoBehaviour
     {
         return this.UIEventSystem.currentSelectedGameObject;
     }
+
+    public void DeselectButton()
+    {
+        this.UIEventSystem.SetSelectedGameObject(null);
+    }
 }

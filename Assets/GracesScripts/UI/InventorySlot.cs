@@ -1,12 +1,12 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 using UnityEngine.UI;
 #nullable enable
 
-public class ItemOptionButton : DungeonButton
+public class InventorySlot : DungeonButton
 {
     public Item? Item;
+    public Ability? Ability;
+
     [SerializeField] Sprite equippedOverlayGraphic;
     [SerializeField] Sprite unequippedGraphic;
     [SerializeField] Image EquippedOverlayTargetImage;
@@ -14,34 +14,51 @@ public class ItemOptionButton : DungeonButton
     {
         if (item == null)
         {
-            ReplaceItemWithBlank();
+            ReplaceSlotWithBlanks();
             return;
         }
 
         this.Item = item;
+        this.Ability = null;
 
-        var spriteImageComponent = this.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
+        var spriteImageComponent = this.gameObject.GetComponentInChildren<InventorySlotImage>();
         spriteImageComponent.SetImage(item.image);
     }
 
-    public void ReplaceItemWithBlank()
+    public void SetAbilityAndImage(Ability? ability)
     {
+        if (ability == null)
+        {
+            ReplaceSlotWithBlanks();
+            return;
+        }
+
+        this.Ability = ability;
         this.Item = null;
 
-        var spriteImageComponent = this.gameObject.GetComponentInChildren<ItemOptionButtonImage>();
+        var spriteImageComponent = this.gameObject.GetComponentInChildren<InventorySlotImage>();
+        spriteImageComponent.SetImage(Ability.image);
+    }
+
+    public void ReplaceSlotWithBlanks()
+    {
+        this.Item = null;
+        this.Ability = null;
+
+        var spriteImageComponent = this.gameObject.GetComponentInChildren<InventorySlotImage>();
         spriteImageComponent.SetImage(unequippedGraphic);
     }
 
     /// <summary>
     /// Item Option Button applies equipped overlay to it.
     /// </summary>
-    public override void ClickButton()
+    public override void PlaySelectSound()
     {
         Debug.Log("On Click");
 
         if (this.Item != null)
         {
-            base.ClickButton();
+            base.PlaySelectSound();
         }
     }
 

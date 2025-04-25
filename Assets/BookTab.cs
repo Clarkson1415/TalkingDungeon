@@ -1,13 +1,19 @@
 using Assets.GracesScripts;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// To switch tab layout to tab selected. And pull the logo out into the correct position.
 /// </summary>
 public class BookTab : DungeonButton
 {
-    public ItemType Category;
+    public enum TabType
+    {
+        Equipment,
+        Abilities,
+    }
+
+    public TabType tabType;
+    public ItemType itemCategory;
     private Animator tabAnimator;
 
     private void Awake()
@@ -23,7 +29,7 @@ public class BookTab : DungeonButton
     {
         if (isSelected)
         {
-            tabAnimator.SetTrigger("Selected");
+            tabAnimator.SetTrigger("ManualForceSelected");
         }
         else // force unselected
         {

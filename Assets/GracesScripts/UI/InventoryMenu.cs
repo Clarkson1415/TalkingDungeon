@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,13 +15,17 @@ using static UnityEditor.Progress;
 [RequireComponent(typeof(AudioSource))]
 public class InventoryMenu : Menu, IPointerEnterHandler
 {
-    [SerializeField] List<GameObject> itemButtonLocations;
+    [Header("EquippedSlots")]
+    [SerializeField] List<GameObject> itemSlots;
     [SerializeField] private GameObject equippedWeaponSlot;
     [SerializeField] private GameObject equippedClothingSlot;
     [SerializeField] private GameObject equippedSpecialItemSlot;
 
+    [SerializeField] private List<GameObject> abilitySlots;
+
     [Header("Item UI description")]
     [SerializeField] private Image ItemTypeIndicatorImageSlot;
+    [SerializeField] private Image ItemAbilityImageSlot;
     [SerializeField] private Sprite specialItemImage;
     [SerializeField] private Sprite ArmourItemImage;
     [SerializeField] private Sprite WeaponItemImage;
@@ -32,13 +38,14 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     [SerializeField] private TMP_Text powerValueLoc;
     [SerializeField] private TMP_Text defenceValueLoc;
+    [SerializeField] private TMP_Text defenceWord;
 
     [Header("player Stats")]
     [SerializeField] private TMP_Text playerPowerStatText;
     [SerializeField] private TMP_Text playerDefenceStatText;
     [SerializeField] private TMP_Text playerWellBeingText;
 
-    List<GameObject> Buttons_NotIncludesEquippedITems = new();
+    List<GameObject> populatedItemSlots = new();
 
     [Header("InventoryAnimation")]
     [SerializeField] GameObject AnimatedBookInventoryBackground;
@@ -47,6 +54,8 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     [Header("Book Tabs")]
     private List<Item> AllInventoryItems = new();
+    private List<Ability> PlayerAbilities = new();
+
     private BookTab selectedTab;
     [SerializeField] BookTab OnFirstOpenInventorySelectedTab;
 
@@ -67,6 +76,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     public void SelectTab(BookTab selectedTab)
     {
+        this.UIEventSystem.SetSelectedGameObject(null);
         this.selectedTab = selectedTab;
 
         MyGuard.IsNotNull(selectedTab);
@@ -76,7 +86,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
         // all other tabs false
         var tabs = FindObjectsByType<BookTab>(FindObjectsSortMode.None);
-        var notSelectedTabs = tabs.Where(x => x != selectedTab);
+        var notSelectedTabs = tabs.Where(x => x != selectedTab).ToList();
         foreach (var tab in notSelectedTabs)
         {
             tab.ForceTabSelectionAnim(false);
@@ -97,9 +107,9 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     // When a raycast enabled image is highlighted with mouse.
     public void OnPointerEnter(PointerEventData eventData)
     {
-        var highlightedWithItem = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<ItemOptionButton>(out _));
+        var highlightedWithItem = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<InventorySlot>(out _));
 
-        var highlightedWithTab = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<ItemOptionButton>(out _));
+        var highlightedWithTab = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<BookTab>(out _));
 
 
         if (highlightedWithItem != null)
@@ -111,9 +121,9 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
             lastHighlightedItem = highlightedWithItem;
 
-            var itemButtonComp = highlightedWithItem.GetComponent<ItemOptionButton>();
+            var itemButtonComp = highlightedWithItem.GetComponent<InventorySlot>();
 
-            if (itemButtonComp.Item != null)
+            if (itemButtonComp.Item != null || itemButtonComp.Ability != null)
             {
                 itemButtonComp.PlayHighlightOptionChangedSound();
                 UpdateItemView(itemButtonComp);
@@ -145,9 +155,11 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     /// and this only needs to be initialised once.
     /// </summary>
     /// <param name="Items"></param>
-    public void OpenInventory(List<Item> playerItems)
+    public void OpenInventory(List<Item> playerItems, List<Ability> playerAbilities)
     {
         AllInventoryItems = playerItems;
+        this.PlayerAbilities = playerAbilities;
+
         this.Inventory.SetActive(false);
         this.bookAnimator.SetTrigger("Open");
         Debug.Log("todo add book slide and open sound effect. then close then slide sfx also");
@@ -156,45 +168,99 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     }
 
     /// <summary>
-    /// Updates item buttons to current category selected from this.selectedTab
+    /// Updates item buttons to current category selected from this.selectedTab. TODO this better by maybe could make booktabs have a enum type that encompasses abilityes and items and have a parent class for abilities and items?
     /// </summary>
     private void UpdateItemsButtons()
     {
-        // get all items matching selected tabs type
-        var Items = AllInventoryItems.Where(x => x.Type == this.selectedTab.Category).ToList();
-
-        Buttons_NotIncludesEquippedITems.Clear();
-
-        for (int i = 0; i < itemButtonLocations.Count; i++)
+        // tab selected is either Ability Tab or item type.
+        // if ability tab is selected tab, show abilities in slots not items.
+        if (this.selectedTab.tabType == BookTab.TabType.Abilities)
         {
-            // add all buttons of your items 
-            // TODO could this be a Menu.cs method instead?
-            var itemButtonOld = itemButtonLocations[i].GetComponentInChildren<ItemOptionButton>();
-            this.Buttons_NotIncludesEquippedITems.Add(itemButtonOld.gameObject);
+            // else if selected tab is an item type show all matching items
+            // get all items matching selected tabs type
+            var ItemsInCategory = this.PlayerAbilities;
 
-            // add items to buttons if there is an item in that slot
-            if (i < Items.Count)
+            populatedItemSlots.Clear();
+
+            for (int i = 0; i < itemSlots.Count; i++)
             {
-                itemButtonOld.SetItemAndImage(Items[i]);
+                var itemButtonOld = itemSlots[i].GetComponentInChildren<InventorySlot>();
+
+                // add items to buttons if there is enough number of items to fill up to the slot
+                if (i < ItemsInCategory.Count)
+                {
+                    itemButtonOld.SetAbilityAndImage(ItemsInCategory[i]);
+                }
+                else
+                {
+                    itemButtonOld.ReplaceSlotWithBlanks();
+                }
+
+                this.populatedItemSlots.Add(itemButtonOld.gameObject);
+            }
+
+            // make sure players equipped items have equipped highlight on and so does the corresponding inventory item.
+            var equippedAbilities = this.abilitySlots.Select(x => x.GetComponentInChildren<InventorySlot>().Ability);
+            var inventorySlots = this.populatedItemSlots.Select(x => x.GetComponent<InventorySlot>()).ToList();
+
+            foreach (var slot in inventorySlots)
+            {
+                if (slot.Item == null)
+                {
+                    slot.ToggleEquipGraphic(false);
+                }
+                else
+                {
+                    slot.ToggleEquipGraphic(equippedAbilities.Contains(slot.Ability));
+                }
             }
         }
-
-        // make sure players equipped items have equipped highlight on and so does the corresponding inventory item.
-        foreach (var GO in this.equippedItemsSlots)
+        else if(this.selectedTab.tabType == BookTab.TabType.Equipment)
         {
-            var button = GO.GetComponentInChildren<ItemOptionButton>();
-            if (button.Item == null)
+            // else if selected tab is an item type show all matching items
+            // get all items matching selected tabs type
+            var ItemsInCategory = AllInventoryItems.Where(x => x.Type == this.selectedTab.itemCategory).ToList();
+
+            populatedItemSlots.Clear();
+
+            for (int i = 0; i < itemSlots.Count; i++)
             {
-                continue;
+                var itemButtonOld = itemSlots[i].GetComponentInChildren<InventorySlot>();
+
+                // add items to buttons if there is enough number of items to fill up to the slot
+                if (i < ItemsInCategory.Count)
+                {
+                    itemButtonOld.SetItemAndImage(ItemsInCategory[i]);
+                }
+                else
+                {
+                    itemButtonOld.ReplaceSlotWithBlanks();
+                }
+
+                this.populatedItemSlots.Add(itemButtonOld.gameObject);
             }
 
-            foreach (var inventoryButton in this.Buttons_NotIncludesEquippedITems)
+            // make sure players equipped items have equipped highlight on and so does the corresponding inventory item.
+            GameObject equippedSlotForCategory = this.selectedTab.itemCategory switch
             {
-                var slot = inventoryButton.GetComponentInChildren<ItemOptionButton>();
+                ItemType.Weapon => this.equippedWeaponSlot,
+                ItemType.Clothing => this.equippedClothingSlot,
+                ItemType.SpecialItem => this.equippedSpecialItemSlot,
+                _ => throw new NotImplementedException()
+            };
 
-                if (button.Item == slot.Item)
+            var equippedThing = equippedSlotForCategory.GetComponentInChildren<InventorySlot>().Item;
+            var inventorySlots = this.populatedItemSlots.Select(x => x.GetComponent<InventorySlot>()).ToList();
+
+            foreach (var slot in inventorySlots)
+            {
+                if (slot.Item == null)
                 {
-                    slot.ToggleEquipGraphic(true);
+                    slot.ToggleEquipGraphic(false);
+                }
+                else
+                {
+                    slot.ToggleEquipGraphic(slot.Item == equippedThing);
                 }
             }
         }
@@ -220,16 +286,15 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         }
 
         SelectTab(selectedTab);
-        UpdateItemsButtons();
     }
 
     private List<GameObject> equippedItemsSlots => new() { this.equippedWeaponSlot, this.equippedSpecialItemSlot, this.equippedClothingSlot };
 
     public void AddItem(Item item)
     {
-        var itemButtonToUpdate = this.Buttons_NotIncludesEquippedITems.Find(x => x.GetComponent<ItemOptionButton>().Item != null);
+        var itemButtonToUpdate = this.populatedItemSlots.Find(x => x.GetComponent<InventorySlot>().Item != null);
 
-        itemButtonToUpdate.GetComponent<ItemOptionButton>().SetItemAndImage(item);
+        itemButtonToUpdate.GetComponent<InventorySlot>().SetItemAndImage(item);
     }
 
     public void UpdatePlayerStatsDisplay(float power, float defence)
@@ -252,31 +317,56 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         this.defenceValueLoc.text = "0";
 
         this.ItemTypeIndicatorImageSlot.sprite = emptySlotImage;
+        this.ItemAbilityImageSlot.sprite = emptySlotImage;
     }
 
-    private void UpdateItemView(ItemOptionButton itemButtonComp)
+    private void UpdateItemView(InventorySlot itemButtonComp)
     {
-        if (itemButtonComp.Item == null)
+        this.ItemTypeIndicatorImageSlot.transform.parent.gameObject.SetActive(true);
+        this.defenceValueLoc.gameObject.SetActive(true);
+        this.defenceWord.gameObject.SetActive(true);
+        this.ItemAbilityImageSlot.sprite = this.emptySlotImage;
+
+        if (itemButtonComp.Item == null && itemButtonComp.Ability == null)
         {
             SetItemViewToEmptyItem();
             return;
         }
 
-        descriptionContainer.SetDescription(itemButtonComp.Item.description);
-        nameContainer.SetName(itemButtonComp.Item.name);
-
-        this.powerValueLoc.text = itemButtonComp.Item.PowerStat.ToString();
-        this.defenceValueLoc.text = itemButtonComp.Item.DefenceStat.ToString();
-
-        Sprite typeSprite = itemButtonComp.Item.Type switch
+        if (itemButtonComp.Ability != null)
         {
-            ItemType.Weapon => this.WeaponItemImage,
-            ItemType.Clothing => this.ArmourItemImage,
-            ItemType.SpecialItem => this.specialItemImage,
-            _ => throw new ArgumentOutOfRangeException($"no Item Type found {itemButtonComp.Item.Type}")
-        };
+            this.ItemTypeIndicatorImageSlot.transform.parent.gameObject.SetActive(false);
+            this.defenceValueLoc.gameObject.SetActive(false);
+            this.defenceWord.gameObject.SetActive(false);
 
-        this.ItemTypeIndicatorImageSlot.sprite = typeSprite;
+            this.ItemAbilityImageSlot.sprite = itemButtonComp.Ability.image;
+
+            descriptionContainer.SetDescription(itemButtonComp.Ability.description);
+            nameContainer.SetName(itemButtonComp.Ability.Name);
+
+            this.powerValueLoc.text = itemButtonComp.Ability.attackPower.ToString();
+        }
+        else if (itemButtonComp.Item != null)
+        {
+            descriptionContainer.SetDescription(itemButtonComp.Item.description);
+            nameContainer.SetName(itemButtonComp.Item.name);
+
+            this.powerValueLoc.text = itemButtonComp.Item.PowerStat.ToString();
+            this.defenceValueLoc.text = itemButtonComp.Item.DefenceStat.ToString();
+
+            Sprite typeSprite = itemButtonComp.Item.Type switch
+            {
+                ItemType.Weapon => this.WeaponItemImage,
+                ItemType.Clothing => this.ArmourItemImage,
+                ItemType.SpecialItem => this.specialItemImage,
+                _ => throw new ArgumentOutOfRangeException($"no Item Type found {itemButtonComp.Item.Type}")
+            };
+
+            this.ItemTypeIndicatorImageSlot.sprite = typeSprite;
+
+            // TODO smoehow show what ability the item has but I need to plan out the menu better.
+            //this.ItemAbilityImageSlot.sprite = itemButtonComp.Item.ability.image
+        }
     }
 
     public void RemoveEquippedItem(Item item)
@@ -289,20 +379,20 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             _ => throw new ArgumentOutOfRangeException($"no Item Type found {item.Type}")
         };
 
-        var oldItem = equipmentSlot.GetComponentInChildren<ItemOptionButton>();
+        var oldItem = equipmentSlot.GetComponentInChildren<InventorySlot>();
         MyGuard.IsNotNull(oldItem);
 
         // toggle graphic on the inventory slot
-        foreach (var thingo in this.Buttons_NotIncludesEquippedITems)
+        foreach (var thingo in this.populatedItemSlots)
         {
-            var itemOption = thingo.GetComponentInChildren<ItemOptionButton>();
+            var itemOption = thingo.GetComponentInChildren<InventorySlot>();
             if (itemOption.Item == oldItem.Item)
             {
                 itemOption.ToggleEquipGraphic(false);
             }
         }
 
-        oldItem.ReplaceItemWithBlank();
+        oldItem.ReplaceSlotWithBlanks();
         oldItem.ToggleEquipGraphic(false);
     }
 
@@ -319,10 +409,10 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             ItemType.Weapon => this.equippedWeaponSlot,
             ItemType.Clothing => this.equippedClothingSlot,
             ItemType.SpecialItem => this.equippedSpecialItemSlot,
-            _ => throw new ArgumentOutOfRangeException($"no Item Type found {newItem.Type}")
+            _ => throw new ArgumentOutOfRangeException($"no Item Type found for type: {newItem.Type} on item: {newItem.Name}")
         };
 
-        var currentEquipped = equippedSlot.GetComponentInChildren<ItemOptionButton>();
+        var currentEquipped = equippedSlot.GetComponentInChildren<InventorySlot>();
 
         // if had item equipped before replacing, remove the equipped highlight from the inventory item
         if (currentEquipped.Item != null)
@@ -341,9 +431,9 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     private void ToggleEquipImageOnInventoryItem(Item ItemToMatch, bool OnOff)
     {
-        foreach (var button in this.Buttons_NotIncludesEquippedITems)
+        foreach (var button in this.populatedItemSlots)
         {
-            var itemOption = button.GetComponentInChildren<ItemOptionButton>();
+            var itemOption = button.GetComponentInChildren<InventorySlot>();
             if (ItemToMatch == itemOption.Item)
             {
                 itemOption.ToggleEquipGraphic(OnOff);

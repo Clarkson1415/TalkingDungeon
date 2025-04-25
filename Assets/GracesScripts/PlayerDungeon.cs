@@ -18,8 +18,6 @@ using static PlayerDataUtility;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : MonoBehaviour
 {
-    [Header("REMEMBER PLAYER STUFF IS LOADED FROM SAVE DATA MODIFY THAT")]
-
     [Header("Menus")]
     [SerializeField] GameObject deathScreenPrefab;
     private DialogueTextBox? dialogueBox;
@@ -329,7 +327,7 @@ public class PlayerDungeon : MonoBehaviour
                     this.currentMenuOpen = inventoryMenu.gameObject;
                     this.currentMenuOpen.SetActive(true);
 
-                    inventoryMenu.OpenInventory(Inventory);
+                    inventoryMenu.OpenInventory(Inventory, abilities);
 
                     audioSourceForInventorySounds.clip = this.InventoryOpenSound;
                     audioSourceForInventorySounds.Play();
@@ -447,6 +445,7 @@ public class PlayerDungeon : MonoBehaviour
                     this.onPointerClick = false;
                     MyGuard.IsNotNull(this.inventoryMenu);
                     var buttonGameObject = this.inventoryMenu.GetSelectedButton();
+                    this.inventoryMenu.DeselectButton();
 
                     if (buttonGameObject == null)
                     {
@@ -455,7 +454,7 @@ public class PlayerDungeon : MonoBehaviour
                     }
 
                     // TODO this better can this be done in Inventroy menu? 
-                    if (buttonGameObject.TryGetComponent<ItemOptionButton>(out var selectedItemOp))
+                    if (buttonGameObject.TryGetComponent<InventorySlot>(out var selectedItemOp))
                     {
                         if (selectedItemOp.Item == null)
                         {
@@ -508,7 +507,7 @@ public class PlayerDungeon : MonoBehaviour
     /// Idk if comparing name string is neccessary though I
     /// </summary>
     /// <param name="itemToRemove"></param>
-    private void RemoveFromPlayerEquipped(ItemOptionButton itemButton)
+    private void RemoveFromPlayerEquipped(InventorySlot itemButton)
     {
         var itemToRemove = itemButton.Item;
         MyGuard.IsNotNull(itemToRemove);

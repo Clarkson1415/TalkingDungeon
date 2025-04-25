@@ -23,12 +23,12 @@ public class DungeonButton : MonoBehaviour
     /// <summary>
     /// Plays the selected sound.
     /// </summary>
-    public virtual void ClickButton()
+    public virtual void PlaySelectSound()
     {
         if (selectedSound == null)
         {
             // dialogue buttons wont have a selected sound;
-            return; 
+            return;
         }
 
         if (this.audioSource.clip != selectedSound)
@@ -38,4 +38,6 @@ public class DungeonButton : MonoBehaviour
 
         this.audioSource.Play();
     }
+
+
 }
