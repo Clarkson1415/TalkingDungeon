@@ -3,13 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]
@@ -50,7 +47,11 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     [Header("InventoryAnimation")]
     [SerializeField] GameObject AnimatedBookInventoryBackground;
     private Animator bookAnimator;
-    [SerializeField] GameObject Inventory;
+
+    /// <summary>
+    /// Ivnentory containers contains item view ability view etc. which each container needs to be toggled between via tabs.
+    /// </summary>
+    [SerializeField] GameObject InventoryOverlayOnBook;
 
     [Header("Book Tabs")]
     private List<Item> AllInventoryItems = new();
@@ -70,7 +71,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     public override void Close()
     {
         this.bookAnimator.SetTrigger("Close");
-        this.Inventory.SetActive(false);
+        this.InventoryOverlayOnBook.SetActive(false);
         StartCoroutine(DisableInventoryAfterBookAnim());
     }
 
@@ -110,7 +111,6 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         var highlightedWithItem = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<InventorySlot>(out _));
 
         var highlightedWithTab = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<BookTab>(out _));
-
 
         if (highlightedWithItem != null)
         {
@@ -160,7 +160,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         AllInventoryItems = playerItems;
         this.PlayerAbilities = playerAbilities;
 
-        this.Inventory.SetActive(false);
+        this.InventoryOverlayOnBook.SetActive(false);
         this.bookAnimator.SetTrigger("Open");
         Debug.Log("todo add book slide and open sound effect. then close then slide sfx also");
 
@@ -215,7 +215,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
                 }
             }
         }
-        else if(this.selectedTab.tabType == BookTab.TabType.Equipment)
+        else if (this.selectedTab.tabType == BookTab.TabType.Equipment)
         {
             // else if selected tab is an item type show all matching items
             // get all items matching selected tabs type
@@ -273,7 +273,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             yield return null;
         }
 
-        this.Inventory.SetActive(true);
+        this.InventoryOverlayOnBook.SetActive(true);
 
         // TODO tab on opens to last open tab otherwise initiaalise to Items
         // and highlight is by changeing the tab.SwapTabSprite() on it and all others false
