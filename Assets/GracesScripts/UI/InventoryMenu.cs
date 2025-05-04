@@ -12,53 +12,68 @@ using UnityEngine.UI;
 [RequireComponent(typeof(AudioSource))]
 public class InventoryMenu : Menu, IPointerEnterHandler
 {
-    /// <summary>
-    /// Inventory Slots
-    /// </summary>
-    List<GameObject> InventorySlots = new();
+    // instead of this
+    // have in invnetory menu:
+    // gear panel, ability panel, item panel that takes up the left top side of the screen
+    // and a new class for each panel to control it. an InventoryMenu.cs juts controls them and tell them what to update and when
+    // we also will have settings pages container, save pages container, dialogue log pages container that will hold and control their information.
 
-    /// <summary>
-    /// game object that is the parent of all the right side of the book slots for inventory items: Weapons, special items.
-    /// </summary>
-    [SerializeField] GameObject InventoryItemsSlotsContainer;
-
-    [Header("InventoryAnimation")]
+    [Header("InventoryMenu")]
+    private List<Item> AllInventoryItems = new();
+    private List<Ability> PlayerAbilities = new();
+    private BookTab selectedTab;
+    [SerializeField] BookTab OnFirstOpenInventorySelectedTab;
     [SerializeField] GameObject AnimatedBookInventoryBackground;
     private Animator bookAnimator;
 
-    [Header("Player Stuff")]
-    [SerializeField] List<GameObject> itemSlots;
-    [SerializeField] private GameObject equippedWeaponSlot;
-    [SerializeField] private GameObject equippedClothingSlot;
-    [SerializeField] private GameObject equippedSpecialItemSlot;
-    [SerializeField] private List<GameObject> abilitySlots;
-    [SerializeField] private TMP_Text playerPowerStatText;
-    [SerializeField] private TMP_Text playerDefenceStatText;
-    [SerializeField] private TMP_Text playerWellBeingText;
+    [Header("Both Pages Containers")]
+    private SaveMenu saveMenu;
+    private SettingsMenu settingsMenu;
+
+    [Header("Left Side Panel Containers")]
+    private gearPanel gearPanel;
+    private ItemPanel gearPanel;
+    private playerStatsPanel playerPanel;
+    private abilityPanel abilityPanel;
 
     /// <summary>
-    /// <see cref="ItemViewContainer"/> Is the parent game object of all the stuff thats shown in the item view section
+    /// Inventory Slots
     /// </summary>
-    [Header("Item view stuff")]
-    [SerializeField] private GameObject ItemViewContainer;
-    [SerializeField] private GameObject itemDescriptionObject;
-    private ItemDescriptionContainer itemdescriptionContainer;
-    [SerializeField] private GameObject itemNameContainerObject;
-    private ItemNameContainer itemNameContainer;
-    [SerializeField] private TMP_Text powerValueText;
-    [SerializeField] private TMP_Text defenceValueText;
-    [SerializeField] private Image ItemTypeIndicatorIndicator;
-    [SerializeField] private Image ItemAbilityImage;
-    [SerializeField] private Sprite specialItemImage;
-    [SerializeField] private Sprite ArmourItemImage;
-    [SerializeField] private Sprite WeaponItemImage;
+    [Header("Right Side Panel Containers")]
+    [SerializeField] GameObject gearSlotsContainer;
+    [SerializeField] GameObject itemSlotsContainer;
+    [SerializeField] GameObject InnateAbilitySlotsContainer;
+    [SerializeField] GameObject GearAbilitySlotsContainer;
 
-    [Header("Book Tabs")]
-    private List<Item> AllInventoryItems = new();
-    private List<Ability> PlayerAbilities = new();
+    // to go in player inventory panel.cs
+    //[Header("Player Stuff")]
+    //[SerializeField] List<GameObject> itemSlots;
+    //[SerializeField] private GameObject equippedWeaponSlot;
+    //[SerializeField] private GameObject equippedClothingSlot;
+    //[SerializeField] private GameObject equippedSpecialItemSlot;
+    //[SerializeField] private List<GameObject> abilitySlots;
+    //[SerializeField] private TMP_Text playerPowerStatText;
+    //[SerializeField] private TMP_Text playerDefenceStatText;
+    //[SerializeField] private TMP_Text playerWellBeingText;
 
-    private BookTab selectedTab;
-    [SerializeField] BookTab OnFirstOpenInventorySelectedTab;
+
+    ///// <summary>
+    ///// <see cref="ItemViewContainer"/> Is the parent game object of all the stuff thats shown in the item view section
+    ///// </summary>
+    //[Header("Left Panel Gear View")]
+    //[SerializeField] private GameObject ItemViewContainer;
+    //[SerializeField] private GameObject itemDescriptionObject;
+    //private ItemDescriptionContainer itemdescriptionContainer;
+    //[SerializeField] private GameObject itemNameContainerObject;
+    //private ItemNameContainer itemNameContainer;
+    //[SerializeField] private TMP_Text powerValueText;
+    //[SerializeField] private TMP_Text defenceValueText;
+    //[SerializeField] private Image ItemTypeIndicatorIndicator;
+    //[SerializeField] private Image ItemAbilityImage;
+    //[SerializeField] private Sprite specialItemImage;
+    //[SerializeField] private Sprite ArmourItemImage;
+    //[SerializeField] private Sprite WeaponItemImage;
+    
 
     private void Awake()
     {
@@ -71,7 +86,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     public override void Close()
     {
         this.bookAnimator.SetTrigger("Close");
-        this.InventoryItemsSlotsContainer.SetActive(false);
+        this.gearSlotsContainer.SetActive(false);
         StartCoroutine(DisableInventoryAfterBookAnim());
     }
 
@@ -160,7 +175,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         AllInventoryItems = playerItems;
         this.PlayerAbilities = playerAbilities;
 
-        this.InventoryItemsSlotsContainer.SetActive(false);
+        this.gearSlotsContainer.SetActive(false);
         this.bookAnimator.SetTrigger("Open");
         Debug.Log("todo add book slide and open sound effect. then close then slide sfx also");
 
@@ -273,7 +288,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             yield return null;
         }
 
-        this.InventoryItemsSlotsContainer.SetActive(true);
+        this.gearSlotsContainer.SetActive(true);
 
         // TODO tab on opens to last open tab otherwise initiaalise to Items
         // and highlight is by changeing the tab.SwapTabSprite() on it and all others false
