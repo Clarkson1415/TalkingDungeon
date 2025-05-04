@@ -12,17 +12,34 @@ using UnityEngine.UI;
 [RequireComponent(typeof(AudioSource))]
 public class InventoryMenu : Menu, IPointerEnterHandler
 {
+    /// <summary>
+    /// Inventory Slots
+    /// </summary>
+    List<GameObject> InventorySlots = new();
+
+    /// <summary>
+    /// game object that is the parent of all the right side of the book slots for inventory items: Weapons, special items.
+    /// </summary>
+    [SerializeField] GameObject InventoryItemsSlotsContainer;
+
+    [Header("InventoryAnimation")]
+    [SerializeField] GameObject AnimatedBookInventoryBackground;
+    private Animator bookAnimator;
+
     [Header("Player Stuff")]
     [SerializeField] List<GameObject> itemSlots;
     [SerializeField] private GameObject equippedWeaponSlot;
     [SerializeField] private GameObject equippedClothingSlot;
     [SerializeField] private GameObject equippedSpecialItemSlot;
     [SerializeField] private List<GameObject> abilitySlots;
+    [SerializeField] private TMP_Text playerPowerStatText;
+    [SerializeField] private TMP_Text playerDefenceStatText;
+    [SerializeField] private TMP_Text playerWellBeingText;
 
     /// <summary>
     /// <see cref="ItemViewContainer"/> Is the parent game object of all the stuff thats shown in the item view section
     /// </summary>
-    [Header("Item UI description")]
+    [Header("Item view stuff")]
     [SerializeField] private GameObject ItemViewContainer;
     [SerializeField] private GameObject itemDescriptionObject;
     private ItemDescriptionContainer itemdescriptionContainer;
@@ -35,22 +52,6 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     [SerializeField] private Sprite specialItemImage;
     [SerializeField] private Sprite ArmourItemImage;
     [SerializeField] private Sprite WeaponItemImage;
-
-    [Header("player Stats")]
-    [SerializeField] private TMP_Text playerPowerStatText;
-    [SerializeField] private TMP_Text playerDefenceStatText;
-    [SerializeField] private TMP_Text playerWellBeingText;
-
-    List<GameObject> populatedItemSlots = new();
-
-    [Header("InventoryAnimation")]
-    [SerializeField] GameObject AnimatedBookInventoryBackground;
-    private Animator bookAnimator;
-
-    /// <summary>
-    /// Ivnentory containers contains item view ability view etc. which each container needs to be toggled between via tabs.
-    /// </summary>
-    [SerializeField] GameObject InventoryOverlayOnBook;
 
     [Header("Book Tabs")]
     private List<Item> AllInventoryItems = new();
@@ -70,7 +71,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     public override void Close()
     {
         this.bookAnimator.SetTrigger("Close");
-        this.InventoryOverlayOnBook.SetActive(false);
+        this.InventoryItemsSlotsContainer.SetActive(false);
         StartCoroutine(DisableInventoryAfterBookAnim());
     }
 
@@ -159,7 +160,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         AllInventoryItems = playerItems;
         this.PlayerAbilities = playerAbilities;
 
-        this.InventoryOverlayOnBook.SetActive(false);
+        this.InventoryItemsSlotsContainer.SetActive(false);
         this.bookAnimator.SetTrigger("Open");
         Debug.Log("todo add book slide and open sound effect. then close then slide sfx also");
 
@@ -179,7 +180,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             // get all items matching selected tabs type
             var ItemsInCategory = this.PlayerAbilities;
 
-            populatedItemSlots.Clear();
+            this.InventorySlots.Clear();
 
             for (int i = 0; i < itemSlots.Count; i++)
             {
@@ -195,12 +196,12 @@ public class InventoryMenu : Menu, IPointerEnterHandler
                     itemButtonOld.ReplaceSlotWithBlanks();
                 }
 
-                this.populatedItemSlots.Add(itemButtonOld.gameObject);
+                this.InventorySlots.Add(itemButtonOld.gameObject);
             }
 
             // make sure players equipped items have equipped highlight on and so does the corresponding inventory item.
             var equippedAbilities = this.abilitySlots.Select(x => x.GetComponentInChildren<InventorySlot>().Ability);
-            var inventorySlots = this.populatedItemSlots.Select(x => x.GetComponent<InventorySlot>()).ToList();
+            var inventorySlots = this.InventorySlots.Select(x => x.GetComponent<InventorySlot>()).ToList();
 
             foreach (var slot in inventorySlots)
             {
@@ -220,7 +221,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             // get all items matching selected tabs type
             var ItemsInCategory = AllInventoryItems.Where(x => x.Type == this.selectedTab.itemCategory).ToList();
 
-            populatedItemSlots.Clear();
+            this.InventorySlots.Clear();
 
             for (int i = 0; i < itemSlots.Count; i++)
             {
@@ -236,7 +237,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
                     itemButtonOld.ReplaceSlotWithBlanks();
                 }
 
-                this.populatedItemSlots.Add(itemButtonOld.gameObject);
+                this.InventorySlots.Add(itemButtonOld.gameObject);
             }
 
             // make sure players equipped items have equipped highlight on and so does the corresponding inventory item.
@@ -249,7 +250,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             };
 
             var equippedThing = equippedSlotForCategory.GetComponentInChildren<InventorySlot>().Item;
-            var inventorySlots = this.populatedItemSlots.Select(x => x.GetComponent<InventorySlot>()).ToList();
+            var inventorySlots = this.InventorySlots.Select(x => x.GetComponent<InventorySlot>()).ToList();
 
             foreach (var slot in inventorySlots)
             {
@@ -272,7 +273,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             yield return null;
         }
 
-        this.InventoryOverlayOnBook.SetActive(true);
+        this.InventoryItemsSlotsContainer.SetActive(true);
 
         // TODO tab on opens to last open tab otherwise initiaalise to Items
         // and highlight is by changeing the tab.SwapTabSprite() on it and all others false
@@ -291,7 +292,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     public void AddItem(Item item)
     {
-        var itemButtonToUpdate = this.populatedItemSlots.Find(x => x.GetComponent<InventorySlot>().Item != null);
+        var itemButtonToUpdate = this.InventorySlots.Find(x => x.GetComponent<InventorySlot>().Item != null);
 
         itemButtonToUpdate.GetComponent<InventorySlot>().SetItemAndImage(item);
     }
@@ -382,7 +383,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         MyGuard.IsNotNull(oldItem);
 
         // toggle graphic on the inventory slot
-        foreach (var thingo in this.populatedItemSlots)
+        foreach (var thingo in this.InventorySlots)
         {
             var itemOption = thingo.GetComponentInChildren<InventorySlot>();
             if (itemOption.Item == oldItem.Item)
@@ -430,7 +431,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     private void ToggleEquipImageOnInventoryItem(Item ItemToMatch, bool OnOff)
     {
-        foreach (var button in this.populatedItemSlots)
+        foreach (var button in this.InventorySlots)
         {
             var itemOption = button.GetComponentInChildren<InventorySlot>();
             if (ItemToMatch == itemOption.Item)
