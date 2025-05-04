@@ -12,30 +12,29 @@ using UnityEngine.UI;
 [RequireComponent(typeof(AudioSource))]
 public class InventoryMenu : Menu, IPointerEnterHandler
 {
-    [Header("EquippedSlots")]
+    [Header("Player Stuff")]
     [SerializeField] List<GameObject> itemSlots;
     [SerializeField] private GameObject equippedWeaponSlot;
     [SerializeField] private GameObject equippedClothingSlot;
     [SerializeField] private GameObject equippedSpecialItemSlot;
-
     [SerializeField] private List<GameObject> abilitySlots;
 
+    /// <summary>
+    /// <see cref="ItemViewContainer"/> Is the parent game object of all the stuff thats shown in the item view section
+    /// </summary>
     [Header("Item UI description")]
-    [SerializeField] private Image ItemTypeIndicatorImageSlot;
-    [SerializeField] private Image ItemAbilityImageSlot;
+    [SerializeField] private GameObject ItemViewContainer;
+    [SerializeField] private GameObject itemDescriptionObject;
+    private ItemDescriptionContainer itemdescriptionContainer;
+    [SerializeField] private GameObject itemNameContainerObject;
+    private ItemNameContainer itemNameContainer;
+    [SerializeField] private TMP_Text powerValueText;
+    [SerializeField] private TMP_Text defenceValueText;
+    [SerializeField] private Image ItemTypeIndicatorIndicator;
+    [SerializeField] private Image ItemAbilityImage;
     [SerializeField] private Sprite specialItemImage;
     [SerializeField] private Sprite ArmourItemImage;
     [SerializeField] private Sprite WeaponItemImage;
-
-    [SerializeField] GameObject itemDescriptionObject;
-    [SerializeField] GameObject nameContainerObject;
-
-    private ItemDescriptionContainer descriptionContainer;
-    private ItemNameContainer nameContainer;
-
-    [SerializeField] private TMP_Text powerValueLoc;
-    [SerializeField] private TMP_Text defenceValueLoc;
-    [SerializeField] private TMP_Text defenceWord;
 
     [Header("player Stats")]
     [SerializeField] private TMP_Text playerPowerStatText;
@@ -64,8 +63,8 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     {
         this.bookAnimator = this.AnimatedBookInventoryBackground.GetComponent<Animator>();
 
-        descriptionContainer = this.itemDescriptionObject.GetComponent<ItemDescriptionContainer>();
-        nameContainer = this.nameContainerObject.GetComponent<ItemNameContainer>();
+        itemdescriptionContainer = this.itemDescriptionObject.GetComponent<ItemDescriptionContainer>();
+        itemNameContainer = this.itemNameContainerObject.GetComponent<ItemNameContainer>();
     }
 
     public override void Close()
@@ -310,22 +309,22 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     private void SetItemViewToEmptyItem()
     {
-        descriptionContainer.SetDescription("Blank");
-        nameContainer.SetName("Empty Slot");
+        itemdescriptionContainer.SetDescription("Blank");
+        itemNameContainer.SetName("Empty Slot");
 
-        this.powerValueLoc.text = "0";
-        this.defenceValueLoc.text = "0";
+        this.powerValueText.text = "0";
+        this.defenceValueText.text = "0";
 
-        this.ItemTypeIndicatorImageSlot.sprite = emptySlotImage;
-        this.ItemAbilityImageSlot.sprite = emptySlotImage;
+        this.ItemTypeIndicatorIndicator.sprite = emptySlotImage;
+        this.ItemAbilityImage.sprite = emptySlotImage;
     }
 
     private void UpdateItemView(InventorySlot itemButtonComp)
     {
-        this.ItemTypeIndicatorImageSlot.transform.parent.gameObject.SetActive(true);
-        this.defenceValueLoc.gameObject.SetActive(true);
+        this.ItemTypeIndicatorIndicator.transform.parent.gameObject.SetActive(true);
+        this.defenceValueText.gameObject.SetActive(true);
         this.defenceWord.gameObject.SetActive(true);
-        this.ItemAbilityImageSlot.sprite = this.emptySlotImage;
+        this.ItemAbilityImage.sprite = this.emptySlotImage;
 
         if (itemButtonComp.Item == null && itemButtonComp.Ability == null)
         {
@@ -335,24 +334,24 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
         if (itemButtonComp.Ability != null)
         {
-            this.ItemTypeIndicatorImageSlot.transform.parent.gameObject.SetActive(false);
-            this.defenceValueLoc.gameObject.SetActive(false);
+            this.ItemTypeIndicatorIndicator.transform.parent.gameObject.SetActive(false);
+            this.defenceValueText.gameObject.SetActive(false);
             this.defenceWord.gameObject.SetActive(false);
 
-            this.ItemAbilityImageSlot.sprite = itemButtonComp.Ability.image;
+            this.ItemAbilityImage.sprite = itemButtonComp.Ability.image;
 
-            descriptionContainer.SetDescription(itemButtonComp.Ability.description);
-            nameContainer.SetName(itemButtonComp.Ability.Name);
+            itemdescriptionContainer.SetDescription(itemButtonComp.Ability.description);
+            itemNameContainer.SetName(itemButtonComp.Ability.Name);
 
-            this.powerValueLoc.text = itemButtonComp.Ability.attackPower.ToString();
+            this.powerValueText.text = itemButtonComp.Ability.attackPower.ToString();
         }
         else if (itemButtonComp.Item != null)
         {
-            descriptionContainer.SetDescription(itemButtonComp.Item.description);
-            nameContainer.SetName(itemButtonComp.Item.name);
+            itemdescriptionContainer.SetDescription(itemButtonComp.Item.description);
+            itemNameContainer.SetName(itemButtonComp.Item.name);
 
-            this.powerValueLoc.text = itemButtonComp.Item.PowerStat.ToString();
-            this.defenceValueLoc.text = itemButtonComp.Item.DefenceStat.ToString();
+            this.powerValueText.text = itemButtonComp.Item.PowerStat.ToString();
+            this.defenceValueText.text = itemButtonComp.Item.DefenceStat.ToString();
 
             Sprite typeSprite = itemButtonComp.Item.Type switch
             {
@@ -362,7 +361,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
                 _ => throw new ArgumentOutOfRangeException($"no Item Type found {itemButtonComp.Item.Type}")
             };
 
-            this.ItemTypeIndicatorImageSlot.sprite = typeSprite;
+            this.ItemTypeIndicatorIndicator.sprite = typeSprite;
 
             // TODO smoehow show what ability the item has but I need to plan out the menu better.
             //this.ItemAbilityImageSlot.sprite = itemButtonComp.Item.ability.image
