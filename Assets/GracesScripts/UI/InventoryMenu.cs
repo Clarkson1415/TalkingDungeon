@@ -26,24 +26,13 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     [SerializeField] GameObject AnimatedBookInventoryBackground;
     private Animator bookAnimator;
 
-    [Header("Both Pages Containers")]
-    private SaveMenu saveMenu;
-    private SettingsMenu settingsMenu;
+    [Header("Menu Sections")]
+    private gearPages gearPages;
+    private ItemPages ItemPages;
+    private abilityPages abilityPages;
 
-    [Header("Left Side Panel Containers")]
-    private gearPanel gearPanel;
-    private ItemPanel gearPanel;
-    private playerStatsPanel playerPanel;
-    private abilityPanel abilityPanel;
-
-    /// <summary>
-    /// Inventory Slots
-    /// </summary>
-    [Header("Right Side Panel Containers")]
-    [SerializeField] GameObject gearSlotsContainer;
-    [SerializeField] GameObject itemSlotsContainer;
-    [SerializeField] GameObject InnateAbilitySlotsContainer;
-    [SerializeField] GameObject GearAbilitySlotsContainer;
+    private saveMenuPages saveMenuPages;
+    private settingsMenuPages settingsMenuPages;
 
     // to go in player inventory panel.cs
     //[Header("Player Stuff")]
