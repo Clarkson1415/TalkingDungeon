@@ -194,20 +194,21 @@ MonoBehaviour:
   InventoryClosedSound: {fileID: 8300000, guid: 1e8ee11b8a2353e408e2f50a02b0ec9c,
     type: 3}
   Inventory:
-  - {fileID: 11400000, guid: 317e86fca9d6252438408716fe48e52d, type: 2}
+  - {fileID: 11400000, guid: 2bbbf6774d36fc241bb3ac0b3aec955e, type: 2}
   audioSourceForInventorySounds: {fileID: 5318926167875360859}
-  equippedWeapon: {fileID: 0}
-  equippedClothing: {fileID: 0}
+  defaultWeaponHands: {fileID: 11400000, guid: 2bbbf6774d36fc241bb3ac0b3aec955e, type: 2}
+  equippedWeapon: {fileID: 11400000, guid: 2bbbf6774d36fc241bb3ac0b3aec955e, type: 2}
   equippedSpecialItem: {fileID: 0}
-  movementSpeed: 3
-  state: 1
   maxWellbeing: 100
   currentWellbeing: 80
   healthBarFillImage: {fileID: 0}
-  abilities:
-  - {fileID: 11400000, guid: 5964789fba75d9540a4e7626dd25d315, type: 2}
   scenesTraversed: []
+  movementSpeed: 3
+  startingState: 1
   isHealthBarDoingAnim: 0
+  enemyLoaderPrefab: {fileID: 5959426843505071393, guid: 08760dcc72a011a4299b2bb0c92e1f5d,
+    type: 3}
+  enemyLoader: {fileID: 0}
 --- !u!114 &3267450824328115795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,58 +284,6 @@ MonoBehaviour:
     m_ActionId: 064be39a-af4a-4399-b929-1e8cc242aeda
     m_ActionName: Player/Fire[/Mouse/leftButton]
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: ab057721-bd0d-4bfc-bdcd-29fd1ae502ff
-    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 5b4460dd-a98f-48fa-a9f8-e4cbdc29c6b5
-    m_ActionName: UI/Submit[/Keyboard/enter]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5275466657955505087}
-        m_TargetAssemblyTypeName: PlayerDungeon, Assembly-CSharp
-        m_MethodName: OnMenuCancel
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 44f699b0-dde2-46fd-b11e-39bc9216a93b
-    m_ActionName: UI/Cancel[/Keyboard/escape]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: cc829e65-2ae4-4191-82db-3ef4a2c325a2
-    m_ActionName: UI/Point[/Mouse/position]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 4e527e84-f068-47bb-a5d9-0f5ad34f7982
-    m_ActionName: UI/Click[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2f5be24d-8a58-4c4b-9a91-d4c7c6345f3e
-    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: bea00656-f24c-41d5-a7b6-26f1212c0c7b
-    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: db7bed04-6bbf-4666-8fea-9605530a3305
-    m_ActionName: UI/RightClick[/Mouse/rightButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 4dd7aa46-89b9-4c85-8fe8-f3bcd589c175
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2baf6c8d-f219-42a6-840a-bc13043ec5de
-    m_ActionName: UI/TrackedDeviceOrientation
-  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5275466657955505087}
         m_TargetAssemblyTypeName: PlayerDungeon, Assembly-CSharp
@@ -350,6 +299,42 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 91a16962-49fc-47e1-ae8b-6c2874de43c4
     m_ActionName: Player/OpenInventory[/Keyboard/i]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5275466657955505087}
+        m_TargetAssemblyTypeName: PlayerDungeon, Assembly-CSharp
+        m_MethodName: OnMenuCancel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: c20d4703-835f-4c17-bfaa-718c0f397f11
+    m_ActionName: Player/Escape[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 716f293e-0a08-406a-95a3-66c156dd32ab
+    m_ActionName: UI/Point[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5275466657955505087}
+        m_TargetAssemblyTypeName: PlayerDungeon, Assembly-CSharp
+        m_MethodName: OnMouseClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 69a967fa-43b3-44a3-ba35-acd66d3a73b4
+    m_ActionName: UI/Click[/Mouse/leftButton]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -469,7 +454,7 @@ MonoBehaviour:
   - {x: 0.20983553, y: -0.3487284, z: 0}
   m_ShapePathHash: 1112366633
   m_Mesh: {fileID: 0}
-  m_InstanceId: 43552
+  m_InstanceId: -2962
   m_LocalBounds:
     m_Center: {x: -0.008348465, y: 0.12563252, z: 0}
     m_Extent: {x: 0.22360897, y: 0.49217469, z: 0}

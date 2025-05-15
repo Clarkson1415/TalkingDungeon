@@ -8,14 +8,14 @@ public class BookTab : DungeonButton
 {
     public enum TabType
     {
-        Equipment,
-        Abilities,
+        Gear,
+        Items,
+        Save,
+        Settings,
     }
 
     public TabType tabType;
-    public ItemType itemCategory;
     private Animator tabAnimator;
-
     private void Awake()
     {
         tabAnimator = GetComponent<Animator>();

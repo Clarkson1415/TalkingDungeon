@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3f80333a5d9d3f54c948f4334ee26ba2, type: 3}
-  m_Name: bagOfWheat
+  m_Name: Hands
   m_EditorClassIdentifier: 
-  PowerStat: 0
+  Abilities:
+  - {fileID: 11400000, guid: 5964789fba75d9540a4e7626dd25d315, type: 2}
+  PowerStat: 5
   DefenceStat: 0
-  Type: 3
-  Name: bag of wheat
-  description: bag of wheat
-  image: {fileID: -431993298, guid: 60af9ccd03ffbb84db4b9a7b3648a770, type: 3}
+  Type: 1
+  Name: Hands
+  description: Your fists! Never be unprepared!
+  image: {fileID: 21300000, guid: e1d143c58c334d3499aed8b59bc418f7, type: 3}
