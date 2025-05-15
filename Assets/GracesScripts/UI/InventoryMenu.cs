@@ -52,7 +52,6 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         this.UIEventSystem.SetSelectedGameObject(null);
         this.selectedTab = selectedTab;
 
-
         // change sprite to the selected tab sprite so it stays (appearing) selected when selecting items.
         selectedTab.ForceTabSelectionAnim(true);
 
@@ -64,7 +63,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             tab.ForceTabSelectionAnim(false);
         }
 
-        // Show the correct windows 
+        // Show the correct windows
         ChangeBookWindows();
     }
 
@@ -74,10 +73,6 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     /// <exception cref="NotImplementedException"></exception>
     private void ChangeBookWindows()
     {
-        // TODO page turn animation
-        // then content appears
-
-
         if (this.selectedTab.tabType == BookTab.TabType.Gear)
         {
             this.gearPages.FlipToPage();
@@ -166,7 +161,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
         var highlightedTabItem = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<BookTab>(out _));
 
-        if (gameobjectSlot != null)
+        if (gameobjectSlot != null && this.selectedTab != null)
         {
             if (gameobjectSlot == lastHighlightedItem)
             {

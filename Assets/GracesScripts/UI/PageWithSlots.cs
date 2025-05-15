@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEditor.Timeline.Actions.MenuPriority;
@@ -17,6 +18,24 @@ namespace Assets.GracesScripts.UI
         [SerializeField] private PlayerInfo playerInfoSection;
         [SerializeField] private ItemView itemView;
         [SerializeField] private List<InventorySlot> InventorySlots;
+
+        protected override void TogglePageComponents(bool OnOff)
+        {
+            this.itemView.gameObject.SetActive(OnOff);
+            this.playerInfoSection.gameObject.SetActive(OnOff);
+
+            var SLotsParentGameObject = this.InventorySlots[0].gameObject.transform.parent.gameObject;
+            SLotsParentGameObject.SetActive(OnOff);
+
+            Debug.Log("toggle on or off page happened. need to have page content toggle off before page turn and on after.");
+            Debug.Log("also need to toggle Tabs lol.");
+            Debug.Log("Then also add closing. so disable, flip page the other way, then play close book animation.");
+
+            foreach (Transform child in this.transform)
+            {
+                child.gameObject.SetActive(OnOff);
+            }
+        }
 
         /// <summary>
         /// Updates item buttons to current category selected from this.selectedTab. TODO this better by maybe could make booktabs have a enum type that encompasses abilityes and items and have a parent class for abilities and items?
