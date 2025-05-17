@@ -35,6 +35,9 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     private Item? playerEquippedItem;
     [SerializeField] private Item HandsWeapon;
 
+    [SerializeField] GameObject PagesAnimation;
+    private Animator animator;
+
     private void Awake()
     {
         this.bookAnimator = this.AnimatedBookInventoryBackground.GetComponent<Animator>();
@@ -75,12 +78,14 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     {
         if (this.selectedTab.tabType == BookTab.TabType.Gear)
         {
-            this.gearPages.FlipToPage();
+            this.gearPages.gameObject.SetActive(true);
+            this.gearPages.TogglePageComponents(true);
             this.gearPages.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == ItemType.Weapon).ToList(), this.playerEquippedWeapon, this.playerEquippedItem);
         }
         else if (this.selectedTab.tabType == BookTab.TabType.Items)
         {
-            this.ItemPages.FlipToPage();
+            this.ItemPages.gameObject.SetActive(true);
+            this.ItemPages.TogglePageComponents(true);
             this.ItemPages.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == ItemType.SpecialItem).ToList(), this.playerEquippedWeapon, this.playerEquippedItem);
         }
         else
@@ -222,5 +227,20 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
         this.gearPages.RemoveEquippedItem(selectedSlot.Item);
         this.ItemPages.RemoveEquippedItem(selectedSlot.Item);
+    }
+
+    public void FlipToPage()
+    {
+        // Flip page animation then enable children of the page.
+        StartCoroutine(WaitForPageFlip());
+    }
+
+    IEnumerator WaitForPageFlip()
+    {
+        yield return new WaitForSeconds(0.24f);
+        this.PagesAnimation.SetActive(true);
+        animator.SetTrigger("Open");
+        yield return new WaitForSeconds(0.24f);
+        this.PagesAnimation.SetActive(false);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.GracesScripts.UI
 {
@@ -9,35 +7,21 @@ namespace Assets.GracesScripts.UI
     /// </summary>
     public abstract class BookPage : MonoBehaviour
     {
-        [SerializeField] GameObject PagesAnimation;
-        private Animator animator;
+        public readonly BookTab.TabType PageTabType;
 
-        private void Awake()
+        /// <summary>
+        /// Call this.ToggleChildComponents() inside this method first, Then add whatever other gameobjects should be toggled with the page. 
+        /// e.g. the slots in the gear page should be setActive false when the save tab is selected.
+        /// </summary>
+        /// <param name="OnOff"></param>
+        public abstract void TogglePageComponents(bool OnOff);
+
+        protected void ToggleChildComponents(bool OnOff)
         {
-            animator = PagesAnimation.GetComponent<Animator>();
-            this.PagesAnimation.SetActive(false);
-
-            this.TogglePageComponents(false);
+            foreach (Transform child in this.transform)
+            {
+                child.gameObject.SetActive(OnOff);
+            }
         }
-
-        public void FlipToPage()
-        {
-            // Flip page animation then enable children of the page.
-            StartCoroutine(WaitForPageFlip());
-        }
-
-        IEnumerator WaitForPageFlip()
-        {
-            yield return new WaitForSeconds(0.24f);
-            this.PagesAnimation.SetActive(true);
-            animator.SetTrigger("Open");
-            yield return new WaitForSeconds(0.24f);
-            this.PagesAnimation.SetActive(false);
-
-            // enable page contents
-            this.TogglePageComponents(true);
-        }
-
-        protected abstract void TogglePageComponents(bool OnOff);
     }
 }

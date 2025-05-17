@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using static UnityEditor.Timeline.Actions.MenuPriority;
 #nullable enable
 
 namespace Assets.GracesScripts.UI
@@ -19,8 +15,11 @@ namespace Assets.GracesScripts.UI
         [SerializeField] private ItemView itemView;
         [SerializeField] private List<InventorySlot> InventorySlots;
 
-        protected override void TogglePageComponents(bool OnOff)
+        /// <inheritdoc/>
+        public override void TogglePageComponents(bool OnOff)
         {
+            this.ToggleChildComponents(OnOff);
+
             this.itemView.gameObject.SetActive(OnOff);
             this.playerInfoSection.gameObject.SetActive(OnOff);
 
@@ -30,11 +29,6 @@ namespace Assets.GracesScripts.UI
             Debug.Log("toggle on or off page happened. need to have page content toggle off before page turn and on after.");
             Debug.Log("also need to toggle Tabs lol.");
             Debug.Log("Then also add closing. so disable, flip page the other way, then play close book animation.");
-
-            foreach (Transform child in this.transform)
-            {
-                child.gameObject.SetActive(OnOff);
-            }
         }
 
         /// <summary>
@@ -83,7 +77,7 @@ namespace Assets.GracesScripts.UI
             {
                 throw new InvalidEnumArgumentException($"item type on {item} not accepted");
             }
-            
+
             this.ToggleEquipGraphicOnInventorySlot(item, false);
             oldItem.ReplaceSlotWithBlanks();
             oldItem.ToggleEquipGraphic(false);
