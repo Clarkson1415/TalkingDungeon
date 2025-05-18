@@ -12,12 +12,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(AudioSource))]
 public class InventoryMenu : Menu, IPointerEnterHandler
 {
-    // instead of this
-    // have in invnetory menu:
-    // gear panel, ability panel, item panel that takes up the left top side of the screen
-    // and a new class for each panel to control it. an InventoryMenu.cs juts controls them and tell them what to update and when
-    // we also will have settings pages container, save pages container, dialogue log pages container that will hold and control their information.
-
     [Header("InventoryMenu")]
     private List<Item> AllInventoryItems = new();
     private BookTab selectedTab;
@@ -119,7 +113,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
         if (Page is PageWithSlots pageWithSlots)
         {
-            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == ItemType.Weapon).ToList(), this.playerEquippedWeapon, this.playerEquippedItem);
+            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == pageWithSlots.ItemType).ToList(), this.playerEquippedWeapon, this.playerEquippedItem);
         }
     }
 

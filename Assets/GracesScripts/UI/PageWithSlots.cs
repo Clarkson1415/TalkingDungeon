@@ -14,6 +14,7 @@ namespace Assets.GracesScripts.UI
         [SerializeField] private PlayerInfo playerInfoSection;
         [SerializeField] private ItemView itemView;
         [SerializeField] private List<InventorySlot> InventorySlots;
+        public ItemType ItemType;
 
         /// <inheritdoc/>
         public override void TogglePageComponents(bool OnOff)
