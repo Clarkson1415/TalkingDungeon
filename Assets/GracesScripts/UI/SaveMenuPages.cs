@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Assets.GracesScripts.UI
 {
-    class SaveMenuPages
+    class SaveMenuPages : BookPage
     {
+        public override void TogglePageComponents(bool OnOff)
+        {
+            base.ToggleChildComponents(OnOff);
+        }
     }
 }

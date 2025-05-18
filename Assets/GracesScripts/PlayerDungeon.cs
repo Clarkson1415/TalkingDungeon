@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -36,7 +35,7 @@ public class PlayerDungeon : MonoBehaviour
     [SerializeField] AudioClip InventoryClosedSound;
     public List<Item> Inventory = new();
     [SerializeField] private AudioSource audioSourceForInventorySounds;
-    private List<Item?> EquippedItems => new() {this.equippedWeapon, this.equippedSpecialItem };
+    private List<Item?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
     [SerializeField] private Item defaultWeaponHands;
     public Item equippedWeapon;
     public Item? equippedSpecialItem;
@@ -69,7 +68,7 @@ public class PlayerDungeon : MonoBehaviour
     private UseAnimatedLayers? animatedLayers;
 
     [Header("Interactions")]
-    
+
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
     /// </summary>
@@ -450,7 +449,7 @@ public class PlayerDungeon : MonoBehaviour
 
                     if (buttonGameObject.TryGetComponent<BookTab>(out var selectedTab))
                     {
-                        this.inventoryMenu.SelectTab(selectedTab);
+                        this.inventoryMenu.OnTabClick(selectedTab);
                         return;
                     }
 
@@ -753,7 +752,7 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         Log.Print("Interact flag set");
-        
+
         this.InteractFlagSet = true;
     }
 

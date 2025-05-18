@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]
@@ -21,60 +22,90 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     private List<Item> AllInventoryItems = new();
     private BookTab selectedTab;
     [SerializeField] BookTab OnFirstOpenInventorySelectedTab;
-    [SerializeField] GameObject AnimatedBookInventoryBackground;
-    private Animator bookAnimator;
+    [SerializeField] GameObject BookInOutAnimator;
+    [SerializeField] private GameObject BookBackGround;
+    private Image bookBackgroundImage;
+    private Animator bookSlideInOutAnimator;
 
     [Header("Menu Sections")]
     [SerializeField] private GearPages gearPages;
     [SerializeField] private ItemPages ItemPages;
     [SerializeField] private SaveMenuPages saveMenuPages;
     [SerializeField] private SettingsPages settingsMenuPages;
+    private List<BookPage> Pages => new() { gearPages, ItemPages, saveMenuPages, settingsMenuPages };
+    [SerializeField] GameObject PageFlipper;
+    private Animator flipPageAnimator;
 
     [Header("Player")]
     private Item playerEquippedWeapon;
     private Item? playerEquippedItem;
     [SerializeField] private Item HandsWeapon;
 
-    [SerializeField] GameObject PagesAnimation;
-    private Animator animator;
+
+    /// <summary>
+    /// TODO: mahbe change so first selected item was the same as when it was last opened. instead of inistialising to button 0?
+    /// and this only needs to be initialised once.
+    /// </summary>
+    /// <param name="Items"></param>
+    public void OpenInventory(List<Item> playerItems, Item playerEquippedWeapon, Item? playerEquippedItem)
+    {
+        AllInventoryItems = playerItems;
+
+        this.playerEquippedWeapon = playerEquippedWeapon;
+        this.playerEquippedItem = playerEquippedItem;
+
+        this.bookSlideInOutAnimator.SetTrigger("Open");
+        Debug.Log("todo add book slide and open sound effect. then close then slide sfx also");
+
+        this.BookBackGround.SetActive(false);
+        DeactivateAllPages();
+        StartCoroutine(WaitForBookAnimThenSetup());
+    }
+
+    public void OnTabClick(BookTab selectedTab)
+    {
+        MyGuard.IsNotNull(selectedTab);
+        this.selectedTab = selectedTab;
+        StartCoroutine(WaitForPageFlipAnimThenSetupPage());
+    }
 
     private void Awake()
     {
-        this.bookAnimator = this.AnimatedBookInventoryBackground.GetComponent<Animator>();
+        this.bookSlideInOutAnimator = this.BookInOutAnimator.GetComponent<Animator>();
+        this.bookBackgroundImage = this.BookBackGround.GetComponent<Image>();
+        this.flipPageAnimator = this.PageFlipper.GetComponent<Animator>();
+        DeactivateAllPages();
+    }
+
+    private void DeactivateAllPages()
+    {
+        foreach(var p in this.Pages)
+        {
+            p.TogglePageComponents(false);
+            p.gameObject.SetActive(false);
+        }
     }
 
     public override void Close()
     {
-        this.bookAnimator.SetTrigger("Close");
+        this.bookSlideInOutAnimator.SetTrigger("Close");
         StartCoroutine(DisableInventoryAfterBookAnim());
     }
 
-    public void SelectTab(BookTab selectedTab)
+    IEnumerator WaitForPageFlipAnimThenSetupPage()
     {
-        MyGuard.IsNotNull(selectedTab);
-        this.UIEventSystem.SetSelectedGameObject(null);
-        this.selectedTab = selectedTab;
-
-        // change sprite to the selected tab sprite so it stays (appearing) selected when selecting items.
-        selectedTab.ForceTabSelectionAnim(true);
-
-        // Make sure all other Tabs return to normal.
-        var tabs = FindObjectsByType<BookTab>(FindObjectsSortMode.None);
-        var notSelectedTabs = tabs.Where(x => x != selectedTab).ToList();
-        foreach (var tab in notSelectedTabs)
-        {
-            tab.ForceTabSelectionAnim(false);
-        }
-
-        // Show the correct windows
-        ChangeBookWindows();
+        this.PageFlipper.SetActive(true);
+        this.flipPageAnimator.SetTrigger("Open");
+        yield return new WaitForSeconds(0.24f);
+        this.PageFlipper.SetActive(false);
+        this.EnableBookPage();
     }
 
     /// <summary>
     /// When a tab is select this method changes what is displayed inside the book pages
     /// </summary>
     /// <exception cref="NotImplementedException"></exception>
-    private void ChangeBookWindows()
+    private void EnableBookPage()
     {
         if (this.selectedTab.tabType == BookTab.TabType.Gear)
         {
@@ -96,7 +127,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     private IEnumerator DisableInventoryAfterBookAnim()
     {
-        while (!this.bookAnimator.GetCurrentAnimatorStateInfo(0).IsName("OffscreenClosed"))
+        while (!this.bookSlideInOutAnimator.GetCurrentAnimatorStateInfo(0).IsName("OffscreenClosed"))
         {
             yield return null;
         }
@@ -104,54 +135,26 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         base.Close();
     }
 
-    /// <summary>
-    /// TODO: mahbe change so first selected item was the same as when it was last opened. instead of inistialising to button 0?
-    /// and this only needs to be initialised once.
-    /// </summary>
-    /// <param name="Items"></param>
-    public void OpenInventory(List<Item> playerItems, Item playerEquippedWeapon, Item? playerEquippedItem)
-    {
-        AllInventoryItems = playerItems;
-
-        this.playerEquippedWeapon = playerEquippedWeapon;
-        this.playerEquippedItem = playerEquippedItem;
-
-        this.bookAnimator.SetTrigger("Open");
-        Debug.Log("todo add book slide and open sound effect. then close then slide sfx also");
-
-        StartCoroutine(EnableInventoryAfterBookAnim());
-    }
-
     public void OnButtonClicked(InventorySlot slotClicked)
     {
-        if (this.selectedTab.tabType == BookTab.TabType.Gear || this.selectedTab.tabType == BookTab.TabType.Items)
-        {
-            throw new NotImplementedException("not done yet");
-        }
-        else
-        {
-            throw new NotImplementedException("not done yet. probably do nothing the button Onclick method should do it. this is for like save buttons and stuff.");
-        }
+        // todo for other buttons save menu and stuff.
     }
 
-    private IEnumerator EnableInventoryAfterBookAnim()
+    private IEnumerator WaitForBookAnimThenSetup()
     {
-        while (!this.bookAnimator.GetCurrentAnimatorStateInfo(0).IsName("StayOpen"))
+        while (!this.bookSlideInOutAnimator.GetCurrentAnimatorStateInfo(0).IsName("StayOpen"))
         {
             yield return null;
         }
-
-        // TODO tab on opens to last open tab otherwise initiaalise to Items
-        // and highlight is by changeing the tab.SwapTabSprite() on it and all others false
-        // store as current selected tab to remember upon re opening inventory
-        // only show items in current selectd category e.g. weaponsb.
 
         if (this.selectedTab == null)
         {
             this.selectedTab = this.OnFirstOpenInventorySelectedTab;
         }
 
-        SelectTab(selectedTab);
+        StartCoroutine(WaitForPageFlipAnimThenSetupPage());
+        this.BookBackGround.SetActive(true);
+        this.bookBackgroundImage.sprite = this.selectedTab.SelectedSprite;
     }
 
     private GameObject lastHighlightedItem;
@@ -165,6 +168,12 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         var gameobjectSlot = eventData.hovered.FirstOrDefault(x => x.gameObject.transform.parent.TryGetComponent<InventorySlot>(out _));
 
         var highlightedTabItem = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<BookTab>(out _));
+
+        if (highlightedTabItem != null)
+        {
+            var bookTab = highlightedTabItem.GetComponent<BookTab>();
+            bookTab.PlayHighlightOptionChangedSound();
+        }
 
         if (gameobjectSlot != null && this.selectedTab != null)
         {
@@ -185,11 +194,6 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             {
                 this.ItemPages.UpdateItemView(itemButtonComp);
             }
-        }
-        else if (highlightedTabItem != null)
-        {
-            var bookTab = highlightedTabItem.GetComponent<BookTab>();
-            bookTab.PlayHighlightOptionChangedSound();
         }
     }
 
@@ -219,6 +223,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         if (selectedSlot.Item.Type == ItemType.Weapon)
         {
             this.playerEquippedWeapon = this.HandsWeapon;
+            Debug.Log("make sure to update player weapon also am i doing that?");
         }
         else
         {
@@ -227,20 +232,5 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
         this.gearPages.RemoveEquippedItem(selectedSlot.Item);
         this.ItemPages.RemoveEquippedItem(selectedSlot.Item);
-    }
-
-    public void FlipToPage()
-    {
-        // Flip page animation then enable children of the page.
-        StartCoroutine(WaitForPageFlip());
-    }
-
-    IEnumerator WaitForPageFlip()
-    {
-        yield return new WaitForSeconds(0.24f);
-        this.PagesAnimation.SetActive(true);
-        animator.SetTrigger("Open");
-        yield return new WaitForSeconds(0.24f);
-        this.PagesAnimation.SetActive(false);
     }
 }

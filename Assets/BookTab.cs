@@ -6,6 +6,10 @@ using UnityEngine;
 /// </summary>
 public class BookTab : DungeonButton
 {
+    public Sprite HighlightedSprite;
+    public Sprite SelectedSprite;
+    public Sprite PressedSprite;
+
     public enum TabType
     {
         Gear,
@@ -15,25 +19,4 @@ public class BookTab : DungeonButton
     }
 
     public TabType tabType;
-    private Animator tabAnimator;
-    private void Awake()
-    {
-        tabAnimator = GetComponent<Animator>();
-    }
-
-    /// <summary>
-    /// used to keep the tab sprite the same. cannot use unity button selected as that changes when anotehr thing is selected in the menu 
-    /// </summary>
-    /// <param name="forceSelected"></param>
-    public void ForceTabSelectionAnim(bool isSelected)
-    {
-        if (isSelected)
-        {
-            tabAnimator.SetTrigger("ManualForceSelected");
-        }
-        else // force unselected
-        {
-            tabAnimator.SetTrigger("ManualForceNormal");
-        }
-    }
 }
