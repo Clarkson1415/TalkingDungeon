@@ -17,6 +17,9 @@ abstract public class Menu : MonoBehaviour
         return this.UIEventSystem.currentSelectedGameObject;
     }
 
+    /// <summary>
+    /// remove from UI selected. probably also reverts the button graphic if there is one for selected idk.
+    /// </summary>
     public void DeselectButton()
     {
         this.UIEventSystem.SetSelectedGameObject(null);

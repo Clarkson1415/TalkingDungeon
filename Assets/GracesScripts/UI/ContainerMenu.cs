@@ -1,4 +1,5 @@
 using Assets.GracesScripts;
+using Assets.GracesScripts.UI;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -100,13 +101,12 @@ public class ContainerMenu : Menu
         descriptionContainer.GetComponentInChildren<ItemDescriptionContainer>().SetDescription(itemButtonComp.Item.description);
         nameContainer.GetComponentInChildren<ItemNameContainer>().SetName(itemButtonComp.Item.name);
 
-        this.powerValue.text = itemButtonComp.Item.PowerStat.ToString();
+        this.powerValue.text = itemButtonComp.Item.AttackStat.ToString();
         this.defenceValue.text = itemButtonComp.Item.DefenceStat.ToString();
 
         Sprite typeSprite = itemButtonComp.Item.Type switch
         {
             ItemType.Weapon => this.WeaponItemImage,
-            ItemType.Clothing => this.ArmourItemImage,
             ItemType.SpecialItem => this.specialItemImage,
             _ => throw new ArgumentOutOfRangeException($"no Item Type found {itemButtonComp.Item.Type}")
         };

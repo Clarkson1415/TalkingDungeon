@@ -1,10 +1,12 @@
 ﻿using Assets.GracesScripts;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/item", order = 1)]
 public class Item : ScriptableObject
 {
-    public int PowerStat;
+    public List<Ability> Abilities;
+    public int AttackStat;
     public int DefenceStat;
 
     public ItemType Type;

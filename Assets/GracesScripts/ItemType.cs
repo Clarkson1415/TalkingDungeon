@@ -4,7 +4,6 @@
     {
         None,
         Weapon,
-        Clothing,
         SpecialItem,
     }
 }

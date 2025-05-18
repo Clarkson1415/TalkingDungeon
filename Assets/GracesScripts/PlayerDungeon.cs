@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -36,17 +35,17 @@ public class PlayerDungeon : MonoBehaviour
     [SerializeField] AudioClip InventoryClosedSound;
     public List<Item> Inventory = new();
     [SerializeField] private AudioSource audioSourceForInventorySounds;
-    private List<Item?> EquippedItems => new() { this.equippedClothing, this.equippedWeapon, this.equippedSpecialItem };
-    public Item? equippedWeapon;
-    public Item? equippedClothing;
+    private List<Item?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
+    [SerializeField] private Item defaultWeaponHands;
+    public Item equippedWeapon;
     public Item? equippedSpecialItem;
 
     [Header("Stats")]
     public float maxWellbeing = 100;
     public float currentWellbeing = 100;
     public Image healthBarFillImage;
-    public List<Ability> abilities = new();
-    public float Power => this.EquippedItems.Sum(x => x != null ? x.PowerStat : 0);
+    public List<Ability> abilities => this.equippedWeapon.Abilities;
+    public float Power => this.EquippedItems.Sum(x => x != null ? x.AttackStat : 0);
     public float Defence => this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0);
 
 # if UNITY_EDITOR
@@ -69,7 +68,7 @@ public class PlayerDungeon : MonoBehaviour
     private UseAnimatedLayers? animatedLayers;
 
     [Header("Interactions")]
-    
+
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
     /// </summary>
@@ -106,8 +105,15 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         this.state = startingState;
-        
+
         SetupPlayer();
+
+#if UNITY_EDITOR // save whats set in the inspector then load it 
+        if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
+        {
+            PlayerDataUtility.SaveGame(this);
+        }
+# endif
 
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString(SaveKeys.LastScene))) // if loading from save load otherwise its not got player prefs for a new game
         {
@@ -118,6 +124,13 @@ public class PlayerDungeon : MonoBehaviour
         if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
         {
             PlayerDataUtility.SaveGame(this);
+        }
+
+        this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
+
+        if (abilities.Count < 1)
+        {
+            throw new ArgumentException("canont have less than 1 ability at least would have push on hands.");
         }
     }
 
@@ -151,7 +164,7 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         this.InitializeMenus();
-        this.LoadPlayer();
+        this.LoadPlayerComponents();
     }
 
     /// <summary>
@@ -225,7 +238,7 @@ public class PlayerDungeon : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    private void LoadPlayer()
+    private void LoadPlayerComponents()
     {
         animatedLayers = GetComponent<UseAnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
@@ -233,23 +246,6 @@ public class PlayerDungeon : MonoBehaviour
         MyGuard.IsNotNull(this.pauseMenu);
         this.currentMenuOpen = this.pauseMenu.gameObject;
         this.healthBarFillImage = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
-
-        this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
-
-        if (abilities.Count < 1)
-        {
-            Debug.LogError("cannot have less than 1 ability at least have basic push");
-        }
-
-        foreach (var item in this.EquippedItems)
-        {
-            if (item == null)
-            {
-                continue;
-            }
-
-            AddToPlayerEquipped(item);
-        }
     }
 
     private void StartInteraction()
@@ -327,13 +323,10 @@ public class PlayerDungeon : MonoBehaviour
                     this.currentMenuOpen = inventoryMenu.gameObject;
                     this.currentMenuOpen.SetActive(true);
 
-                    inventoryMenu.OpenInventory(Inventory, abilities);
+                    inventoryMenu.OpenInventory(Inventory, this.equippedWeapon, this.equippedSpecialItem);
 
                     audioSourceForInventorySounds.clip = this.InventoryOpenSound;
                     audioSourceForInventorySounds.Play();
-                    
-                    this.inventoryMenu.UpdatePlayerStatsDisplay(this.Power, this.Defence);
-                    this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
 
                     StopMovement();
                     this.state = KnightState.ININVENTORY;
@@ -445,6 +438,7 @@ public class PlayerDungeon : MonoBehaviour
                     this.onPointerClick = false;
                     MyGuard.IsNotNull(this.inventoryMenu);
                     var buttonGameObject = this.inventoryMenu.GetSelectedButton();
+
                     this.inventoryMenu.DeselectButton();
 
                     if (buttonGameObject == null)
@@ -453,31 +447,35 @@ public class PlayerDungeon : MonoBehaviour
                         return;
                     }
 
-                    // TODO this better can this be done in Inventroy menu? 
-                    if (buttonGameObject.TryGetComponent<InventorySlot>(out var selectedItemOp))
+                    if (buttonGameObject.TryGetComponent<BookTab>(out var selectedTab))
                     {
-                        if (selectedItemOp.Item == null)
-                        {
-                            return;
-                            // nothing happens if empty square selected.
-                        }
-                        else if (this.EquippedItems.Contains(selectedItemOp.Item))
-                        {
-                            RemoveFromPlayerEquipped(selectedItemOp);
-                        }
-                        else if (IsValidEquip(selectedItemOp.Item))
-                        {
-                            AddToPlayerEquipped(selectedItemOp.Item);
-                        }
-                        else
-                        {
-                            Log.Print("can't equip that");
-                            return;
-                        }
+                        this.inventoryMenu.OnTabClick(selectedTab);
+                        return;
                     }
-                    else if (buttonGameObject.TryGetComponent<BookTab>(out var selectedTab))
+
+                    if (!buttonGameObject.TryGetComponent<InventorySlot>(out var selectedItemOp))
                     {
-                        this.inventoryMenu.SelectTab(selectedTab);
+                        // clicked on something else
+                        return;
+                    }
+
+                    if (selectedItemOp.Item == null)
+                    {
+                        return;
+                    }
+                    else if (this.EquippedItems.Contains(selectedItemOp.Item))
+                    {
+                        this.inventoryMenu.RemoveFromPlayerEquipped(selectedItemOp);
+                        RemoveFromPlayerEquipped(selectedItemOp);
+                    }
+                    else if (IsValidEquip(selectedItemOp.Item))
+                    {
+                        this.inventoryMenu.AddToPlayerEquipped(selectedItemOp);
+                        AddToPlayerEquipped(selectedItemOp.Item);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Item invalid??");
                     }
                 }
                 break;
@@ -512,23 +510,15 @@ public class PlayerDungeon : MonoBehaviour
         var itemToRemove = itemButton.Item;
         MyGuard.IsNotNull(itemToRemove);
         MyGuard.IsNotNull(inventoryMenu);
-        this.inventoryMenu.RemoveEquippedItem(itemToRemove);
 
-        if (equippedWeapon != null && (itemToRemove.name == equippedWeapon.name))
+        if (itemToRemove.name == equippedWeapon.name)
         {
-            equippedWeapon = null;
-        }
-        else if (equippedClothing != null && (itemToRemove.name == equippedClothing.name))
-        {
-            equippedClothing = null;
+            equippedWeapon = defaultWeaponHands;
         }
         else if (equippedSpecialItem != null && (itemToRemove.name == equippedSpecialItem.name))
         {
             equippedSpecialItem = null;
         }
-
-        this.inventoryMenu.UpdatePlayerStatsDisplay(this.Power, this.Defence);
-        this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
     }
 
     /// <summary>
@@ -540,15 +530,10 @@ public class PlayerDungeon : MonoBehaviour
     {
         MyGuard.IsNotNull(this.inventoryMenu);
 
-        this.inventoryMenu.AddOrReplaceEquipped(itemToEquip);
-
         switch (itemToEquip.Type)
         {
             case ItemType.Weapon:
                 this.equippedWeapon = itemToEquip;
-                break;
-            case ItemType.Clothing:
-                this.equippedClothing = itemToEquip;
                 break;
             case ItemType.SpecialItem:
                 this.equippedSpecialItem = itemToEquip;
@@ -556,9 +541,6 @@ public class PlayerDungeon : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException("No type found fo add to player quip.");
         }
-
-        this.inventoryMenu.UpdatePlayerStatsDisplay(this.Power, this.Defence);
-        this.inventoryMenu.UpdatePlayerWellBeingDislpay((int)this.currentWellbeing);
     }
 
     /// <summary>
@@ -770,7 +752,7 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         Log.Print("Interact flag set");
-        
+
         this.InteractFlagSet = true;
     }
 

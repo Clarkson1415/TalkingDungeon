@@ -18,9 +18,6 @@ public static class PlayerDataUtility
         string equippedWeaponPath = player.equippedWeapon?.Path ?? string.Empty;
         PlayerPrefs.SetString(SaveKeys.EquippedWeaponPath, equippedWeaponPath);
 
-        string equippedClothingPath = player.equippedClothing?.Path ?? string.Empty;
-        PlayerPrefs.SetString(SaveKeys.EquippedClothingPath, equippedClothingPath);
-
         string equippedItemPath = player.equippedSpecialItem?.Path ?? string.Empty;
         PlayerPrefs.SetString(SaveKeys.EquippedItemPath, equippedItemPath);
 
@@ -28,16 +25,13 @@ public static class PlayerDataUtility
         string itemJson = JsonUtility.ToJson(new StringListWrapper { savedStrings = InventoryItemsNames });
         PlayerPrefs.SetString(SaveKeys.InventoryItemsPaths, itemJson);
 
-        List<string> AbilityNames = player.abilities.Select(ability => ability != null ? ability.Path ?? string.Empty : string.Empty).ToList();
-        string abilitiesJson = JsonUtility.ToJson(new StringListWrapper { savedStrings = AbilityNames });
-        PlayerPrefs.SetString(SaveKeys.AbilitiesPaths, abilitiesJson);
-
         // TODO save all ItemContainers in scene. they each will have their own save method to reutrn their json list of items. with by the key: sceneName/ChestName
         // ItecmContainer.Save
 
         PlayerPrefs.Save();
 
         // TODO show loading text for a second
+        Debug.Log("save game");
     }
 
     [Serializable]
@@ -55,10 +49,7 @@ public static class PlayerDataUtility
         public const string MaxWellbeing = "MaxWellbeing";
         public const string InventoryItemsPaths = "InventoryItemsPaths";
         public const string EquippedWeaponPath = "EquippedWeaponPath";
-        public const string EquippedClothingPath = "EquippedClothingPath";
         public const string EquippedItemPath = "EquippedItemPath";
-
-        public const string AbilitiesPaths = "AbilitiesPaths";
 
         // TODO Dialogue log should be saved
         // public const string DialogueLog = "Dialogue";
@@ -93,10 +84,6 @@ public static class PlayerDataUtility
         string itemsJson = PlayerPrefs.GetString(SaveKeys.InventoryItemsPaths);
         player.Inventory = DeserializeSavedStrings<Item>(itemsJson);
 
-        // deserialize saved abilities
-        string abilitiesJson = PlayerPrefs.GetString(SaveKeys.AbilitiesPaths);
-        player.abilities = DeserializeSavedStrings<Ability>(abilitiesJson);
-
         player.currentWellbeing = PlayerPrefs.GetFloat(SaveKeys.CurrentWellbeing);
         player.maxWellbeing = PlayerPrefs.GetFloat(SaveKeys.MaxWellbeing);
 
@@ -106,24 +93,19 @@ public static class PlayerDataUtility
             player.equippedWeapon = Resources.Load<Item>(weaponPath);
         }
 
-        string clothingPath = PlayerPrefs.GetString(SaveKeys.EquippedClothingPath);
-        if (!string.IsNullOrEmpty(clothingPath))
-        {
-            player.equippedClothing = Resources.Load<Item>(PlayerPrefs.GetString(SaveKeys.EquippedClothingPath));
-        }
-
-        string specialItemPath = PlayerPrefs.GetString(SaveKeys.EquippedClothingPath);
+        string specialItemPath = PlayerPrefs.GetString(SaveKeys.EquippedItemPath);
         if (!string.IsNullOrEmpty(specialItemPath))
         {
             player.equippedSpecialItem = Resources.Load<Item>(PlayerPrefs.GetString(SaveKeys.EquippedItemPath));
         }
-    }
 
+        Debug.Log("Loaded from save");
+    }
     private static List<T> DeserializeSavedStrings<T>(string json) where T : ScriptableObject
     {
         var wrapper = JsonUtility.FromJson<StringListWrapper>(json);
 
-        List<T> loadedItems = new List<T>();
+        List<T> loadedItems = new();
         foreach (string itemPath in wrapper.savedStrings)
         {
             T item = Resources.Load<T>(itemPath);

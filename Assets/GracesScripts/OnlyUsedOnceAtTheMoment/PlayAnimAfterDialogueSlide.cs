@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class PlayAnimAfterDialogueSlide : MonoBehaviour
 {
-    private GameObject? dialogueBox;
+    private GameObject dialogueBox;
     [SerializeField] private Animator animator;
     private TorchState state = TorchState.waiting;
     private bool playerInRange = false;

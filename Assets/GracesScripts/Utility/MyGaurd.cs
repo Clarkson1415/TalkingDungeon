@@ -13,4 +13,14 @@ public class MyGuard
 
         throw new ArgumentException();
     }
+
+    public static void IsNotNull<T>([NotNull] T? value, string failureMessage)
+    {
+        if (value is not null)
+        {
+            return;
+        }
+
+        throw new ArgumentException($"MyGuard IsNotNull exception for {value} msg: {failureMessage}");
+    }
 }
