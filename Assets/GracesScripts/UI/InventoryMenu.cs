@@ -66,7 +66,9 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     {
         MyGuard.IsNotNull(selectedTab);
         this.selectedTab = selectedTab;
-        StartCoroutine(WaitForPageFlipAnimThenSetupPage());
+        DeactivateAllPages();
+        this.EnableBookPage();
+        StartCoroutine(PageFlip(1));
     }
 
     private void Awake()
@@ -92,13 +94,16 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         StartCoroutine(DisableInventoryAfterBookAnim());
     }
 
-    IEnumerator WaitForPageFlipAnimThenSetupPage()
+    IEnumerator PageFlip(int numberOfFlips)
     {
         this.PageFlipper.SetActive(true);
-        this.flipPageAnimator.SetTrigger("Open");
-        yield return new WaitForSeconds(0.24f);
+        for(int i = 0; i < numberOfFlips; i++)
+        {
+            this.flipPageAnimator.SetTrigger("Open");
+            yield return new WaitForSeconds(0.22f);
+        }
+
         this.PageFlipper.SetActive(false);
-        this.EnableBookPage();
     }
 
     /// <summary>
@@ -107,17 +112,26 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     /// <exception cref="NotImplementedException"></exception>
     private void EnableBookPage()
     {
+        this.bookBackgroundImage.sprite = this.selectedTab.SelectedSprite;
+        var Page = GetCurrentPage();
+        Page.gameObject.SetActive(true);
+        Page.TogglePageComponents(true);
+
+        if (Page is PageWithSlots pageWithSlots)
+        {
+            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == ItemType.Weapon).ToList(), this.playerEquippedWeapon, this.playerEquippedItem);
+        }
+    }
+
+    private BookPage GetCurrentPage()
+    {
         if (this.selectedTab.tabType == BookTab.TabType.Gear)
         {
-            this.gearPages.gameObject.SetActive(true);
-            this.gearPages.TogglePageComponents(true);
-            this.gearPages.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == ItemType.Weapon).ToList(), this.playerEquippedWeapon, this.playerEquippedItem);
+            return this.gearPages;
         }
         else if (this.selectedTab.tabType == BookTab.TabType.Items)
         {
-            this.ItemPages.gameObject.SetActive(true);
-            this.ItemPages.TogglePageComponents(true);
-            this.ItemPages.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == ItemType.SpecialItem).ToList(), this.playerEquippedWeapon, this.playerEquippedItem);
+            return this.ItemPages;
         }
         else
         {
@@ -127,6 +141,10 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     private IEnumerator DisableInventoryAfterBookAnim()
     {
+        StartCoroutine(PageFlip(1));
+        this.GetCurrentPage().TogglePageComponents(false);
+        this.BookBackGround.SetActive(false);
+
         while (!this.bookSlideInOutAnimator.GetCurrentAnimatorStateInfo(0).IsName("OffscreenClosed"))
         {
             yield return null;
@@ -137,24 +155,27 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
     public void OnButtonClicked(InventorySlot slotClicked)
     {
-        // todo for other buttons save menu and stuff.
+        // todo for other buttons save menu and stuff.i
     }
 
     private IEnumerator WaitForBookAnimThenSetup()
     {
-        while (!this.bookSlideInOutAnimator.GetCurrentAnimatorStateInfo(0).IsName("StayOpen"))
+        // wait for slide in anim to finish then flip page and tabs open at the same time
+        while (!this.bookSlideInOutAnimator.GetCurrentAnimatorStateInfo(0).IsName("Open"))
         {
             yield return null;
         }
+
+        yield return new WaitForSeconds(1);
 
         if (this.selectedTab == null)
         {
             this.selectedTab = this.OnFirstOpenInventorySelectedTab;
         }
 
-        StartCoroutine(WaitForPageFlipAnimThenSetupPage());
         this.BookBackGround.SetActive(true);
-        this.bookBackgroundImage.sprite = this.selectedTab.SelectedSprite;
+        this.EnableBookPage();
+        StartCoroutine(PageFlip(1));
     }
 
     private GameObject lastHighlightedItem;
