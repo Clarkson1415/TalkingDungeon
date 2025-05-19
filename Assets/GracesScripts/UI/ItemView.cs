@@ -19,6 +19,8 @@ namespace Assets.GracesScripts.UI
         }
         public void UpdateItemView(InventorySlot itemSelected)
         {
+            this.SetItemViewToEmptyItem();
+
             if (itemSelected.Ability != null)
             {
                 this.itemdescriptionContainer.SetDescription(itemSelected.Ability.description);

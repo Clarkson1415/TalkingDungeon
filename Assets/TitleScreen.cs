@@ -1,9 +1,11 @@
+using Assets.GracesScripts.UI;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TitleScreen : MonoBehaviour
+public class TitleScreen : MenuWithButtons
 {
-    [SerializeField] EventSystem UIEventSystem;
     [SerializeField] GameObject LoadLastSaveButton;
     [SerializeField] GameObject StartNewGameButton;
     [SerializeField] GameObject startLoadButtonLocation;
@@ -18,48 +20,39 @@ public class TitleScreen : MonoBehaviour
             Debug.LogWarning("Deleting all player prefs...");
             PlayerPrefs.DeleteAll();
         }
+        
+        GameObject topButton;
 
         var savedScene = PlayerPrefs.GetString(PlayerDataUtility.SaveKeys.LastScene);
         if (string.IsNullOrEmpty(savedScene))
         {
-            var topButton = Instantiate(StartNewGameButton, startLoadButtonLocation.transform);
-            this.UIEventSystem.SetSelectedGameObject(topButton);
+            topButton = Instantiate(StartNewGameButton, startLoadButtonLocation.transform);
             topButton.GetComponent<MenuButton>().sceneToLoad = TalkingDungeonScenes.Intro;
         }
         else
         {
-            var topButton = Instantiate(LoadLastSaveButton, startLoadButtonLocation.transform);
-            this.UIEventSystem.SetSelectedGameObject(topButton);
+            topButton = Instantiate(LoadLastSaveButton, startLoadButtonLocation.transform);
         }
     }
 
-    private GameObject currentlyShownItem;
+    //// this Update is only needed if player uses keyabord wasd to navigate buttons
+    //private void Update()
+    //{
+    //    var highlightedButton = this.UIEventSystem.currentSelectedGameObject;
 
-    // Update is called once per frame
-    void Update()
-    {
-        var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
+    //    if (highlightedButton == lastHighlightedItem)
+    //    {
+    //        return;
+    //    }
 
-        // on menu open after another has been open do onece
-        if (highlightedMenuItem == null)
-        {
-            return;
-        }
+    //    if (highlightedButton == null)
+    //    {
+    //        return;
+    //    }
 
-        if (currentlyShownItem == null)
-        {
-            currentlyShownItem = highlightedMenuItem;
-        }
+    //    lastHighlightedItem = highlightedButton;
 
-        // when it is open do this
-        if (highlightedMenuItem != currentlyShownItem && currentlyShownItem != null)
-        {
-            currentlyShownItem = highlightedMenuItem;
-
-            if (highlightedMenuItem.TryGetComponent<MenuButton>(out var button))
-            {
-                button.PlayHighlightOptionChangedSound();
-            }
-        }
-    }
+    //    var button = highlightedButton.GetComponent<DungeonButton>();
+    //    button.PlayHighlightedSound();
+    //}
 }

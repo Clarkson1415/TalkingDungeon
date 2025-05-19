@@ -57,31 +57,35 @@ namespace Assets.GracesScripts.UI
         }
 
         /// <summary>
-        /// TODO is not setup? anywhere i can see? but should be used to unequip from player equipped slot. when invenotry item selected that matches an equipped item.
-        /// and also UpdatePlayersEquipped should be called somewhere
+        /// Remove equipped Item when inventory slot or the equipment item slot is clicked and there is something in it. Will not remove the default Hands.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="WeaponToRemove"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void RemoveEquippedItem(Item item)
+        public void RemoveEquippedWeapon(Item WeaponToRemove, Item DefaultHands)
         {
-            InventorySlot oldItem;
+            var EquipmentSlot = this.playerInfoSection.equippedWeaponSlot;
 
-            if (item.Type == ItemType.Weapon)
+            if (EquipmentSlot.Item == null || EquipmentSlot.Item == DefaultHands)
             {
-                oldItem = this.playerInfoSection.equippedWeaponSlot;
-            }
-            else if (item.Type == ItemType.SpecialItem)
-            {
-                oldItem = this.playerInfoSection.equippedSpecialItemSlot;
-            }
-            else
-            {
-                throw new InvalidEnumArgumentException($"item type on {item} not accepted");
+                return;
             }
 
-            this.ToggleEquipGraphicOnInventorySlot(item, false);
-            oldItem.ReplaceSlotWithBlanks();
-            oldItem.ToggleEquipGraphic(false);
+            this.ToggleEquipGraphicOnInventorySlot(EquipmentSlot.Item, false);
+            EquipmentSlot.SetItemAndImage(DefaultHands);
+        }
+
+        public void RemoveEquippedItem(Item itemToTryRemove)
+        {
+            var EquipmentSlot = this.playerInfoSection.equippedSpecialItemSlot;
+
+            if (EquipmentSlot.Item == null)
+            {
+                return;
+            }
+
+            this.ToggleEquipGraphicOnInventorySlot(EquipmentSlot.Item, false);
+            EquipmentSlot.ReplaceSlotWithBlanks();
+            EquipmentSlot.ToggleEquipGraphic(false);
         }
 
         public void EquipItem(Item item)
@@ -138,6 +142,11 @@ namespace Assets.GracesScripts.UI
             }
         }
 
+        /// <summary>
+        /// Toggles the graphic on the corresponding Item in the Inventory slots only.
+        /// </summary>
+        /// <param name="ItemToMatch"></param>
+        /// <param name="OnOff"></param>
         private void ToggleEquipGraphicOnInventorySlot(Item ItemToMatch, bool OnOff)
         {
             foreach (var button in this.InventorySlots)
@@ -154,7 +163,7 @@ namespace Assets.GracesScripts.UI
         {
             if (slot.Item != null || slot.Ability != null)
             {
-                slot.PlayHighlightOptionChangedSound();
+                slot.PlayHighlightedSound();
                 this.itemView.UpdateItemView(slot);
             }
             else

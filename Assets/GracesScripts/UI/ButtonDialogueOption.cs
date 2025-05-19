@@ -1,10 +1,4 @@
-using Assets.GracesScripts;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 using TMPro;
-using UnityEngine;
 [System.Serializable]
 
 public class DialogueOptionButton : DungeonButton
@@ -12,10 +6,6 @@ public class DialogueOptionButton : DungeonButton
     public DialogueSlide NextDialogueSlide { get; set; }
 
     public string OptionText { get; set; }
-
-    public void Start()
-    {
-    }
 
     public void UpdateButtonText()
     {

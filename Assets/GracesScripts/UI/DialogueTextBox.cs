@@ -1,14 +1,14 @@
+using Assets.GracesScripts.UI;
 using EasyTransition;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]
-public class DialogueTextBox : MonoBehaviour
+public class DialogueTextBox : MenuWithButtons
 {
     [Header("Battle Stuff")]
     public TransitionSettings transitionForGoingToBattleScene;
@@ -18,11 +18,10 @@ public class DialogueTextBox : MonoBehaviour
     [SerializeField] private float textspeed = 0.1f;
     [SerializeField] private float underscorePauseTime = 0.01f;
     [SerializeField] GameObject prefabButton;
-    [SerializeField] private EventSystem UIEventSystem;
     [SerializeField] AudioSource audioSource;
     [SerializeField] List<GameObject> buttonPositionsTopToBottom;
     [SerializeField] AudioClip dialoguePrintingAudio;
-    
+
     readonly List<GameObject> buttons = new();
     [HideInInspector] public bool PlayerInteractFlagSet;
     private Coroutine? writeSlidesOverTimeCoroutine = null;
@@ -77,25 +76,8 @@ public class DialogueTextBox : MonoBehaviour
         }
     }
 
-    private GameObject? currentHighlightedbutton;
-
     private void Update()
     {
-        // currentHighlightedbutton starts off null and i dont think i want the change selection sound to play when the buttons are instantiated.
-        var highlightedMenuItem = this.UIEventSystem.currentSelectedGameObject;
-
-        if (highlightedMenuItem != currentHighlightedbutton && currentHighlightedbutton != null)
-        {
-            if(highlightedMenuItem != null)
-            {
-                this.currentHighlightedbutton = highlightedMenuItem;
-                if (this.currentHighlightedbutton.TryGetComponent<DialogueOptionButton>(out var button))
-                {
-                    button.PlayHighlightOptionChangedSound();
-                }
-            }
-        }
-
         switch (State)
         {
             case BoxState.WAITINGFORINTERACTION:
@@ -129,7 +111,7 @@ public class DialogueTextBox : MonoBehaviour
                 {
                     this.PlayerInteractFlagSet = false;
                     MyGuard.IsNotNull(this.CurrentSlide);
-                    
+
                     if (this.CurrentSlide.startFight)
                     {
                         var player = FindObjectOfType<PlayerDungeon>();
@@ -150,8 +132,7 @@ public class DialogueTextBox : MonoBehaviour
                     }
 
                     // if its null no buttons so either go to next slide or exit dialogue
-
-                    if (this.UIEventSystem.currentSelectedGameObject == null && this.CurrentSlide.nextSlide != null)
+                    if (this.lastHighlightedItem == null && this.CurrentSlide.nextSlide != null)
                     {
                         // var selectedDiaOption = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
                         this.UpdateCurrentSlide(CurrentSlide.nextSlide);
@@ -159,7 +140,7 @@ public class DialogueTextBox : MonoBehaviour
                         //Log.Print("state writing after waiting");
                         this.State = BoxState.WRITINGSLIDE;
                     }
-                    else if (this.UIEventSystem.currentSelectedGameObject == null)
+                    else if (lastHighlightedItem == null)
                     {
                         UpdateCurrentSlide(null);
                         //Log.Print("state INVIS INACTIVE");
@@ -170,10 +151,13 @@ public class DialogueTextBox : MonoBehaviour
                     }
                     else // a button was clicked
                     {
-                        var selected = this.UIEventSystem.currentSelectedGameObject;
-                        if (!selected.TryGetComponent<DialogueOptionButton>(out var buttonOption))
+                        var selected = lastHighlightedItem;
+
+                        var buttonOption = selected.GetComponentInParent<DialogueOptionButton>();
+
+                        if (buttonOption == null)
                         {
-                            Debug.Log("could not deg a dialouge option button component");
+                            return;
                         }
 
                         if (buttonOption.NextDialogueSlide == null)
@@ -246,8 +230,6 @@ public class DialogueTextBox : MonoBehaviour
                 buttonGameObj.GetComponent<DialogueOptionButton>().SetValues(this.CurrentSlide.dialogueOptions[i].optionText, this.CurrentSlide.dialogueOptions[i].nextSlide);
                 this.buttons.Add(buttonGameObj);
             }
-
-            this.UIEventSystem.SetSelectedGameObject(this.buttons[0]);
         }
 
         // draw options
@@ -258,8 +240,6 @@ public class DialogueTextBox : MonoBehaviour
                 button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOptionButton>().OptionText;
             }
         }
-
-        this.currentHighlightedbutton = this.UIEventSystem.currentSelectedGameObject;
     }
 
     private IEnumerator WriteSlideOverTime()

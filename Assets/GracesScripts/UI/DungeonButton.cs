@@ -10,7 +10,7 @@ public class DungeonButton : MonoBehaviour
     [SerializeField] AudioClip highlightSound;
     [SerializeField] AudioClip? selectedSound;
     [SerializeField] AudioSource audioSource;
-    public void PlayHighlightOptionChangedSound()
+    public void PlayHighlightedSound()
     {
         if (this.audioSource.clip != highlightSound)
         {

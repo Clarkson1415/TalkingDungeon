@@ -13,6 +13,11 @@ PrefabInstance:
       propertyPath: m_text
       value: Quit Game
       objectReference: {fileID: 0}
+    - target: {fileID: 2776272465168031458, guid: 228cb4c902af3d543a3bf08555f44d77,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2854247187439803706, guid: 228cb4c902af3d543a3bf08555f44d77,
         type: 3}
       propertyPath: m_Name
@@ -20,8 +25,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3826625337082700675, guid: 228cb4c902af3d543a3bf08555f44d77,
         type: 3}
+      propertyPath: m_SpriteState.m_HighlightedSprite
+      value: 
+      objectReference: {fileID: 655526647, guid: b815186ffa001aa478ca018e847d18ea,
+        type: 3}
+    - target: {fileID: 3826625337082700675, guid: 228cb4c902af3d543a3bf08555f44d77,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: QuitGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 3826625337082700675, guid: 228cb4c902af3d543a3bf08555f44d77,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PlaySelectSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 3826625337082700675, guid: 228cb4c902af3d543a3bf08555f44d77,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: DungeonButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6670486865316888481, guid: 228cb4c902af3d543a3bf08555f44d77,
         type: 3}
@@ -121,6 +142,16 @@ PrefabInstance:
     - target: {fileID: 6670486865316888481, guid: 228cb4c902af3d543a3bf08555f44d77,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7255696921536754331, guid: 228cb4c902af3d543a3bf08555f44d77,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7754132954177861577, guid: 228cb4c902af3d543a3bf08555f44d77,
+        type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

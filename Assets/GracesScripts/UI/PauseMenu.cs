@@ -1,7 +1,8 @@
+using Assets.GracesScripts.UI;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PauseMenu : Menu
+public class PauseMenu : MenuWithButtons
 {
     [SerializeField] GameObject menu;
     [SerializeField] private List<GameObject> menuButtons;
@@ -27,7 +28,7 @@ public class PauseMenu : Menu
         {
             if (highlightedMenuItem.TryGetComponent<MenuButton>(out var button))
             {
-                button.PlayHighlightOptionChangedSound();
+                button.PlayHighlightedSound();
                 currentHighlighted = this.UIEventSystem.currentSelectedGameObject;
             }
         }

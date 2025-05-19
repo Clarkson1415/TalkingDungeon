@@ -3,6 +3,10 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static PlayerDataUtility;
+using Unity.VisualScripting;
+using System.Collections;
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -11,7 +15,9 @@ using UnityEditor;
 public class MenuButton : DungeonButton
 {
     public TransitionSettings transition;
+    [SerializeField] private string FeedbackFormURL;
     [SerializeField] public string sceneToLoad;
+    private SavedAnimationText saveText;
 
     /// <summary>
     /// 
@@ -25,13 +31,15 @@ public class MenuButton : DungeonButton
 
     public void SaveGame()
     {
-        var player = FindObjectOfType<PlayerDungeon>();
-        if (player == null)
-        {
-            throw new ArgumentNullException("player not found cannot save");
-        }
+        //var player = FindObjectOfType<PlayerDungeon>();
+        //if (player == null)
+        //{
+        //    throw new ArgumentNullException("player not found cannot save");
+        //}
 
-        PlayerDataUtility.SaveGame(player);
+        //PlayerDataUtility.SaveGame(player);
+        this.saveText.gameObject.SetActive(true);
+        this.saveText.PlaySavedAnimation();
     }
 
     public void LoadGameFromSave()
@@ -58,6 +66,11 @@ public class MenuButton : DungeonButton
     {
         this.SaveGame();
         TransitionManager.Instance().Transition("TitleScreen", transition, 0f);
+    }
+
+    public void OpenFeedbackForm()
+    {
+        Application.OpenURL("https://docs.google.com/forms/d/e/1FAIpQLSfg7iF1jkyPRbznepDfAlqV4rfdLAybiiSk9cyvw1LzsPJ35A/viewform?usp=dialog");
     }
 
     public void QuitGame()
