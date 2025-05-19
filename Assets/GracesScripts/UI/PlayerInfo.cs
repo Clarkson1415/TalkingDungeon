@@ -32,16 +32,23 @@ namespace Assets.GracesScripts.UI
             this.playerWellBeingText.text = player.currentWellbeing.ToString();
         }
 
+        public void ClearAbilitySlots()
+        {
+            foreach (var ab in this.abilitySlots)
+            {
+                ab.ReplaceSlotWithBlanks();
+            }
+        }
+
         public void UpdateAbilitySlots(List<Ability> abilities)
         {
-            for(int i = 0; i < this.abilitySlots.Count; i++)
-            {
-                this.abilitySlots[i].ReplaceSlotWithBlanks();
+            this.ClearAbilitySlots();
 
-                if (i < abilities.Count)
-                {
-                    this.abilitySlots[i].SetAbilityAndImage(abilities[i]);
-                }
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                this.abilitySlots[i].gameObject.SetActive(true);
+                this.abilitySlots[i].SetAbilityAndImage(abilities[i]);
+                this.abilitySlots[i].UpdateToolTip($"{abilities[i].name}: {abilities[i].description}");
             }
         }
     }

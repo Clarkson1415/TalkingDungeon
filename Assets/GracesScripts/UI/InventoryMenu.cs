@@ -124,7 +124,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 
         if (Page is PageWithSlots pageWithSlots)
         {
-            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == pageWithSlots.ItemType).ToList(), this.playerEquippedWeapon, this.playerEquippedItem);
+            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == pageWithSlots.ItemType).ToList(), this.playerEquippedWeapon, this.playerEquippedItem, this.HandsWeapon);
         }
     }
 

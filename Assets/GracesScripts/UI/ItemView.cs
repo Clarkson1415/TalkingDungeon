@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.GracesScripts.UI
@@ -9,6 +10,13 @@ namespace Assets.GracesScripts.UI
         [SerializeField] private TMP_Text defenceValueText;
         [SerializeField] ItemDescriptionContainer itemdescriptionContainer;
         [SerializeField] ItemNameContainer itemNameContainer;
+        [SerializeField] private List<InventorySlot> AbilitySlots;
+
+        private void Awake()
+        {
+            GrantsAbilitySection.SetActive(true);
+        }
+
         public void SetItemViewToEmptyItem()
         {
             itemdescriptionContainer.SetDescription("Blank");
@@ -16,37 +24,51 @@ namespace Assets.GracesScripts.UI
 
             this.powerValueText.text = "0";
             this.defenceValueText.text = "0";
+
+            GrantsAbilitySection.SetActive(false);
         }
+
         public void UpdateItemView(InventorySlot itemSelected)
         {
-            this.SetItemViewToEmptyItem();
-
-            if (itemSelected.Ability != null)
+            if (itemSelected.Ability == null)
             {
-                this.itemdescriptionContainer.SetDescription(itemSelected.Ability.description);
-                this.itemNameContainer.SetName(itemSelected.Ability.name);
-                this.defenceValueText.text = 0.ToString();
-                this.defenceValueText.text = itemSelected.Ability.attackPower.ToString();
+                this.SetItemViewToEmptyItem();
             }
-            else if (itemSelected.Item != null)
+
+            if (itemSelected.Item == null)
             {
-                this.itemdescriptionContainer.SetDescription(itemSelected.Item.description);
-                this.itemNameContainer.SetName(itemSelected.Item.name);
-                this.defenceValueText.text = itemSelected.Item.DefenceStat.ToString();
-                this.defenceValueText.text = itemSelected.Item.AttackStat.ToString();
+                return;
+            }
 
-                if (itemSelected.Item.Type == ItemType.Weapon)
-                {
-                    var abilityString = "Grants Abilities: \n ";
-                    for (int i = 0; i < itemSelected.Item.Abilities.Count; i++)
-                    {
-                        abilityString += $"{itemSelected.Item.Abilities[i].name} : \n";
-                        abilityString += $"{itemSelected.Item.Abilities[i].description}\n";
-                    }
+            this.itemdescriptionContainer.SetDescription(itemSelected.Item.description);
+            this.itemNameContainer.SetName(itemSelected.Item.name);
+            this.defenceValueText.text = itemSelected.Item.DefenceStat.ToString();
+            this.defenceValueText.text = itemSelected.Item.AttackStat.ToString();
 
-                    this.itemdescriptionContainer.SetDescription($"{itemSelected.Item.description} \n" +
-                        $"{abilityString}");
-                }
+            if (itemSelected.Item.Type == ItemType.Weapon)
+            {
+                this.itemdescriptionContainer.SetDescription($"{itemSelected.Item.description}");
+
+                UpdateAbilitySlots(itemSelected.Item.Abilities);
+            }
+        }
+
+        [SerializeField] private GameObject GrantsAbilitySection;
+
+        private void UpdateAbilitySlots(List<Ability> abilities)
+        {
+            GrantsAbilitySection.SetActive(true);
+
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                this.AbilitySlots[i].gameObject.SetActive(true);
+                this.AbilitySlots[i].SetAbilityAndImage(abilities[i]);
+                this.AbilitySlots[i].UpdateToolTip($"{abilities[i].name}: {abilities[i].description}");
+            }
+
+            for (int j = abilities.Count; j < this.AbilitySlots.Count; j++)
+            {
+                this.AbilitySlots[j].gameObject.SetActive(false);
             }
         }
     }

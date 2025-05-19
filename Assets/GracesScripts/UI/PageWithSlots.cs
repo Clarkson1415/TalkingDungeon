@@ -35,7 +35,7 @@ namespace Assets.GracesScripts.UI
         /// <summary>
         /// Updates item buttons to current category selected from this.selectedTab. TODO this better by maybe could make booktabs have a enum type that encompasses abilityes and items and have a parent class for abilities and items?
         /// </summary>
-        public void FillItemSlots(List<Item> itemToFillWith, Item equippedWeapon, Item? equippedItem)
+        public void FillItemSlots(List<Item> itemToFillWith, Item equippedWeapon, Item? equippedItem, Item DefaultHands)
         {
             InventorySlots.ForEach(slot => slot.ReplaceSlotWithBlanks());
             InventorySlots.ForEach(slot => slot.ToggleEquipGraphic(false));
@@ -51,7 +51,7 @@ namespace Assets.GracesScripts.UI
             }
 
             // Make sure player equip slots match the player equipped items.
-            this.UpdatePlayersEquipped(equippedWeapon, equippedItem);
+            this.InitialSetPlayersEquipped(equippedWeapon, equippedItem, DefaultHands);
             this.playerInfoSection.UpdatePlayerStatsDisplay();
             this.itemView.SetItemViewToEmptyItem();
         }
@@ -72,6 +72,7 @@ namespace Assets.GracesScripts.UI
 
             this.ToggleEquipGraphicOnInventorySlot(EquipmentSlot.Item, false);
             EquipmentSlot.SetItemAndImage(DefaultHands);
+            this.playerInfoSection.ClearAbilitySlots();
         }
 
         public void RemoveEquippedItem(Item itemToTryRemove)
@@ -85,7 +86,6 @@ namespace Assets.GracesScripts.UI
 
             this.ToggleEquipGraphicOnInventorySlot(EquipmentSlot.Item, false);
             EquipmentSlot.ReplaceSlotWithBlanks();
-            EquipmentSlot.ToggleEquipGraphic(false);
         }
 
         public void EquipItem(Item item)
@@ -93,12 +93,11 @@ namespace Assets.GracesScripts.UI
             if (item.Type == ItemType.Weapon)
             {
                 this.playerInfoSection.equippedWeaponSlot.SetItemAndImage(item);
-                this.playerInfoSection.equippedWeaponSlot.ToggleEquipGraphic(true);
+                this.playerInfoSection.UpdateAbilitySlots(item.Abilities);
             }
             else if (item.Type == ItemType.SpecialItem)
             {
                 this.playerInfoSection.equippedSpecialItemSlot.SetItemAndImage(item);
-                this.playerInfoSection.equippedSpecialItemSlot.ToggleEquipGraphic(true);
             }
 
             this.ToggleEquipGraphicOnInventorySlot(item, true);
@@ -110,7 +109,7 @@ namespace Assets.GracesScripts.UI
         /// </summary>
         /// <param name="newItem"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void UpdatePlayersEquipped(Item weapon, Item? specialItem)
+        public void InitialSetPlayersEquipped(Item weapon, Item? specialItem, Item Hands)
         {
             if (this.playerInfoSection.equippedWeaponSlot.Item != null)
             {
@@ -118,8 +117,8 @@ namespace Assets.GracesScripts.UI
             }
 
             this.playerInfoSection.equippedWeaponSlot.SetItemAndImage(weapon);
-            this.playerInfoSection.equippedWeaponSlot.ToggleEquipGraphic(true);
             ToggleEquipGraphicOnInventorySlot(weapon, true);
+            ToggleEquipGraphicOnInventorySlot(Hands, true);
 
             // also update ability slots
             this.playerInfoSection.UpdateAbilitySlots(weapon.Abilities);
@@ -133,12 +132,7 @@ namespace Assets.GracesScripts.UI
             if (specialItem != null)
             {
                 this.playerInfoSection.equippedSpecialItemSlot.SetItemAndImage(specialItem);
-                this.playerInfoSection.equippedSpecialItemSlot.ToggleEquipGraphic(true);
                 ToggleEquipGraphicOnInventorySlot(specialItem, true);
-            }
-            else
-            {
-                this.playerInfoSection.equippedSpecialItemSlot.ToggleEquipGraphic(false);
             }
         }
 
@@ -161,14 +155,10 @@ namespace Assets.GracesScripts.UI
 
         public void UpdateItemView(InventorySlot slot)
         {
-            if (slot.Item != null || slot.Ability != null)
+            if (slot.Item != null)
             {
                 slot.PlayHighlightedSound();
-                this.itemView.UpdateItemView(slot);
-            }
-            else
-            {
-                this.itemView.SetItemViewToEmptyItem();
+                this.itemView.UpdateItemView(slot); 
             }
         }
     }
