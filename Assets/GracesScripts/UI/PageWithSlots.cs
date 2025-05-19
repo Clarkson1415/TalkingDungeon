@@ -14,6 +14,7 @@ namespace Assets.GracesScripts.UI
         [SerializeField] private PlayerInfo playerInfoSection;
         [SerializeField] private ItemView itemView;
         [SerializeField] private List<InventorySlot> InventorySlots;
+        public ItemType ItemType;
 
         /// <inheritdoc/>
         public override void TogglePageComponents(bool OnOff)
@@ -34,7 +35,7 @@ namespace Assets.GracesScripts.UI
         /// <summary>
         /// Updates item buttons to current category selected from this.selectedTab. TODO this better by maybe could make booktabs have a enum type that encompasses abilityes and items and have a parent class for abilities and items?
         /// </summary>
-        public void FillItemSlots(List<Item> itemToFillWith, Item equippedWeapon, Item? equippedItem)
+        public void FillItemSlots(List<Item> itemToFillWith, Item equippedWeapon, Item? equippedItem, Item DefaultHands)
         {
             InventorySlots.ForEach(slot => slot.ReplaceSlotWithBlanks());
             InventorySlots.ForEach(slot => slot.ToggleEquipGraphic(false));
@@ -50,37 +51,41 @@ namespace Assets.GracesScripts.UI
             }
 
             // Make sure player equip slots match the player equipped items.
-            this.UpdatePlayersEquipped(equippedWeapon, equippedItem);
+            this.InitialSetPlayersEquipped(equippedWeapon, equippedItem, DefaultHands);
             this.playerInfoSection.UpdatePlayerStatsDisplay();
             this.itemView.SetItemViewToEmptyItem();
         }
 
         /// <summary>
-        /// TODO is not setup? anywhere i can see? but should be used to unequip from player equipped slot. when invenotry item selected that matches an equipped item.
-        /// and also UpdatePlayersEquipped should be called somewhere
+        /// Remove equipped Item when inventory slot or the equipment item slot is clicked and there is something in it. Will not remove the default Hands.
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="WeaponToRemove"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void RemoveEquippedItem(Item item)
+        public void RemoveEquippedWeapon(Item WeaponToRemove, Item DefaultHands)
         {
-            InventorySlot oldItem;
+            var EquipmentSlot = this.playerInfoSection.equippedWeaponSlot;
 
-            if (item.Type == ItemType.Weapon)
+            if (EquipmentSlot.Item == null || EquipmentSlot.Item == DefaultHands)
             {
-                oldItem = this.playerInfoSection.equippedWeaponSlot;
-            }
-            else if (item.Type == ItemType.SpecialItem)
-            {
-                oldItem = this.playerInfoSection.equippedSpecialItemSlot;
-            }
-            else
-            {
-                throw new InvalidEnumArgumentException($"item type on {item} not accepted");
+                return;
             }
 
-            this.ToggleEquipGraphicOnInventorySlot(item, false);
-            oldItem.ReplaceSlotWithBlanks();
-            oldItem.ToggleEquipGraphic(false);
+            this.ToggleEquipGraphicOnInventorySlot(EquipmentSlot.Item, false);
+            EquipmentSlot.SetItemAndImage(DefaultHands);
+            this.playerInfoSection.ClearAbilitySlots();
+        }
+
+        public void RemoveEquippedItem(Item itemToTryRemove)
+        {
+            var EquipmentSlot = this.playerInfoSection.equippedSpecialItemSlot;
+
+            if (EquipmentSlot.Item == null)
+            {
+                return;
+            }
+
+            this.ToggleEquipGraphicOnInventorySlot(EquipmentSlot.Item, false);
+            EquipmentSlot.ReplaceSlotWithBlanks();
         }
 
         public void EquipItem(Item item)
@@ -88,12 +93,11 @@ namespace Assets.GracesScripts.UI
             if (item.Type == ItemType.Weapon)
             {
                 this.playerInfoSection.equippedWeaponSlot.SetItemAndImage(item);
-                this.playerInfoSection.equippedWeaponSlot.ToggleEquipGraphic(true);
+                this.playerInfoSection.UpdateAbilitySlots(item.Abilities);
             }
             else if (item.Type == ItemType.SpecialItem)
             {
                 this.playerInfoSection.equippedSpecialItemSlot.SetItemAndImage(item);
-                this.playerInfoSection.equippedSpecialItemSlot.ToggleEquipGraphic(true);
             }
 
             this.ToggleEquipGraphicOnInventorySlot(item, true);
@@ -105,7 +109,7 @@ namespace Assets.GracesScripts.UI
         /// </summary>
         /// <param name="newItem"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void UpdatePlayersEquipped(Item weapon, Item? specialItem)
+        public void InitialSetPlayersEquipped(Item weapon, Item? specialItem, Item Hands)
         {
             if (this.playerInfoSection.equippedWeaponSlot.Item != null)
             {
@@ -113,8 +117,8 @@ namespace Assets.GracesScripts.UI
             }
 
             this.playerInfoSection.equippedWeaponSlot.SetItemAndImage(weapon);
-            this.playerInfoSection.equippedWeaponSlot.ToggleEquipGraphic(true);
             ToggleEquipGraphicOnInventorySlot(weapon, true);
+            ToggleEquipGraphicOnInventorySlot(Hands, true);
 
             // also update ability slots
             this.playerInfoSection.UpdateAbilitySlots(weapon.Abilities);
@@ -128,15 +132,15 @@ namespace Assets.GracesScripts.UI
             if (specialItem != null)
             {
                 this.playerInfoSection.equippedSpecialItemSlot.SetItemAndImage(specialItem);
-                this.playerInfoSection.equippedSpecialItemSlot.ToggleEquipGraphic(true);
                 ToggleEquipGraphicOnInventorySlot(specialItem, true);
-            }
-            else
-            {
-                this.playerInfoSection.equippedSpecialItemSlot.ToggleEquipGraphic(false);
             }
         }
 
+        /// <summary>
+        /// Toggles the graphic on the corresponding Item in the Inventory slots only.
+        /// </summary>
+        /// <param name="ItemToMatch"></param>
+        /// <param name="OnOff"></param>
         private void ToggleEquipGraphicOnInventorySlot(Item ItemToMatch, bool OnOff)
         {
             foreach (var button in this.InventorySlots)
@@ -151,14 +155,10 @@ namespace Assets.GracesScripts.UI
 
         public void UpdateItemView(InventorySlot slot)
         {
-            if (slot.Item != null || slot.Ability != null)
+            if (slot.Item != null)
             {
-                slot.PlayHighlightOptionChangedSound();
-                this.itemView.UpdateItemView(slot);
-            }
-            else
-            {
-                this.itemView.SetItemViewToEmptyItem();
+                slot.PlayHighlightedSound();
+                this.itemView.UpdateItemView(slot); 
             }
         }
     }

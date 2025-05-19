@@ -25,6 +25,17 @@ public class InventorySlot : DungeonButton
         spriteImageComponent.SetImage(item.image);
     }
 
+    /// <summary>
+    /// Should SPlit ITem into ability and item items classes as this is only for abilities.
+    /// </summary>
+    /// <param name="text"></param>
+    public void UpdateToolTip(string text)
+    {
+        var toolTip = this.GetComponentInParent<HasATooltip>();
+        MyGuard.IsNotNull(toolTip, "No tooltip founnd in parent");
+        toolTip.ChangeToolTipText(text);
+    }
+
     public void SetAbilityAndImage(Ability? ability)
     {
         if (ability == null)
@@ -71,7 +82,6 @@ public class InventorySlot : DungeonButton
         else
         {
             EquippedOverlayTargetImage.sprite = unequippedGraphic;
-
         }
     }
 

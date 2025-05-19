@@ -163,7 +163,7 @@ public class PlayerDungeon : MonoBehaviour
             yield return null;
         }
 
-        this.InitializeMenus();
+        this.InitializeMenusAndSaveText();
         this.LoadPlayerComponents();
     }
 
@@ -193,7 +193,7 @@ public class PlayerDungeon : MonoBehaviour
         }
     }
 
-    private void InitializeMenus()
+    private void InitializeMenusAndSaveText()
     {
         // has to be active to find it so set all menus active then off saves setting player serialised files in every scene and idk if it i could even do that now I have persistant data 
         ActivateAllCanvasObjects();
@@ -350,6 +350,11 @@ public class PlayerDungeon : MonoBehaviour
                     this.InteractFlagSet = false;
                     dialogueBox.PlayerInteractFlagSet = true;
                 }
+                else if (this.onPointerClick)
+                {
+                    onPointerClick = false;
+                    dialogueBox.PlayerInteractFlagSet = true;
+                }
                 else if (this.dialogueBox.finishedInteractionFlag)
                 {
                     this.dialogueBox.finishedInteractionFlag = false;
@@ -372,17 +377,12 @@ public class PlayerDungeon : MonoBehaviour
                     MyGuard.IsNotNull(this.pauseMenu);
                     this.currentMenuOpen = this.pauseMenu.gameObject;
                 }
-                else if (this.onPointerClick) // TODO TEST WITH ONPOINTER
+                else if (this.onPointerClick)
                 {
                     this.onPointerClick = false;
-                    var itemOpButton = this.ContainerMenu.GetCurrentSelected();
+                    var itemOpButton = this.ContainerMenu.GetSelectedButton().GetComponentInParent<InventorySlot>();
 
-                    if (itemOpButton == null)
-                    {
-                        return;
-                    }
-
-                    if (itemOpButton.Item == null)
+                    if (itemOpButton == null || itemOpButton.Item == null)
                     {
                         return;
                     }
@@ -391,9 +391,8 @@ public class PlayerDungeon : MonoBehaviour
                     {
                         chest.Loot.Remove(itemOpButton.Item);
                         this.Inventory.Add(itemOpButton.Item);
+                        this.ContainerMenu.RemoveOldItem(itemOpButton);
                     }
-
-                    this.ContainerMenu.RemoveOldItem(itemOpButton);
                 }
                 break;
             case KnightState.INPAUSEMENU:
@@ -438,8 +437,6 @@ public class PlayerDungeon : MonoBehaviour
                     this.onPointerClick = false;
                     MyGuard.IsNotNull(this.inventoryMenu);
                     var buttonGameObject = this.inventoryMenu.GetSelectedButton();
-
-                    this.inventoryMenu.DeselectButton();
 
                     if (buttonGameObject == null)
                     {

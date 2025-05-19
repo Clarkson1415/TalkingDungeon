@@ -7,8 +7,6 @@ namespace Assets.GracesScripts.UI
     /// </summary>
     public abstract class BookPage : MonoBehaviour
     {
-        public readonly BookTab.TabType PageTabType;
-
         /// <summary>
         /// Call this.ToggleChildComponents() inside this method first, Then add whatever other gameobjects should be toggled with the page. 
         /// e.g. the slots in the gear page should be setActive false when the save tab is selected.

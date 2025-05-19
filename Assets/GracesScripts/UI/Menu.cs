@@ -1,27 +1,24 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-abstract public class Menu : MonoBehaviour
+namespace Assets.GracesScripts.UI
 {
-    [SerializeField] protected EventSystem UIEventSystem;
-    [SerializeField] public Sprite emptySlotImage;
-
-    public virtual void Close()
+    public abstract class Menu : MonoBehaviour
     {
-        this.UIEventSystem.SetSelectedGameObject(null);
-        this.gameObject.SetActive(false);
-    }
+        [SerializeField] protected EventSystem UIEventSystem;
+        [SerializeField] public Sprite emptySlotImage;
 
-    public GameObject GetSelectedButton()
-    {
-        return this.UIEventSystem.currentSelectedGameObject;
-    }
+        public virtual void Close()
+        {
+            this.UIEventSystem.SetSelectedGameObject(null);
+            this.gameObject.SetActive(false);
+        }
 
-    /// <summary>
-    /// remove from UI selected. probably also reverts the button graphic if there is one for selected idk.
-    /// </summary>
-    public void DeselectButton()
-    {
-        this.UIEventSystem.SetSelectedGameObject(null);
+        public GameObject GetSelectedButton()
+        {
+            var selected = this.UIEventSystem.currentSelectedGameObject;
+            this.UIEventSystem.SetSelectedGameObject(null);
+            return selected;
+        }
     }
 }

@@ -10,14 +10,8 @@ using UnityEngine.UI;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]
-public class InventoryMenu : Menu, IPointerEnterHandler
+public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 {
-    // instead of this
-    // have in invnetory menu:
-    // gear panel, ability panel, item panel that takes up the left top side of the screen
-    // and a new class for each panel to control it. an InventoryMenu.cs juts controls them and tell them what to update and when
-    // we also will have settings pages container, save pages container, dialogue log pages container that will hold and control their information.
-
     [Header("InventoryMenu")]
     private List<Item> AllInventoryItems = new();
     private BookTab selectedTab;
@@ -41,6 +35,17 @@ public class InventoryMenu : Menu, IPointerEnterHandler
     private Item? playerEquippedItem;
     [SerializeField] private Item HandsWeapon;
 
+    protected override void UpdateItemView(InventorySlot slot)
+    {
+        if (this.selectedTab.tabType == BookTab.TabType.Gear)
+        {
+            this.gearPages.UpdateItemView(slot);
+        }
+        else if (this.selectedTab.tabType == BookTab.TabType.Items)
+        {
+            this.ItemPages.UpdateItemView(slot);
+        }
+    }
 
     /// <summary>
     /// TODO: mahbe change so first selected item was the same as when it was last opened. instead of inistialising to button 0?
@@ -119,7 +124,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
 
         if (Page is PageWithSlots pageWithSlots)
         {
-            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == ItemType.Weapon).ToList(), this.playerEquippedWeapon, this.playerEquippedItem);
+            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == pageWithSlots.ItemType).ToList(), this.playerEquippedWeapon, this.playerEquippedItem, this.HandsWeapon);
         }
     }
 
@@ -132,6 +137,10 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         else if (this.selectedTab.tabType == BookTab.TabType.Items)
         {
             return this.ItemPages;
+        }
+        else if (this.selectedTab.tabType == BookTab.TabType.Save)
+        {
+            return this.saveMenuPages;
         }
         else
         {
@@ -151,11 +160,6 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         }
 
         base.Close();
-    }
-
-    public void OnButtonClicked(InventorySlot slotClicked)
-    {
-        // todo for other buttons save menu and stuff.i
     }
 
     private IEnumerator WaitForBookAnimThenSetup()
@@ -178,63 +182,26 @@ public class InventoryMenu : Menu, IPointerEnterHandler
         StartCoroutine(PageFlip(1));
     }
 
-    private GameObject lastHighlightedItem;
-
-    /// <summary>
-    /// When a raycast enabled image is highlighted with mouse.
-    /// </summary>
-    /// <param name="eventData"></param>
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        var gameobjectSlot = eventData.hovered.FirstOrDefault(x => x.gameObject.transform.parent.TryGetComponent<InventorySlot>(out _));
-
-        var highlightedTabItem = eventData.hovered.FirstOrDefault(x => x.TryGetComponent<BookTab>(out _));
-
-        if (highlightedTabItem != null)
-        {
-            var bookTab = highlightedTabItem.GetComponent<BookTab>();
-            bookTab.PlayHighlightOptionChangedSound();
-        }
-
-        if (gameobjectSlot != null && this.selectedTab != null)
-        {
-            if (gameobjectSlot == lastHighlightedItem)
-            {
-                return;
-            }
-
-            lastHighlightedItem = gameobjectSlot;
-
-            var itemButtonComp = gameobjectSlot.GetComponentInParent<InventorySlot>();
-
-            if (this.selectedTab.tabType == BookTab.TabType.Gear)
-            {
-                this.gearPages.UpdateItemView(itemButtonComp);
-            }
-            else if (this.selectedTab.tabType == BookTab.TabType.Items)
-            {
-                this.ItemPages.UpdateItemView(itemButtonComp);
-            }
-        }
-    }
-
     public void AddToPlayerEquipped(InventorySlot selectedSlot)
     {
         MyGuard.IsNotNull(selectedSlot.Item);
 
         if (selectedSlot.Item.Type == ItemType.Weapon)
         {
+            this.gearPages.RemoveEquippedWeapon(this.playerEquippedWeapon, HandsWeapon);
             this.playerEquippedWeapon = selectedSlot.Item;
+            this.gearPages.EquipItem(selectedSlot.Item);
         }
         else
         {
-            this.playerEquippedItem = selectedSlot.Item;
-        }
+            if (this.playerEquippedItem != null)
+            {
+                this.ItemPages.RemoveEquippedItem(this.playerEquippedItem);
+            }
 
-        this.gearPages.RemoveEquippedItem(selectedSlot.Item);
-        this.ItemPages.RemoveEquippedItem(selectedSlot.Item);
-        this.gearPages.EquipItem(selectedSlot.Item);
-        this.ItemPages.EquipItem(selectedSlot.Item);
+            this.playerEquippedItem = selectedSlot.Item;
+            this.ItemPages.EquipItem(selectedSlot.Item);
+        }
     }
 
     public void RemoveFromPlayerEquipped(InventorySlot selectedSlot)
@@ -251,7 +218,7 @@ public class InventoryMenu : Menu, IPointerEnterHandler
             this.playerEquippedItem = null;
         }
 
-        this.gearPages.RemoveEquippedItem(selectedSlot.Item);
+        this.gearPages.RemoveEquippedWeapon(selectedSlot.Item, this.HandsWeapon);
         this.ItemPages.RemoveEquippedItem(selectedSlot.Item);
     }
 }

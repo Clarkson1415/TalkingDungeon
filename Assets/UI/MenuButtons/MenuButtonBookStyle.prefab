@@ -147,7 +147,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: 8339d3a2463d3ed4f86799b3f62a62fc,
+    m_HighlightedSprite: {fileID: 655526647, guid: b815186ffa001aa478ca018e847d18ea,
       type: 3}
     m_PressedSprite: {fileID: -2015704873, guid: b815186ffa001aa478ca018e847d18ea,
       type: 3}
@@ -167,7 +167,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7242552906154585518}
         m_TargetAssemblyTypeName: MenuButton, Assembly-CSharp
-        m_MethodName: QuitGame
+        m_MethodName: StartNewGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -179,7 +179,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 7242552906154585518}
         m_TargetAssemblyTypeName: DungeonButton, Assembly-CSharp
-        m_MethodName: ClickButton
+        m_MethodName: PlaySelectSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -203,7 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.3401388, g: 0.9150943, b: 0.3424804, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -242,9 +242,8 @@ MonoBehaviour:
   highlightSound: {fileID: 8300000, guid: 782eec1bfc660704387355bd0d7d4f6f, type: 3}
   selectedSound: {fileID: 8300000, guid: 782eec1bfc660704387355bd0d7d4f6f, type: 3}
   audioSource: {fileID: 6168920574111687682}
-  isSelected: 0
   transition: {fileID: 11400000, guid: 06fa0ad2bc756f44ab258bc74947381d, type: 2}
-  firstSceneToLoad: 
+  sceneToLoad: 
 --- !u!1 &6868002529276741317
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,13 +303,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: quit game
+  m_text: New Game
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3fb1560187c4586429fae89d10d353b9, type: 2}
   m_sharedMaterial: {fileID: -4576902391450975989, guid: 3fb1560187c4586429fae89d10d353b9,
@@ -439,7 +438,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
