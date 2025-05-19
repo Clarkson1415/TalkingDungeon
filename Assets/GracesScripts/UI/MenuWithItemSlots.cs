@@ -27,11 +27,6 @@ namespace Assets.GracesScripts.UI
         {
             var highlightedButton = eventData.hovered.FirstOrDefault(x => x.gameObject.transform.parent.TryGetComponent<DungeonButton>(out _));
 
-            if (highlightedButton == lastHighlightedItem)
-            {
-                return;
-            }
-
             if (highlightedButton == null)
             {
                 return;

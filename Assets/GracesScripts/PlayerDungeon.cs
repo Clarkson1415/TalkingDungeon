@@ -31,10 +31,7 @@ public class PlayerDungeon : MonoBehaviour
 
     [Header("Inventory")]
     private InventoryMenu? inventoryMenu;
-    [SerializeField] AudioClip InventoryOpenSound;
-    [SerializeField] AudioClip InventoryClosedSound;
     public List<Item> Inventory = new();
-    [SerializeField] private AudioSource audioSourceForInventorySounds;
     private List<Item?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
     [SerializeField] private Item defaultWeaponHands;
     public Item equippedWeapon;
@@ -322,12 +319,7 @@ public class PlayerDungeon : MonoBehaviour
                     iKeyFlag = false;
                     this.currentMenuOpen = inventoryMenu.gameObject;
                     this.currentMenuOpen.SetActive(true);
-
                     inventoryMenu.OpenInventory(Inventory, this.equippedWeapon, this.equippedSpecialItem);
-
-                    audioSourceForInventorySounds.clip = this.InventoryOpenSound;
-                    audioSourceForInventorySounds.Play();
-
                     StopMovement();
                     this.state = KnightState.ININVENTORY;
                 }
@@ -387,6 +379,8 @@ public class PlayerDungeon : MonoBehaviour
                         return;
                     }
 
+                    itemOpButton.PlaySelectSound();
+
                     if (this.InteractableInRange is ItemContainer chest && chest != null)
                     {
                         chest.Loot.Remove(itemOpButton.Item);
@@ -427,8 +421,6 @@ public class PlayerDungeon : MonoBehaviour
                     MyGuard.IsNotNull(currentMenuOpen);
                     MyGuard.IsNotNull(pauseMenu);
                     this.currentMenuOpen.GetComponent<InventoryMenu>().Close();
-                    audioSourceForInventorySounds.clip = this.InventoryClosedSound;
-                    audioSourceForInventorySounds.Play();
                     this.currentMenuOpen = pauseMenu.gameObject;
                     this.state = KnightState.PLAYERCANMOVE;
                 }

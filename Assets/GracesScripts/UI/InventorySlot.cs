@@ -65,8 +65,6 @@ public class InventorySlot : DungeonButton
     /// </summary>
     public override void PlaySelectSound()
     {
-        Debug.Log("On Click");
-
         if (this.Item != null)
         {
             base.PlaySelectSound();

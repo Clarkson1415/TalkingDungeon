@@ -150,9 +150,9 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 
     private IEnumerator DisableInventoryAfterBookAnim()
     {
-        StartCoroutine(PageFlip(1));
         this.GetCurrentPage().TogglePageComponents(false);
         this.BookBackGround.SetActive(false);
+        Debug.Log("TODO Make the flip right page animation. and make the page with stuff on it on the right transparent so looks like its closing it over the actual book contents.");
 
         while (!this.bookSlideInOutAnimator.GetCurrentAnimatorStateInfo(0).IsName("OffscreenClosed"))
         {
@@ -170,7 +170,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
             yield return null;
         }
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1.5f);
 
         if (this.selectedTab == null)
         {
