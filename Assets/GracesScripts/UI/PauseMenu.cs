@@ -1,23 +1,21 @@
 using Assets.GracesScripts.UI;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PauseMenu : MenuWithButtons
 {
     [SerializeField] GameObject menu;
-    [SerializeField] private List<GameObject> menuButtons;
     private GameObject currentHighlighted;
+    private Animator pauseMenuAnimator;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-
+        pauseMenuAnimator = this.GetComponent<Animator>();
     }
 
     public void StartPauseMenu()
     {
-        this.UIEventSystem.SetSelectedGameObject(menuButtons[0]);
-        currentHighlighted = menuButtons[0];
+        this.pauseMenuAnimator.SetTrigger("Open");
     }
 
     private void Update()
@@ -32,5 +30,10 @@ public class PauseMenu : MenuWithButtons
                 currentHighlighted = this.UIEventSystem.currentSelectedGameObject;
             }
         }
+    }
+
+    public override void Close()
+    {
+        this.pauseMenuAnimator.SetTrigger("Close");
     }
 }
