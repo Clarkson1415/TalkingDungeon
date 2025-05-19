@@ -31,14 +31,21 @@ public class MenuButton : DungeonButton
 
     public void SaveGame()
     {
-        //var player = FindObjectOfType<PlayerDungeon>();
-        //if (player == null)
-        //{
-        //    throw new ArgumentNullException("player not found cannot save");
-        //}
+        var player = FindObjectOfType<PlayerDungeon>();
+        if (player == null)
+        {
+            throw new ArgumentNullException("player not found cannot save");
+        }
 
-        //PlayerDataUtility.SaveGame(player);
-        this.saveText.gameObject.SetActive(true);
+        PlayerDataUtility.SaveGame(player);
+
+        this.saveText = FindObjectOfType<SavedAnimationText>();
+        if (saveText == null)
+        {
+            Debug.LogWarning("not sure why savetext is null idk if it should be or not.");
+            return;
+        }
+
         this.saveText.PlaySavedAnimation();
     }
 

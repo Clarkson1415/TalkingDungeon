@@ -163,7 +163,7 @@ public class PlayerDungeon : MonoBehaviour
             yield return null;
         }
 
-        this.InitializeMenus();
+        this.InitializeMenusAndSaveText();
         this.LoadPlayerComponents();
     }
 
@@ -193,7 +193,7 @@ public class PlayerDungeon : MonoBehaviour
         }
     }
 
-    private void InitializeMenus()
+    private void InitializeMenusAndSaveText()
     {
         // has to be active to find it so set all menus active then off saves setting player serialised files in every scene and idk if it i could even do that now I have persistant data 
         ActivateAllCanvasObjects();
