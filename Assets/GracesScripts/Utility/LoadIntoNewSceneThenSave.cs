@@ -31,7 +31,7 @@ public class LoadIntoNewSceneThenSave : MonoBehaviour
             throw new ArgumentNullException("player not found cannot save");
         }
 
-        PlayerDataUtility.SaveGame(player);
+        SaveGameUtility.SaveGame(player);
 
         // using transition package
         TransitionManager.Instance().Transition(nextScene, transition, 0f);

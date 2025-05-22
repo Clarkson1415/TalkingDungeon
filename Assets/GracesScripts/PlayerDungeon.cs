@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static PlayerDataUtility;
+using static SaveGameUtility;
 #nullable enable
 
 /// <summary>
@@ -22,12 +22,11 @@ public class PlayerDungeon : MonoBehaviour
     private DialogueTextBox? dialogueBox;
     private ContainerMenu? ContainerMenu;
     private PauseMenu? pauseMenu;
-    private GameObject? currentMenuOpen;
+    private GameObject? menuToUseNext;
 
     [Header("Death")]
     [SerializeField] AudioSource LevelMusic;
     [SerializeField] AudioSource DeathSFX;
-
 
     [Header("Inventory")]
     private InventoryMenu? inventoryMenu;
@@ -41,23 +40,19 @@ public class PlayerDungeon : MonoBehaviour
     public float maxWellbeing = 100;
     public float currentWellbeing = 100;
     public Image healthBarFillImage;
-    public List<Ability> abilities => this.equippedWeapon.Abilities;
+    private GameObject WellBeingObject;
+    public List<Ability> Abilities => this.equippedWeapon.Abilities;
     public float Power => this.EquippedItems.Sum(x => x != null ? x.AttackStat : 0);
     public float Defence => this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0);
 
 # if UNITY_EDITOR
-    [Header("For While Testing In Unity Editor")]
+    [Header("For While Testing In Unity Editor its made public but do not remove just make hide in inspector.")]
     public List<string> scenesTraversed = new();
 # endif
 
     [Header("Movement")]
     [SerializeField] private float movementSpeed = 1f;
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    // reason: RB is located in setup.
     private Rigidbody2D rb;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-
     private Vector2 direction;
     [SerializeField] private KnightState startingState = KnightState.PLAYERCANMOVE;
     [HideInInspector] private KnightState state;
@@ -65,14 +60,12 @@ public class PlayerDungeon : MonoBehaviour
     private UseAnimatedLayers? animatedLayers;
 
     [Header("Interactions")]
-
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
     /// </summary>
     private bool InteractFlagSet;
     private bool onPointerClick;
 
-    [HideInInspector] public bool isHealthBarDoingAnim;
     [HideInInspector] public IInteracble? InteractableInRange { get; private set; } = null;
 
     [Header("EnemyBattleLoader")]
@@ -103,29 +96,29 @@ public class PlayerDungeon : MonoBehaviour
 
         this.state = startingState;
 
-        SetupPlayer();
+        StartCoroutine(WaitForSceneLoadedThenLoadComponents());
 
 #if UNITY_EDITOR // save whats set in the inspector then load it 
         if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
         {
-            PlayerDataUtility.SaveGame(this);
+            SaveGameUtility.SaveGame(this);
         }
 # endif
 
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString(SaveKeys.LastScene))) // if loading from save load otherwise its not got player prefs for a new game
         {
-            PlayerDataUtility.LoadSaveDataFromLastScene(this);
+            SaveGameUtility.LoadSaveDataFromLastScene(this);
         }
 
         // do not save if in battle scene though
         if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
         {
-            PlayerDataUtility.SaveGame(this);
+            SaveGameUtility.SaveGame(this);
         }
 
         this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
 
-        if (abilities.Count < 1)
+        if (Abilities.Count < 1)
         {
             throw new ArgumentException("canont have less than 1 ability at least would have push on hands.");
         }
@@ -134,12 +127,8 @@ public class PlayerDungeon : MonoBehaviour
     /// <summary>
     /// Called after all the save data has been loaded.
     /// </summary>
-    public void SetupPlayer()
-    {
-        StartCoroutine(WaitForSceneLoadedThenSetup());
-    }
-
-    IEnumerator WaitForSceneLoadedThenSetup()
+    /// <returns></returns>
+    IEnumerator WaitForSceneLoadedThenLoadComponents()
     {
         Scene currentScene = SceneManager.GetActiveScene();
 
@@ -168,7 +157,7 @@ public class PlayerDungeon : MonoBehaviour
     /// If the scene was loaded from a save when update runs rb will still be null beacuse setupPlayer hasnt been called in awake. so wait for this to be true to do update stuff. As setupPlayer will be aclled y menubutton after scene has loaded.
     /// </summary>
     /// <returns></returns>
-    private bool areComponentsLoaded()
+    private bool AreComponentsLoaded()
     {
         if (this.rb == null)
         {
@@ -241,8 +230,9 @@ public class PlayerDungeon : MonoBehaviour
         this.rb = GetComponent<Rigidbody2D>();
         footstepsSound = GetComponentInChildren<AudioSource>();
         MyGuard.IsNotNull(this.pauseMenu);
-        this.currentMenuOpen = this.pauseMenu.gameObject;
+        this.menuToUseNext = this.pauseMenu.gameObject;
         this.healthBarFillImage = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
+        WellBeingObject = this.healthBarFillImage.transform.parent.gameObject;
     }
 
     private void StartInteraction()
@@ -257,7 +247,7 @@ public class PlayerDungeon : MonoBehaviour
             }
 
             MyGuard.IsNotNull(this.dialogueBox);
-            currentMenuOpen = this.dialogueBox.gameObject;
+            menuToUseNext = this.dialogueBox.gameObject;
             this.dialogueBox.gameObject.SetActive(true);
             dialogueBox.PlayerInteractFlagSet = true;
             this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
@@ -266,7 +256,7 @@ public class PlayerDungeon : MonoBehaviour
         else if (this.InteractableInRange is ItemContainer chest && chest != null)
         {
             MyGuard.IsNotNull(ContainerMenu);
-            currentMenuOpen = this.ContainerMenu.gameObject;
+            menuToUseNext = this.ContainerMenu.gameObject;
             this.ContainerMenu.gameObject.SetActive(true);
             chest.GetComponent<Animator>().SetTrigger("Opened");
             chest.PlayOpenSound();
@@ -293,7 +283,7 @@ public class PlayerDungeon : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!areComponentsLoaded())
+        if (!AreComponentsLoaded())
         {
             return;
         }
@@ -311,14 +301,14 @@ public class PlayerDungeon : MonoBehaviour
                     this.pauseMenu.StartPauseMenu();
                     this.state = KnightState.INPAUSEMENU;
                     StopMovement();
-                    this.currentMenuOpen = this.pauseMenu.gameObject;
+                    this.menuToUseNext = this.pauseMenu.gameObject;
                 }
                 if (iKeyFlag)
                 {
                     MyGuard.IsNotNull(this.inventoryMenu);
                     iKeyFlag = false;
-                    this.currentMenuOpen = inventoryMenu.gameObject;
-                    this.currentMenuOpen.SetActive(true);
+                    this.menuToUseNext = inventoryMenu.gameObject;
+                    this.menuToUseNext.SetActive(true);
                     inventoryMenu.OpenInventory(Inventory, this.equippedWeapon, this.equippedSpecialItem);
                     StopMovement();
                     this.state = KnightState.ININVENTORY;
@@ -367,7 +357,7 @@ public class PlayerDungeon : MonoBehaviour
 
                     this.state = KnightState.PLAYERCANMOVE;
                     MyGuard.IsNotNull(this.pauseMenu);
-                    this.currentMenuOpen = this.pauseMenu.gameObject;
+                    this.menuToUseNext = this.pauseMenu.gameObject;
                 }
                 else if (this.onPointerClick)
                 {
@@ -418,10 +408,10 @@ public class PlayerDungeon : MonoBehaviour
                 if (escKeyFlag)
                 {
                     escKeyFlag = false;
-                    MyGuard.IsNotNull(currentMenuOpen);
+                    MyGuard.IsNotNull(menuToUseNext);
                     MyGuard.IsNotNull(pauseMenu);
-                    this.currentMenuOpen.GetComponent<InventoryMenu>().Close();
-                    this.currentMenuOpen = pauseMenu.gameObject;
+                    this.menuToUseNext.GetComponent<InventoryMenu>().Close();
+                    this.menuToUseNext = pauseMenu.gameObject;
                     this.state = KnightState.PLAYERCANMOVE;
                 }
                 if (this.onPointerClick)
@@ -470,13 +460,6 @@ public class PlayerDungeon : MonoBehaviour
                 break;
             case KnightState.InTurnBased:
                 // controlled by BattleUI and never exits. We change states when the next scene after the battle is loaded and the player in that scene will be used with its starting state.
-                if (escKeyFlag)
-                {
-                    escKeyFlag = false;
-                    var BattleUI = FindObjectOfType<BattleUI>();
-                    MyGuard.IsNotNull(BattleUI);
-                    BattleUI.PlayerEscKeyFlag = true;
-                }
                 break;
             default:
                 this.state = KnightState.PLAYERCANMOVE;
@@ -546,6 +529,9 @@ public class PlayerDungeon : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        Debug.Log("Check how the timing of StartShake and damage bar reducing works i dont remember but rewrite it so its clearly aligned.");
+        WellBeingObject.GetComponent<ShakeObject>().StartShake(1f, 5f);
+
         this.currentWellbeing -= damage;
         // if current damage will kill player make it go fast
         if (this.currentWellbeing <= 0)
@@ -572,7 +558,6 @@ public class PlayerDungeon : MonoBehaviour
     private IEnumerator AnimateHealthLoss(float speedToFinish, float damage)
     {
         Log.Print("started animating health loss player");
-        this.isHealthBarDoingAnim = true;
         var timeIncrement = 0.1f;
         var damagePerTimeIncrement = damage / (speedToFinish / timeIncrement);
         while (this.healthBarFillImage.fillAmount > Mathf.Clamp((this.currentWellbeing / this.maxWellbeing), 0, 1))
@@ -581,7 +566,6 @@ public class PlayerDungeon : MonoBehaviour
             yield return new WaitForSeconds(timeIncrement);
         }
 
-        this.isHealthBarDoingAnim = false;
         Log.Print("finished animating health loss player");
     }
 
@@ -598,16 +582,13 @@ public class PlayerDungeon : MonoBehaviour
     private bool iKeyFlag;
     private bool escKeyFlag;
 
+    /// <summary>
+    /// When esc key is pressed.
+    /// </summary>
+    /// <param name="context"></param>
     public void OnMenuCancel(InputAction.CallbackContext context)
     {
         if (!context.started)
-        {
-            return;
-        }
-
-        // TODO: might want to change this later if want to open pause menu over dialogue but for now this is fastest solution
-        // dont open pause menu in dialogue.
-        if (this.state == KnightState.INDIALOGUE)
         {
             return;
         }
@@ -629,7 +610,6 @@ public class PlayerDungeon : MonoBehaviour
 
     public void OnNavigateOrMove(InputAction.CallbackContext context)
     {
-        // TODO a better way would have each button fire their own OnNavigatedToo event when they are highlighted to play it's sound.
         if (this.state != KnightState.PLAYERCANMOVE)
         {
             return;
@@ -637,7 +617,6 @@ public class PlayerDungeon : MonoBehaviour
 
         // if in interactin dont update and Return early this stops animation from playing when you're in dialogue
         // another option is to diable and enable the PLayer Move action map and re enable.
-
         this.direction = context.ReadValue<Vector2>();
 
         // TODO for an Running as well. need to add an IsRunning boolean triggered in the OnRun function. do I want the player to have to be running first? then press sprint?

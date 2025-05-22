@@ -116,7 +116,7 @@ public class DialogueTextBox : MenuWithButtons
                     {
                         var player = FindObjectOfType<PlayerDungeon>();
                         MyGuard.IsNotNull(player);
-                        PlayerDataUtility.SaveGame(player);
+                        SaveGameUtility.SaveGame(player);
 
                         if (player.InteractableInRange is Unit enemy)
                         {

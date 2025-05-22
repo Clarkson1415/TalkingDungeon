@@ -2,12 +2,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static PlayerDataUtility;
-using Unity.VisualScripting;
-using System.Collections;
-
-
-
+using static SaveGameUtility;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -20,9 +15,8 @@ public class MenuButton : DungeonButton
     private SavedAnimationText saveText;
 
     /// <summary>
-    /// 
+    /// Loads the 'IntroScene'
     /// </summary>
-    /// <param name="nameOfTheFirstScene">the name of the first scene in the whole game.</param>
     public void StartNewGame()
     {
         TransitionManager.Instance().Transition(TalkingDungeonScenes.Intro, transition, 0f);
@@ -37,7 +31,7 @@ public class MenuButton : DungeonButton
             throw new ArgumentNullException("player not found cannot save");
         }
 
-        PlayerDataUtility.SaveGame(player);
+        SaveGameUtility.SaveGame(player);
 
         this.saveText = FindObjectOfType<SavedAnimationText>();
         if (saveText == null)
@@ -66,7 +60,7 @@ public class MenuButton : DungeonButton
             throw new ArgumentNullException("player not found cannot save");
         }
 
-        PlayerDataUtility.LoadPositionFromSave(player);
+        SaveGameUtility.LoadPositionFromSave(player);
     }
 
     public void SaveAndQuitToTitle()

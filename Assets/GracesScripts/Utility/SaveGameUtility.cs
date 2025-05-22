@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public static class PlayerDataUtility
+public static class SaveGameUtility
 {
     public static void SaveGame(PlayerDungeon player)
     {
@@ -27,11 +26,10 @@ public static class PlayerDataUtility
 
         // TODO save all ItemContainers in scene. they each will have their own save method to reutrn their json list of items. with by the key: sceneName/ChestName
         // ItecmContainer.Save
+        Debug.Log("At some point need to save containers contents so they dont reload");
+        Debug.Log("at some point also need to save converstaions with NPCS? maybe? I won't have backtracking though so idk.");
 
         PlayerPrefs.Save();
-
-        // TODO show loading text for a second
-        Debug.Log("save game");
     }
 
     [Serializable]
@@ -101,6 +99,7 @@ public static class PlayerDataUtility
 
         Debug.Log("Loaded from save");
     }
+
     private static List<T> DeserializeSavedStrings<T>(string json) where T : ScriptableObject
     {
         var wrapper = JsonUtility.FromJson<StringListWrapper>(json);

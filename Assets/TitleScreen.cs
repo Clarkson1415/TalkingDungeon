@@ -23,7 +23,7 @@ public class TitleScreen : MenuWithButtons
         
         GameObject topButton;
 
-        var savedScene = PlayerPrefs.GetString(PlayerDataUtility.SaveKeys.LastScene);
+        var savedScene = PlayerPrefs.GetString(SaveGameUtility.SaveKeys.LastScene);
         if (string.IsNullOrEmpty(savedScene))
         {
             topButton = Instantiate(StartNewGameButton, startLoadButtonLocation.transform);
