@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class HasATooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] private GameObject toolTip;
+    [SerializeField] protected GameObject toolTip;
     [SerializeField] protected TMP_Text tmp;
 
     private void Awake()
