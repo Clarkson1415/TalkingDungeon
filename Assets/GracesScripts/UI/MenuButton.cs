@@ -66,6 +66,11 @@ public class MenuButton : DungeonButton
     public void SaveAndQuitToTitle()
     {
         this.SaveGame();
+        this.QuitToTitle();
+    }
+
+    public void QuitToTitle()
+    {
         TransitionManager.Instance().Transition("TitleScreen", transition, 0f);
     }
 
@@ -74,7 +79,7 @@ public class MenuButton : DungeonButton
         Application.OpenURL("https://docs.google.com/forms/d/e/1FAIpQLSfg7iF1jkyPRbznepDfAlqV4rfdLAybiiSk9cyvw1LzsPJ35A/viewform?usp=dialog");
     }
 
-    public void QuitGame()
+    public void QuitApplication()
     {
 #if UNITY_EDITOR
         EditorApplication.isPlaying = false;

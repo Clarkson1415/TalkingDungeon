@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 #nullable enable
 
@@ -72,7 +71,7 @@ namespace Assets.GracesScripts.UI
 
             this.ToggleEquipGraphicOnInventorySlot(EquipmentSlot.Item, false);
             EquipmentSlot.SetItemAndImage(DefaultHands);
-            this.playerInfoSection.ClearAbilitySlots();
+            this.playerInfoSection.UpdateAbilitySlots(DefaultHands.Abilities);
         }
 
         public void RemoveEquippedItem(Item itemToTryRemove)
@@ -100,6 +99,7 @@ namespace Assets.GracesScripts.UI
                 this.playerInfoSection.equippedSpecialItemSlot.SetItemAndImage(item);
             }
 
+            this.playerInfoSection.UpdateAbilitySlots(item.Abilities);
             this.ToggleEquipGraphicOnInventorySlot(item, true);
         }
 
@@ -155,10 +155,19 @@ namespace Assets.GracesScripts.UI
 
         public void UpdateItemView(InventorySlot slot)
         {
+            slot.PlayHighlightedSound();
+
             if (slot.Item != null)
             {
-                slot.PlayHighlightedSound();
-                this.itemView.UpdateItemView(slot); 
+                this.itemView.UpdateItemView(slot);
+            }
+            else if (slot.Ability != null)
+            {
+                // don't change item view ability has a tooltip.
+            }
+            else
+            {
+                this.itemView.SetItemViewToEmptyItem();
             }
         }
     }

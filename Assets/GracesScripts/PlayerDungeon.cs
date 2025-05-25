@@ -444,8 +444,8 @@ public class PlayerDungeon : MonoBehaviour
                     }
                     else if (this.EquippedItems.Contains(selectedItemOp.Item))
                     {
-                        this.inventoryMenu.RemoveFromPlayerEquipped(selectedItemOp);
                         RemoveFromPlayerEquipped(selectedItemOp);
+                        this.inventoryMenu.RemoveFromPlayerEquipped(selectedItemOp);
                     }
                     else if (IsValidEquip(selectedItemOp.Item))
                     {
