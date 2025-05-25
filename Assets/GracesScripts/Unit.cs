@@ -51,7 +51,7 @@ public class Unit : MonoBehaviour, IInteracble, IHasDialogue
 
     public void SetupUnitForBattle()
     {
-        Debug.Log("EVERYTHING BELOW GETFIRSTDIALOGUE SLIDE TO GO IN UNITFORBATTEL.CS an extension of this class for the turn based battle.");
+        Debug.Log("EVERYTHING BELOW GETFIRSTDIALOGUE SLIDE TO GO IN UNITFORBATTEL.CS an extension of this class for the turn based battle. NAH maybe not? thogh animate enemy health in here is conveintint because dont have to setup UI on the new object when battle starts");
         MyGuard.IsNotNull(enemyHealthFill);
         MyGuard.IsNotNull(HealthBarObject);
         this.enemyHealthFill.fillAmount = this.currentHealth / this.maxHealth;

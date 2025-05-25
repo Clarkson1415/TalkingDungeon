@@ -628,19 +628,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4421446548930551112}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3116497278824554094}
-        m_TargetAssemblyTypeName: ItemOptionButton, Assembly-CSharp
-        m_MethodName: ClickButton
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!82 &5320583092845342663
 AudioSource:
   m_ObjectHideFlags: 0
@@ -968,11 +956,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ToolTip
-      objectReference: {fileID: 0}
-    - target: {fileID: 1638988993410189458, guid: 52d80cc5f2eecf74fa19e66e028d2ebc,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6269311257198934992, guid: 52d80cc5f2eecf74fa19e66e028d2ebc,
         type: 3}

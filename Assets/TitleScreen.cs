@@ -1,8 +1,5 @@
 using Assets.GracesScripts.UI;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class TitleScreen : MenuWithButtons
 {
@@ -20,7 +17,7 @@ public class TitleScreen : MenuWithButtons
             Debug.LogWarning("Deleting all player prefs...");
             PlayerPrefs.DeleteAll();
         }
-        
+
         GameObject topButton;
 
         var savedScene = PlayerPrefs.GetString(SaveGameUtility.SaveKeys.LastScene);

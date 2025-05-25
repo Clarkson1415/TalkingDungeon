@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -20,7 +19,7 @@ public class BattleUI : MonoBehaviour
     [SerializeField] AudioSource buttonClickedAudioSource;
     [SerializeField] AudioSource buttonChangedAudioSource;
 
-    [SerializeField] private List<TurnBasedAbilityButton> AbilityButtons;
+    [SerializeField] private List<InventorySlot> AbilityButtons;
     [SerializeField] GameObject actionButtonScreen;
     [SerializeField] GameObject abilityButtonSceen;
     [SerializeField] GameObject itemScreen;
@@ -125,7 +124,7 @@ public class BattleUI : MonoBehaviour
         for (int i = 0; i < player.Abilities.Count; i++)
         {
             this.AbilityButtons[i].gameObject.SetActive(true);
-            this.AbilityButtons[i].SetAbility(player.Abilities[i]);
+            this.AbilityButtons[i].SetAbilityAndImage(player.Abilities[i]);
             this.AbilityButtons[i].GetComponent<Button>().onClick.AddListener(OnAbilityButtonClicked);
         }
 

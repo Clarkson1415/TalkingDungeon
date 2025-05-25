@@ -6,7 +6,6 @@ namespace Assets.GracesScripts.UI
     public abstract class Menu : MonoBehaviour
     {
         [SerializeField] protected EventSystem UIEventSystem;
-        [SerializeField] public Sprite emptySlotImage;
 
         public virtual void Close()
         {
