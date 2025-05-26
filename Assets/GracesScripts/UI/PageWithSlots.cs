@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.GracesScripts.ScriptableObjects;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 #nullable enable
@@ -8,12 +9,12 @@ namespace Assets.GracesScripts.UI
     /// <summary>
     /// parent class to be inherited by Gear and ItemPages as they have similar behaviour
     /// </summary>
-    public class PageWithSlots : BookPage
+    public abstract class PageWithSlots : BookPage
     {
         [SerializeField] private PlayerInfoPage playerInfoSection;
         [SerializeField] private ItemView itemView;
         [SerializeField] private List<InventorySlot> InventorySlots;
-        public ItemType ItemType;
+        public abstract Type TypeInPageSlots { get; set; }
 
         /// <inheritdoc/>
         public override void TogglePageComponents(bool OnOff)
@@ -34,7 +35,7 @@ namespace Assets.GracesScripts.UI
         /// <summary>
         /// Updates item buttons to current category selected from this.selectedTab. TODO this better by maybe could make booktabs have a enum type that encompasses abilityes and items and have a parent class for abilities and items?
         /// </summary>
-        public void FillItemSlots(List<Item> itemToFillWith, Item equippedWeapon, Item? equippedItem, Item DefaultHands)
+        public void FillItemSlots(List<DungeonItem> itemToFillWith, DungeonItem equippedWeapon, DungeonItem? equippedItem, DungeonItem DefaultHands)
         {
             InventorySlots.ForEach(slot => slot.ReplaceSlotWithBlanks());
             InventorySlots.ForEach(slot => slot.ToggleEquipGraphic(false));
@@ -60,7 +61,7 @@ namespace Assets.GracesScripts.UI
         /// </summary>
         /// <param name="WeaponToRemove"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void RemoveEquippedWeapon(Item WeaponToRemove, Item DefaultHands)
+        public void RemoveEquippedWeapon(DungeonItem WeaponToRemove, DungeonItem DefaultHands)
         {
             var EquipmentSlot = this.playerInfoSection.equippedWeaponSlot;
 
@@ -74,7 +75,7 @@ namespace Assets.GracesScripts.UI
             this.playerInfoSection.UpdateAbilitySlots(DefaultHands.Abilities);
         }
 
-        public void RemoveEquippedItem(Item itemToTryRemove)
+        public void RemoveEquippedItem(DungeonItem itemToTryRemove)
         {
             var EquipmentSlot = this.playerInfoSection.equippedSpecialItemSlot;
 
@@ -87,7 +88,7 @@ namespace Assets.GracesScripts.UI
             EquipmentSlot.ReplaceSlotWithBlanks();
         }
 
-        public void EquipItem(Item item)
+        public void EquipItem(DungeonItem item)
         {
             if (item.Type == ItemType.Weapon)
             {
@@ -109,7 +110,7 @@ namespace Assets.GracesScripts.UI
         /// </summary>
         /// <param name="newItem"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void InitialSetPlayersEquipped(Item weapon, Item? specialItem, Item Hands)
+        public void InitialSetPlayersEquipped(DungeonItem weapon, DungeonItem? specialItem, DungeonItem Hands)
         {
             if (this.playerInfoSection.equippedWeaponSlot.Item != null)
             {
@@ -141,7 +142,7 @@ namespace Assets.GracesScripts.UI
         /// </summary>
         /// <param name="ItemToMatch"></param>
         /// <param name="OnOff"></param>
-        private void ToggleEquipGraphicOnInventorySlot(Item ItemToMatch, bool OnOff)
+        private void ToggleEquipGraphicOnInventorySlot(DungeonItem ItemToMatch, bool OnOff)
         {
             foreach (var button in this.InventorySlots)
             {

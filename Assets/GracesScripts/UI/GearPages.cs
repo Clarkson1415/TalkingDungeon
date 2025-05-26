@@ -1,6 +1,11 @@
-﻿namespace Assets.GracesScripts.UI
+﻿using Assets.GracesScripts.ScriptableObjects;
+using System;
+
+namespace Assets.GracesScripts.UI
 {
-    class GearPages : PageWithSlots
+    public class GearPages : PageWithSlots
     {
+        public override Type TypeInPageSlots { get => typeof(Weapon); set => throw new NotImplementedException(); }
     }
 }
+        

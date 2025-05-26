@@ -16,7 +16,7 @@ using static SaveGameUtility;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : Unit
 {
-    private Item defaultWeaponHands;
+    private DungeonItem defaultWeaponHands;
     [SerializeField] private float movementSpeed = 1f;
     private Rigidbody2D rb;
     private Vector2 direction;
@@ -224,7 +224,7 @@ public class PlayerDungeon : Unit
         this.menuToUseNext = this.pauseMenu.gameObject;
         this.healthBarFill = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
         this.HealthBarObject = this.healthBarFill.transform.parent.gameObject;
-        this.defaultWeaponHands = Resources.Load<Item>("Items/Weapon/Hands");
+        this.defaultWeaponHands = Resources.Load<DungeonItem>("Items/Weapon/Hands");
     }
 
     private void StartInteraction()
@@ -472,7 +472,7 @@ public class PlayerDungeon : Unit
     /// </summary>
     /// <param name="itemToEquip"></param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    private void AddToPlayerEquipped(Item itemToEquip)
+    private void AddToPlayerEquipped(DungeonItem itemToEquip)
     {
         MyGuard.IsNotNull(this.inventoryMenu);
 
@@ -494,7 +494,7 @@ public class PlayerDungeon : Unit
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    private bool IsValidEquip(Item item)
+    private bool IsValidEquip(DungeonItem item)
     {
         MyGuard.IsNotNull(item);
         bool isValid = true;

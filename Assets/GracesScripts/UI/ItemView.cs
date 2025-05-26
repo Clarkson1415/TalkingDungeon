@@ -43,7 +43,7 @@ namespace Assets.GracesScripts.UI
             this.itemdescriptionContainer.SetDescription(itemSelected.Item.description);
             this.itemNameContainer.SetName(itemSelected.Item.name);
             this.defenceValueText.text = itemSelected.Item.DefenceStat.ToString();
-            this.defenceValueText.text = itemSelected.Item.AttackStat.ToString();
+            this.defenceValueText.text = itemSelected.Item.PowerStat.ToString();
 
             if (itemSelected.Item.Type == ItemType.Weapon)
             {

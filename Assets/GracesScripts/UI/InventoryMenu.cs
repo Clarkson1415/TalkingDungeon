@@ -1,9 +1,11 @@
 using Assets.GracesScripts;
+using Assets.GracesScripts.ScriptableObjects;
 using Assets.GracesScripts.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,7 +15,7 @@ using UnityEngine.UI;
 public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 {
     [Header("InventoryMenu")]
-    private List<Item> AllInventoryItems = new();
+    private List<DungeonItem> AllInventoryItems = new();
     private BookTab selectedTab;
     [SerializeField] BookTab OnFirstOpenInventorySelectedTab;
     [SerializeField] GameObject BookInOutAnimator;
@@ -31,9 +33,9 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     private Animator flipPageAnimator;
 
     [Header("Player")]
-    private Item playerEquippedWeapon;
-    private Item? playerEquippedItem;
-    [SerializeField] private Item HandsWeapon;
+    private DungeonItem playerEquippedWeapon;
+    private DungeonItem? playerEquippedItem;
+    [SerializeField] private DungeonItem HandsWeapon;
 
     protected override void UpdateItemView(InventorySlot slot)
     {
@@ -52,7 +54,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     /// and this only needs to be initialised once.
     /// </summary>
     /// <param name="Items"></param>
-    public void OpenInventory(List<Item> playerItems, Item playerEquippedWeapon, Item? playerEquippedItem)
+    public void OpenInventory(List<DungeonItem> playerItems, DungeonItem playerEquippedWeapon, DungeonItem? playerEquippedItem)
     {
         AllInventoryItems = playerItems;
 
@@ -124,7 +126,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 
         if (Page is PageWithSlots pageWithSlots)
         {
-            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.Type == pageWithSlots.ItemType).ToList(), this.playerEquippedWeapon, this.playerEquippedItem, this.HandsWeapon);
+            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.GetType() == pageWithSlots.TypeInPageSlots).ToList(), this.playerEquippedWeapon, this.playerEquippedItem, this.HandsWeapon);
         }
     }
 
@@ -186,7 +188,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     {
         MyGuard.IsNotNull(selectedSlot.Item);
 
-        if (selectedSlot.Item.Type == ItemType.Weapon)
+        if (selectedSlot.Item is Weapon)
         {
             this.gearPages.RemoveEquippedWeapon(this.playerEquippedWeapon, HandsWeapon);
             this.playerEquippedWeapon = selectedSlot.Item;
@@ -208,7 +210,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     {
         MyGuard.IsNotNull(selectedSlot.Item);
 
-        if (selectedSlot.Item.Type == ItemType.Weapon)
+        if (selectedSlot.Item is Weapon)
         {
             this.playerEquippedWeapon = this.HandsWeapon;
             Debug.Log("make sure to update player weapon also am i doing that?");

@@ -12,7 +12,7 @@ public class ItemContainer : MonoBehaviour, IInteracble
     /// <summary>
     /// Loot chest starts out with, after it's been saved, loot is then loaded from player prefs
     /// </summary>
-    public List<Item> Loot;
+    public List<DungeonItem> Loot;
 
     [SerializeField] private AudioClip chestOpenSound;
     [SerializeField] private AudioClip chestClosedSound;

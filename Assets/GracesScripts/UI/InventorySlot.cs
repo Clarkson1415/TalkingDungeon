@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class InventorySlot : DungeonButton
 {
-    public Item? Item;
+    public DungeonItem? Item;
     public Ability? Ability;
 
     [SerializeField] Sprite equippedOverlayGraphic;
     [SerializeField] Sprite unequippedGraphic;
     [SerializeField] Image EquippedOverlayTargetImage;
-    public void SetItemAndImage(Item? item)
+    public void SetItemAndImage(DungeonItem? item)
     {
         if (item == null)
         {

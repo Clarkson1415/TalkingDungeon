@@ -1,4 +1,5 @@
 using Assets.GracesScripts;
+using Assets.GracesScripts.ScriptableObjects;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,17 @@ public abstract class Unit : MonoBehaviour
     public float currentHealth = 100;
     public float maxHealth = 100;
     public List<Ability> Abilities => this.equippedWeapon.Abilities;
-    protected List<Item?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
-    public Item equippedWeapon;
-    public Item? equippedSpecialItem;
-    public List<Item> Inventory = new();
-    public float Power => this.EquippedItems.Sum(x => x != null ? x.AttackStat : 0);
-    public float Defence => this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0);
+    protected List<DungeonItem?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
+    public Weapon equippedWeapon;
+    public SpecialItem? equippedSpecialItem;
+    public List<DungeonItem> Inventory = new();
+    public float baseDefence = 0;
+
+    /// <summary>
+    /// Will be changed from one off items to buffing abilities
+    /// </summary>
+    public float defenceModifier = 0;
+    public float Defence => this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0) + defenceModifier + baseDefence;
 
     // this to go in Unit in a battle
     [HideInInspector] public GameObject HealthBarObject;

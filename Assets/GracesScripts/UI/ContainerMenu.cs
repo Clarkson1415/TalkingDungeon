@@ -21,7 +21,7 @@ public class ContainerMenu : MenuWithItemSlots
         this.itemView.UpdateItemView(slot);
     }
 
-    public void PopulateContainer(List<Item> items)
+    public void PopulateContainer(List<DungeonItem> items)
     {
         // Could optimise this and FillItemSlots
         this.slots.ForEach(slot => slot.ReplaceSlotWithBlanks());

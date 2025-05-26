@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Assets.GracesScripts.ScriptableObjects;
+using System;
 
 namespace Assets.GracesScripts.UI
 {
-    class ItemPages : PageWithSlots
+    public class ItemPages : PageWithSlots
     {
+        public override Type TypeInPageSlots { get => typeof(SpecialItem); set => throw new NotImplementedException(); }
 
     }
 }

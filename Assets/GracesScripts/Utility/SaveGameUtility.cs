@@ -80,7 +80,7 @@ public static class SaveGameUtility
 
         // deserialize saved items.
         string itemsJson = PlayerPrefs.GetString(SaveKeys.InventoryItemsPaths);
-        player.Inventory = DeserializeSavedStrings<Item>(itemsJson);
+        player.Inventory = DeserializeSavedStrings<DungeonItem>(itemsJson);
 
         player.currentHealth = PlayerPrefs.GetFloat(SaveKeys.CurrentWellbeing);
         player.maxHealth = PlayerPrefs.GetFloat(SaveKeys.MaxWellbeing);
@@ -88,13 +88,13 @@ public static class SaveGameUtility
         string weaponPath = PlayerPrefs.GetString(SaveKeys.EquippedWeaponPath);
         if (!string.IsNullOrEmpty(weaponPath))
         {
-            player.equippedWeapon = Resources.Load<Item>(weaponPath);
+            player.equippedWeapon = Resources.Load<DungeonItem>(weaponPath);
         }
 
         string specialItemPath = PlayerPrefs.GetString(SaveKeys.EquippedItemPath);
         if (!string.IsNullOrEmpty(specialItemPath))
         {
-            player.equippedSpecialItem = Resources.Load<Item>(PlayerPrefs.GetString(SaveKeys.EquippedItemPath));
+            player.equippedSpecialItem = Resources.Load<DungeonItem>(PlayerPrefs.GetString(SaveKeys.EquippedItemPath));
         }
 
         Debug.Log("Loaded from save");

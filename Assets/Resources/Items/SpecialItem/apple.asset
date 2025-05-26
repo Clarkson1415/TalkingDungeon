@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f80333a5d9d3f54c948f4334ee26ba2, type: 3}
   m_Name: apple
   m_EditorClassIdentifier: 
-  Abilities: []
-  AttackStat: 0
+  Abilities:
+  - {fileID: 11400000, guid: f1559ba6952a31a4c9acce2368bcedf5, type: 2}
+  PowerStat: 0
   DefenceStat: 0
   Type: 2
   Name: apple

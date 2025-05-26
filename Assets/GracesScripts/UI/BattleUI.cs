@@ -1,4 +1,5 @@
 using Assets.GracesScripts;
+using Assets.GracesScripts.UI;
 using EasyTransition;
 using System;
 using System.Collections;
@@ -8,7 +9,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BattleUI : MonoBehaviour
+public class BattleUI : MenuWithButtons
 {
     [Header("Player")]
     private PlayerDungeon player;
@@ -20,7 +21,6 @@ public class BattleUI : MonoBehaviour
     [Header("UI")]
     [SerializeField] TransitionSettings exitBattleTransition;
     [SerializeField] AudioSource buttonClickedAudioSource;
-    [SerializeField] AudioSource buttonChangedAudioSource;
 
     [SerializeField] private List<InventorySlot> AbilityButtons;
     [SerializeField] GameObject actionButtonScreen;
@@ -38,15 +38,23 @@ public class BattleUI : MonoBehaviour
     private Battle state;
     private EventSystem evSys;
 
-    private bool actionClickedFlag;
-    private bool abilityClickedFlag;
-    private bool backButtonClicked;
-    private bool isDialoguePrinting;
+    private static Color positiveGreen = new Color(0, 0.7f, 0);
 
     /// <summary>
     /// Screens that are in the bottom middle battle ui except for death that never needs to be turned off again.
     /// </summary>
     private List<GameObject> BattleScreens => new() { this.actionButtonScreen, this.abilityButtonSceen };
+    private bool actionClickedFlag;
+    private bool abilityClickedFlag;
+    private bool backButtonClickedFlag;
+    private bool isDialoguePrinting;
+
+    private void ResetFlags()
+    {
+        actionClickedFlag = false;
+        abilityClickedFlag = false;
+        backButtonClickedFlag = false;
+    }
 
     private void Awake()
     {
@@ -143,25 +151,6 @@ public class BattleUI : MonoBehaviour
     // Update is called once per frame 
     void Update()
     {
-        var highlighted = this.evSys.currentSelectedGameObject;
-
-        if (highlighted == null)
-        {
-            // do nothing
-        }
-        else if (highlighted != currentSelectedButton)
-        {
-            if (currentSelectedButton != null)
-            {
-                if (!this.buttonClickedAudioSource.isPlaying) // if the button clicked sound is playing don't play button changed also
-                {
-                    this.buttonChangedAudioSource.Play();
-                }
-            }
-
-            currentSelectedButton = highlighted;
-        }
-
         switch (state)
         {
             case Battle.PlayerPickActionTurn:
@@ -231,9 +220,9 @@ public class BattleUI : MonoBehaviour
                 }
                 break;
             case Battle.inItemMenu:
-                if (this.backButtonClicked)
+                if (this.backButtonClickedFlag)
                 {
-                    this.backButtonClicked = false;
+                    this.backButtonClickedFlag = false;
                     this.itemScreen.GetComponent<ItemMenuBattle>().CloseItemMenu();
                 }
                 if (!this.itemScreen.activeSelf)
@@ -253,9 +242,9 @@ public class BattleUI : MonoBehaviour
                     ShowAbilityUsedText(this.player, abilityUsed);
                     this.state = Battle.ExecutingPlayerTurn;
                 }
-                if (this.backButtonClicked)
+                if (this.backButtonClickedFlag)
                 {
-                    this.backButtonClicked = false;
+                    this.backButtonClickedFlag = false;
                     this.abilityButtonSceen.SetActive(false);
                     this.actionButtonScreen.SetActive(true);
                     this.state = Battle.PlayerPickActionTurn;
@@ -336,11 +325,13 @@ public class BattleUI : MonoBehaviour
             default:
                 break;
         }
+
+        ResetFlags();
     }
 
     private void ShowAbilityUsedText(Unit user, Ability abilityUsed)
     {
-        var color = new Color(12, 117, 8, 1);
+        var color = positiveGreen;
         var person = "Player";
         if (user is Unit_NPC)
         {
@@ -385,7 +376,7 @@ public class BattleUI : MonoBehaviour
 
     public void OnBackButtonClicked()
     {
-        backButtonClicked = true;
+        backButtonClickedFlag = true;
         buttonClickedAudioSource.Play();
     }
 }

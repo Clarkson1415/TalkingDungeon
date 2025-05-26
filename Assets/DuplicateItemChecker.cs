@@ -12,7 +12,7 @@ public class DuplicateItemChecker : MonoBehaviour
     {
         var player = FindObjectOfType<PlayerDungeon>();
 
-        List<Item> FoundItems = new();
+        List<DungeonItem> FoundItems = new();
 
         foreach (var item in player.Inventory)
         {

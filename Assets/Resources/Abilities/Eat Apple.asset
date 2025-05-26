@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1046ae07000c71478575c7a41a75686, type: 3}
+  m_Name: Eat Apple
+  m_EditorClassIdentifier: 
+  Name: Eat Apple
+  description: eat the apple
+  cooldown: 0
+  image: {fileID: 1934690802, guid: 70375e31e442a0c498a4bd2e1bfeead0, type: 3}
+  Effects:
+  - {fileID: 11400000, guid: 72f68dc6b2e90274791b1850290c9d74, type: 2}
