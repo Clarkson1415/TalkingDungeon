@@ -341,13 +341,14 @@ public class BattleUI : MonoBehaviour
     private void ShowAbilityUsedText(Unit user, Ability abilityUsed)
     {
         var color = new Color(12, 117, 8, 1);
-        
+        var person = "Player";
         if (user is Unit_NPC)
         {
             color = Color.red;
+            person = enemyYouFightin.unitName;
         }
 
-        var turnInfoString = $"player used {player.equippedWeapon} to {abilityUsed.name} to {abilityUsed.description}:\n";
+        var turnInfoString = $"{person} used {player.equippedWeapon} to {abilityUsed.name} to {abilityUsed.description}:\n";
         foreach (var effect in abilityUsed.Effects)
         {
             effect.Apply(this.player, this.enemyYouFightin);
