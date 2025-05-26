@@ -1,11 +1,9 @@
-using Assets.GracesScripts;
 using Assets.GracesScripts.ScriptableObjects;
 using Assets.GracesScripts.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -35,7 +33,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     [Header("Player")]
     private Weapon playerEquippedWeapon;
     private SpecialItem? playerEquippedItem;
-    [SerializeField] private Weapon HandsWeapon;
+    private Weapon HandsWeapon;
 
     protected override void UpdateItemView(InventorySlot slot)
     {
@@ -83,12 +81,14 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
         this.bookSlideInOutAnimator = this.BookInOutAnimator.GetComponent<Animator>();
         this.bookBackgroundImage = this.BookBackGround.GetComponent<Image>();
         this.flipPageAnimator = this.PageFlipper.GetComponent<Animator>();
+        this.HandsWeapon = Resources.Load<Weapon>("Items/Weapon/Hands");
+        MyGuard.IsNotNull(this.HandsWeapon);
         DeactivateAllPages();
     }
 
     private void DeactivateAllPages()
     {
-        foreach(var p in this.Pages)
+        foreach (var p in this.Pages)
         {
             p.TogglePageComponents(false);
             p.gameObject.SetActive(false);
@@ -104,7 +104,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     IEnumerator PageFlip(int numberOfFlips)
     {
         this.PageFlipper.SetActive(true);
-        for(int i = 0; i < numberOfFlips; i++)
+        for (int i = 0; i < numberOfFlips; i++)
         {
             this.flipPageAnimator.SetTrigger("Open");
             yield return new WaitForSeconds(0.22f);

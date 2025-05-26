@@ -225,7 +225,8 @@ public class PlayerDungeon : Unit
         this.menuToUseNext = this.pauseMenu.gameObject;
         this.healthBarFill = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
         this.HealthBarObject = this.healthBarFill.transform.parent.gameObject;
-        this.defaultWeaponHands = Resources.Load<Weapon>("Items/Weapon/Hands");
+        
+
     }
 
     private void StartInteraction()
