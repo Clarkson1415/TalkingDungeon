@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.GracesScripts.ScriptableObjects;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -42,14 +43,16 @@ namespace Assets.GracesScripts.UI
 
             this.itemdescriptionContainer.SetDescription(itemSelected.Item.description);
             this.itemNameContainer.SetName(itemSelected.Item.name);
-            this.defenceValueText.text = itemSelected.Item.DefenceStat.ToString();
-            this.defenceValueText.text = itemSelected.Item.PowerStat.ToString();
+            this.defenceValueText.text = "";
+            this.powerValueText.text = "";
 
-            if (itemSelected.Item.Type == ItemType.Weapon)
+            if (itemSelected.Item is Weapon weapon)
             {
-                this.itemdescriptionContainer.SetDescription($"{itemSelected.Item.description}");
-
-                UpdateAbilitySlots(itemSelected.Item.Abilities);
+                MyGuard.IsNotNull(weapon);
+                this.itemdescriptionContainer.SetDescription($"{weapon.description}");
+                this.defenceValueText.text = weapon.DefenceStat.ToString();
+                this.powerValueText.text = weapon.PowerStat.ToString();
+                UpdateAbilitySlots(weapon.Abilities);
             }
         }
 

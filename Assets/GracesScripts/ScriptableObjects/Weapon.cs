@@ -10,7 +10,7 @@ namespace Assets.GracesScripts.ScriptableObjects
         public List<Ability> Abilities;
 
         /// <summary>
-        /// Multiplyer 
+        /// Multiplies power of all abilities this weapon can do.
         /// </summary>
         public int PowerStat;
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.GracesScripts.ScriptableObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -88,13 +89,13 @@ public static class SaveGameUtility
         string weaponPath = PlayerPrefs.GetString(SaveKeys.EquippedWeaponPath);
         if (!string.IsNullOrEmpty(weaponPath))
         {
-            player.equippedWeapon = Resources.Load<DungeonItem>(weaponPath);
+            player.equippedWeapon = Resources.Load<Weapon>(weaponPath);
         }
 
         string specialItemPath = PlayerPrefs.GetString(SaveKeys.EquippedItemPath);
         if (!string.IsNullOrEmpty(specialItemPath))
         {
-            player.equippedSpecialItem = Resources.Load<DungeonItem>(PlayerPrefs.GetString(SaveKeys.EquippedItemPath));
+            player.equippedSpecialItem = Resources.Load<SpecialItem>(PlayerPrefs.GetString(SaveKeys.EquippedItemPath));
         }
 
         Debug.Log("Loaded from save");

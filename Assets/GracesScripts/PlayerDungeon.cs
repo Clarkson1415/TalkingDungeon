@@ -1,4 +1,5 @@
 using Assets.GracesScripts;
+using Assets.GracesScripts.ScriptableObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ using static SaveGameUtility;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : Unit
 {
-    private DungeonItem defaultWeaponHands;
+    private Weapon defaultWeaponHands;
     [SerializeField] private float movementSpeed = 1f;
     private Rigidbody2D rb;
     private Vector2 direction;
@@ -224,7 +225,7 @@ public class PlayerDungeon : Unit
         this.menuToUseNext = this.pauseMenu.gameObject;
         this.healthBarFill = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
         this.HealthBarObject = this.healthBarFill.transform.parent.gameObject;
-        this.defaultWeaponHands = Resources.Load<DungeonItem>("Items/Weapon/Hands");
+        this.defaultWeaponHands = Resources.Load<Weapon>("Items/Weapon/Hands");
     }
 
     private void StartInteraction()
@@ -476,16 +477,13 @@ public class PlayerDungeon : Unit
     {
         MyGuard.IsNotNull(this.inventoryMenu);
 
-        switch (itemToEquip.Type)
+        if (itemToEquip is Weapon w)
         {
-            case ItemType.Weapon:
-                this.equippedWeapon = itemToEquip;
-                break;
-            case ItemType.SpecialItem:
-                this.equippedSpecialItem = itemToEquip;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException("No type found fo add to player quip.");
+            this.equippedWeapon = w;
+        }
+        else if (itemToEquip is SpecialItem special)
+        {
+            this.equippedSpecialItem = special;
         }
     }
 

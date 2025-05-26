@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 #nullable enable
 
 /// <summary>
@@ -19,17 +20,23 @@ public abstract class Unit : MonoBehaviour
     public Weapon equippedWeapon;
     public SpecialItem? equippedSpecialItem;
     public List<DungeonItem> Inventory = new();
-    public float baseDefence = 0;
+    // this to go in Unit in a battle
+    [HideInInspector] public GameObject HealthBarObject;
+    [HideInInspector] public Image healthBarFill;
+
+    
+    [SerializeField] private float basePower = 0;
+    public float powerModifier;
+    public float Power => powerModifier * (this.basePower + this.equippedWeapon.PowerStat);
+
+    [SerializeField] private float baseDefence = 0;
 
     /// <summary>
     /// Will be changed from one off items to buffing abilities
     /// </summary>
     public float defenceModifier = 0;
-    public float Defence => this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0) + defenceModifier + baseDefence;
+    public float Defence => defenceModifier * (this.equippedWeapon.DefenceStat + baseDefence);
 
-    // this to go in Unit in a battle
-    [HideInInspector] public GameObject HealthBarObject;
-    [HideInInspector] public Image healthBarFill;
 
     public void SetupUnitForBattle()
     {

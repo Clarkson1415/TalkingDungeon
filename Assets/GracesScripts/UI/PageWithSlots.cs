@@ -35,7 +35,7 @@ namespace Assets.GracesScripts.UI
         /// <summary>
         /// Updates item buttons to current category selected from this.selectedTab. TODO this better by maybe could make booktabs have a enum type that encompasses abilityes and items and have a parent class for abilities and items?
         /// </summary>
-        public void FillItemSlots(List<DungeonItem> itemToFillWith, DungeonItem equippedWeapon, DungeonItem? equippedItem, DungeonItem DefaultHands)
+        public void FillItemSlots(List<DungeonItem> itemToFillWith, Weapon equippedWeapon, SpecialItem? equippedItem, Weapon DefaultHands)
         {
             InventorySlots.ForEach(slot => slot.ReplaceSlotWithBlanks());
             InventorySlots.ForEach(slot => slot.ToggleEquipGraphic(false));
@@ -61,7 +61,7 @@ namespace Assets.GracesScripts.UI
         /// </summary>
         /// <param name="WeaponToRemove"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void RemoveEquippedWeapon(DungeonItem WeaponToRemove, DungeonItem DefaultHands)
+        public void RemoveEquippedWeapon(Weapon WeaponToRemove, Weapon DefaultHands)
         {
             var EquipmentSlot = this.playerInfoSection.equippedWeaponSlot;
 
@@ -75,7 +75,7 @@ namespace Assets.GracesScripts.UI
             this.playerInfoSection.UpdateAbilitySlots(DefaultHands.Abilities);
         }
 
-        public void RemoveEquippedItem(DungeonItem itemToTryRemove)
+        public void RemoveEquippedItem(SpecialItem itemToTryRemove)
         {
             var EquipmentSlot = this.playerInfoSection.equippedSpecialItemSlot;
 
@@ -90,17 +90,17 @@ namespace Assets.GracesScripts.UI
 
         public void EquipItem(DungeonItem item)
         {
-            if (item.Type == ItemType.Weapon)
+            if (item is Weapon weapon)
             {
-                this.playerInfoSection.equippedWeaponSlot.SetItemAndImage(item);
-                this.playerInfoSection.UpdateAbilitySlots(item.Abilities);
+                this.playerInfoSection.equippedWeaponSlot.SetItemAndImage(weapon);
+                this.playerInfoSection.UpdateAbilitySlots(weapon.Abilities);
             }
-            else if (item.Type == ItemType.SpecialItem)
+            else if (item is SpecialItem special)
             {
                 this.playerInfoSection.equippedSpecialItemSlot.SetItemAndImage(item);
+                this.playerInfoSection.ClearAbilitySlots();
             }
 
-            this.playerInfoSection.UpdateAbilitySlots(item.Abilities);
             this.ToggleEquipGraphicOnInventorySlot(item, true);
         }
 
@@ -110,7 +110,7 @@ namespace Assets.GracesScripts.UI
         /// </summary>
         /// <param name="newItem"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void InitialSetPlayersEquipped(DungeonItem weapon, DungeonItem? specialItem, DungeonItem Hands)
+        public void InitialSetPlayersEquipped(Weapon weapon, SpecialItem? specialItem, Weapon Hands)
         {
             if (this.playerInfoSection.equippedWeaponSlot.Item != null)
             {

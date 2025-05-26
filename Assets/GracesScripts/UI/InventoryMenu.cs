@@ -33,9 +33,9 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     private Animator flipPageAnimator;
 
     [Header("Player")]
-    private DungeonItem playerEquippedWeapon;
-    private DungeonItem? playerEquippedItem;
-    [SerializeField] private DungeonItem HandsWeapon;
+    private Weapon playerEquippedWeapon;
+    private SpecialItem? playerEquippedItem;
+    [SerializeField] private Weapon HandsWeapon;
 
     protected override void UpdateItemView(InventorySlot slot)
     {
@@ -54,7 +54,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     /// and this only needs to be initialised once.
     /// </summary>
     /// <param name="Items"></param>
-    public void OpenInventory(List<DungeonItem> playerItems, DungeonItem playerEquippedWeapon, DungeonItem? playerEquippedItem)
+    public void OpenInventory(List<DungeonItem> playerItems, Weapon playerEquippedWeapon, SpecialItem? playerEquippedItem)
     {
         AllInventoryItems = playerItems;
 
@@ -188,21 +188,21 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     {
         MyGuard.IsNotNull(selectedSlot.Item);
 
-        if (selectedSlot.Item is Weapon)
+        if (selectedSlot.Item is Weapon weapon)
         {
             this.gearPages.RemoveEquippedWeapon(this.playerEquippedWeapon, HandsWeapon);
-            this.playerEquippedWeapon = selectedSlot.Item;
-            this.gearPages.EquipItem(selectedSlot.Item);
+            this.playerEquippedWeapon = weapon;
+            this.gearPages.EquipItem(weapon);
         }
-        else
+        else if (selectedSlot.Item is SpecialItem special)
         {
             if (this.playerEquippedItem != null)
             {
                 this.ItemPages.RemoveEquippedItem(this.playerEquippedItem);
             }
 
-            this.playerEquippedItem = selectedSlot.Item;
-            this.ItemPages.EquipItem(selectedSlot.Item);
+            this.playerEquippedItem = special;
+            this.ItemPages.EquipItem(special);
         }
     }
 
@@ -210,17 +210,18 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     {
         MyGuard.IsNotNull(selectedSlot.Item);
 
-        if (selectedSlot.Item is Weapon)
+        if (selectedSlot.Item is Weapon weapon)
         {
             this.playerEquippedWeapon = this.HandsWeapon;
             Debug.Log("make sure to update player weapon also am i doing that?");
+            this.gearPages.RemoveEquippedWeapon(weapon, this.HandsWeapon);
         }
         else
         {
             this.playerEquippedItem = null;
+            var item = selectedSlot.Item as SpecialItem;
+            MyGuard.IsNotNull(item, "Item cannot be null here.");
+            this.ItemPages.RemoveEquippedItem(item);
         }
-
-        this.gearPages.RemoveEquippedWeapon(selectedSlot.Item, this.HandsWeapon);
-        this.ItemPages.RemoveEquippedItem(selectedSlot.Item);
     }
 }
