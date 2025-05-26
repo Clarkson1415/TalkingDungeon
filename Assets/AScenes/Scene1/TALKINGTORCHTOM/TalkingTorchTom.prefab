@@ -5101,10 +5101,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4838487597769796761}
-  - component: {fileID: 2649976523449545950}
   - component: {fileID: 1859165092951538369}
   - component: {fileID: 3257140619700671272}
   - component: {fileID: 1912967461522423830}
+  - component: {fileID: 1974318904907394840}
   m_Layer: 0
   m_Name: TalkingTorchTom
   m_TagString: Untagged
@@ -5128,26 +5128,6 @@ Transform:
   - {fileID: 4700734537784024205}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2649976523449545950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5846622229012021022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db057ab8473bd4e4b812275ae5cdf7fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  unitName: TalkingTorchTom
-  prefabToUseInBattle: {fileID: 0}
-  currentHealth: 100
-  maxHealth: 100
-  firstDialogueSlide: {fileID: 11400000, guid: ce0874126930a344385392d1ec0e1e60, type: 2}
-  battleSceneDialogueSlide: {fileID: 0}
-  abilities:
-  - {fileID: 11400000, guid: 5964789fba75d9540a4e7626dd25d315, type: 2}
 --- !u!61 &1859165092951538369
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5227,3 +5207,26 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1974318904907394840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5846622229012021022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95903e89861a52e47af0425dc2d877bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 100
+  maxHealth: 100
+  equippedWeapon: {fileID: 0}
+  equippedSpecialItem: {fileID: 0}
+  Inventory: []
+  HealthBarObject: {fileID: 0}
+  healthBarFill: {fileID: 0}
+  unitName: Talking Torch Tom
+  prefabToUseInBattle: {fileID: 0}
+  firstDialogueSlide: {fileID: 11400000, guid: ce0874126930a344385392d1ec0e1e60, type: 2}
+  battleSceneDialogueSlide: {fileID: 0}

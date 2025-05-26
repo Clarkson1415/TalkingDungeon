@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd350cfbf9b214b45a293c16683baf9e, type: 3}
-  m_Name: S1O1S
+  m_Script: {fileID: 11500000, guid: f0d57cc309c67a44a877100754abd67b, type: 3}
+  m_Name: StabDamage
   m_EditorClassIdentifier: 
-  startFight: 1
-  dialogue: Then I will stop you
-  dialogueOptions: []
-  nextSlide: {fileID: 0}
+  Description: Delt 8 damage
+  Damage: 8

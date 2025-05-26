@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.GracesScripts.UI
 {
-    public class PlayerInfo : MonoBehaviour
+    public class PlayerInfoPage : MonoBehaviour
     {
         [SerializeField] private TMP_Text playerPowerStatText;
         [SerializeField] private TMP_Text playerDefenceStatText;
@@ -29,7 +29,7 @@ namespace Assets.GracesScripts.UI
         {
             this.playerPowerStatText.text = player.Power.ToString();
             this.playerDefenceStatText.text = player.Defence.ToString();
-            this.playerWellBeingText.text = player.currentWellbeing.ToString();
+            this.playerWellBeingText.text = player.currentHealth.ToString();
         }
 
         public void ClearAbilitySlots()
@@ -48,7 +48,6 @@ namespace Assets.GracesScripts.UI
             {
                 this.abilitySlots[i].gameObject.SetActive(true);
                 this.abilitySlots[i].SetAbilityAndImage(abilities[i]);
-                this.abilitySlots[i].UpdateToolTip($"{abilities[i].name}: {abilities[i].description}");
             }
         }
     }

@@ -1,11 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class AbilityButtonToolTip : HasATooltip
 {
 
     private void Awake()
+    {
+        UpdateAbilityToolTip();
+    }
+
+    public void UpdateAbilityToolTip()
     {
         var initialSteate = this.gameObject.activeSelf;
         this.toolTip.SetActive(true);

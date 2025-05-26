@@ -1,3 +1,4 @@
+using Assets.GracesScripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,7 +27,7 @@ public class EnemyLoader : MonoBehaviour
 
         var enemyStartBattleLocation = FindObjectOfType<EnemyLocationInTurnBased>();
         MyGuard.IsNotNull(enemyStartBattleLocation);
-        Instantiate(enemyWasTalkingTo.GetComponent<Unit>().prefabToUseInBattle, enemyStartBattleLocation.transform);
+        Instantiate(enemyWasTalkingTo.GetComponent<Unit_NPC>().prefabToUseInBattle, enemyStartBattleLocation.transform);
         Destroy(enemyWasTalkingTo);
 
         var battleUI = FindObjectOfType<BattleUI>();

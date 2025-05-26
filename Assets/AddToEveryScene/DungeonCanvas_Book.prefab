@@ -1336,7 +1336,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIEventSystem: {fileID: 996770724043691549}
-  emptySlotImage: {fileID: 21300000, guid: 8339d3a2463d3ed4f86799b3f62a62fc, type: 3}
   transitionForGoingToBattleScene: {fileID: 11400000, guid: 57d2dee28715fc6499379ee5905b3caf,
     type: 2}
   textspeed: 0.1
@@ -4499,7 +4498,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIEventSystem: {fileID: 996770724043691549}
-  emptySlotImage: {fileID: 21300000, guid: 8339d3a2463d3ed4f86799b3f62a62fc, type: 3}
   itemView: {fileID: 6674625936413252378}
   slots:
   - {fileID: 493768414242151461}
@@ -8067,7 +8065,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIEventSystem: {fileID: 996770724043691549}
-  emptySlotImage: {fileID: 21300000, guid: 8339d3a2463d3ed4f86799b3f62a62fc, type: 3}
   OnFirstOpenInventorySelectedTab: {fileID: 3527209348182104335}
   BookInOutAnimator: {fileID: 1147497164904091641}
   BookBackGround: {fileID: 8727644948829296905}
@@ -8521,7 +8518,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIEventSystem: {fileID: 996770724043691549}
-  emptySlotImage: {fileID: 21300000, guid: 8339d3a2463d3ed4f86799b3f62a62fc, type: 3}
   menu: {fileID: 3015361277488238214}
 --- !u!95 &5344549039160131453
 Animator:
@@ -11589,6 +11585,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2361067203369324002}
   - component: {fileID: 299000958935890452}
+  - component: {fileID: 4808543307335279126}
   m_Layer: 5
   m_Name: Wellbeing
   m_TagString: Untagged
@@ -11635,6 +11632,18 @@ SortingGroup:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_SortAtRoot: 0
+--- !u!114 &4808543307335279126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9029091428882979426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a29de04df6c2c54dbf41c7cff948cb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9131733230799728383
 GameObject:
   m_ObjectHideFlags: 0

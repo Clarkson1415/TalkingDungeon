@@ -1,3 +1,4 @@
+using Assets.GracesScripts;
 using Assets.GracesScripts.UI;
 using EasyTransition;
 using System.Collections;
@@ -12,7 +13,6 @@ public class DialogueTextBox : MenuWithButtons
 {
     [Header("Battle Stuff")]
     public TransitionSettings transitionForGoingToBattleScene;
-
     public DialogueSlide? CurrentSlide { get; private set; }
     public BoxState State { get; private set; } = BoxState.WAITINGFORINTERACTION;
     [SerializeField] private float textspeed = 0.1f;
@@ -25,10 +25,12 @@ public class DialogueTextBox : MenuWithButtons
     readonly List<GameObject> buttons = new();
     [HideInInspector] public bool PlayerInteractFlagSet;
     private Coroutine? writeSlidesOverTimeCoroutine = null;
-    private bool newInteractionSetup;
+    private bool startInteactionFlag;
     private bool FinishedWritingSlideOverTime;
     private const char pauseCharacterToNotPrint = '_';
     private TMP_Text TMPTextBox;
+    public TMP_Text speakerNameText;
+    private Unit_NPC currentSpeaker;
 
     /// <summary>
     /// for the player statemachine to recognise the interaction has finished.
@@ -45,9 +47,10 @@ public class DialogueTextBox : MenuWithButtons
         this.audioSource.Play();
     }
 
-    public void BeginDialogue(DialogueSlide firstSlide)
+    public void BeginDialogue(DialogueSlide firstSlide, Unit_NPC speaker)
     {
-        this.newInteractionSetup = true;
+        this.startInteactionFlag = true;
+        currentSpeaker = speaker;
         this.UpdateCurrentSlide(firstSlide);
     }
 
@@ -74,6 +77,8 @@ public class DialogueTextBox : MenuWithButtons
         {
             this.CurrentSlide = newSlide;
         }
+
+        speakerNameText.text = currentSpeaker.unitName;
     }
 
     private void Update()
@@ -81,10 +86,10 @@ public class DialogueTextBox : MenuWithButtons
         switch (State)
         {
             case BoxState.WAITINGFORINTERACTION:
-                if (this.PlayerInteractFlagSet && this.newInteractionSetup)
+                if (this.PlayerInteractFlagSet && this.startInteactionFlag)
                 {
                     State = BoxState.WRITINGSLIDE;
-                    this.newInteractionSetup = false;
+                    this.startInteactionFlag = false;
                     this.PlayerInteractFlagSet = false;
                     this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
                     this.FinishedWritingSlideOverTime = false;
@@ -118,7 +123,7 @@ public class DialogueTextBox : MenuWithButtons
                         MyGuard.IsNotNull(player);
                         SaveGameUtility.SaveGame(player);
 
-                        if (player.InteractableInRange is Unit enemy)
+                        if (player.InteractableInRange is Unit_NPC enemy)
                         {
                             MyGuard.IsNotNull(enemy);
                             MyGuard.IsNotNull(player.enemyLoader);

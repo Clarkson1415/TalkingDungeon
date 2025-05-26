@@ -2,7 +2,6 @@ using Assets.GracesScripts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -15,42 +14,9 @@ using static SaveGameUtility;
 /// </summary>
 [RequireComponent(typeof(UseAnimatedLayers))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerDungeon : MonoBehaviour
+public class PlayerDungeon : Unit
 {
-    [Header("Menus")]
-    [SerializeField] GameObject deathScreenPrefab;
-    private DialogueTextBox? dialogueBox;
-    private ContainerMenu? ContainerMenu;
-    private PauseMenu? pauseMenu;
-    private GameObject? menuToUseNext;
-
-    [Header("Death")]
-    [SerializeField] AudioSource LevelMusic;
-    [SerializeField] AudioSource DeathSFX;
-
-    [Header("Inventory")]
-    private InventoryMenu? inventoryMenu;
-    public List<Item> Inventory = new();
-    private List<Item?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
-    [SerializeField] private Item defaultWeaponHands;
-    public Item equippedWeapon;
-    public Item? equippedSpecialItem;
-
-    [Header("Stats")]
-    public float maxWellbeing = 100;
-    public float currentWellbeing = 100;
-    public Image healthBarFillImage;
-    private GameObject WellBeingObject;
-    public List<Ability> Abilities => this.equippedWeapon.Abilities;
-    public float Power => this.EquippedItems.Sum(x => x != null ? x.AttackStat : 0);
-    public float Defence => this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0);
-
-# if UNITY_EDITOR
-    [Header("For While Testing In Unity Editor its made public but do not remove just make hide in inspector.")]
-    public List<string> scenesTraversed = new();
-# endif
-
-    [Header("Movement")]
+    private Item defaultWeaponHands;
     [SerializeField] private float movementSpeed = 1f;
     private Rigidbody2D rb;
     private Vector2 direction;
@@ -59,18 +25,43 @@ public class PlayerDungeon : MonoBehaviour
     private AudioSource? footstepsSound;
     private UseAnimatedLayers? animatedLayers;
 
-    [Header("Interactions")]
-    /// <summary>
-    /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
-    /// </summary>
-    private bool InteractFlagSet;
-    private bool onPointerClick;
+    [Header("Menus")]
+    [SerializeField] GameObject deathScreenPrefab;
+    private DialogueTextBox? dialogueBox;
+    private ContainerMenu? ContainerMenu;
+    private PauseMenu? pauseMenu;
+    private GameObject? menuToUseNext;
+    private InventoryMenu? inventoryMenu;
 
+    [Header("Death")]
+    [SerializeField] AudioSource LevelMusic;
+    [SerializeField] AudioSource DeathSFX;
+
+# if UNITY_EDITOR
+    [Header("For While Testing In Unity Editor its made public but do not remove just make hide in inspector.")]
+    public List<string> scenesTraversed = new();
+# endif
     [HideInInspector] public IInteracble? InteractableInRange { get; private set; } = null;
 
     [Header("EnemyBattleLoader")]
     [SerializeField] private GameObject enemyLoaderPrefab;
     [HideInInspector] public EnemyLoader enemyLoader;
+
+    /// <summary>
+    /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
+    /// </summary>
+    private bool InteractFlagSet;
+    private bool onPointerClickFlag;
+    private bool iKeyFlag;
+    private bool escKeyFlag;
+
+    private void ResetFlags()
+    {
+        InteractFlagSet = false;
+        onPointerClickFlag = false;
+        iKeyFlag = false;
+        escKeyFlag = false;
+    }
 
     private enum KnightState
     {
@@ -116,7 +107,7 @@ public class PlayerDungeon : MonoBehaviour
             SaveGameUtility.SaveGame(this);
         }
 
-        this.healthBarFillImage.fillAmount = this.currentWellbeing / this.maxWellbeing;
+        this.healthBarFill.fillAmount = this.currentHealth / this.maxHealth;
 
         if (Abilities.Count < 1)
         {
@@ -231,8 +222,9 @@ public class PlayerDungeon : MonoBehaviour
         footstepsSound = GetComponentInChildren<AudioSource>();
         MyGuard.IsNotNull(this.pauseMenu);
         this.menuToUseNext = this.pauseMenu.gameObject;
-        this.healthBarFillImage = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
-        WellBeingObject = this.healthBarFillImage.transform.parent.gameObject;
+        this.healthBarFill = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
+        this.HealthBarObject = this.healthBarFill.transform.parent.gameObject;
+        this.defaultWeaponHands = Resources.Load<Item>("Items/Weapon/Hands");
     }
 
     private void StartInteraction()
@@ -250,7 +242,7 @@ public class PlayerDungeon : MonoBehaviour
             menuToUseNext = this.dialogueBox.gameObject;
             this.dialogueBox.gameObject.SetActive(true);
             dialogueBox.PlayerInteractFlagSet = true;
-            this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide());
+            this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide(), interactableWithDialogue as Unit_NPC);
             this.state = KnightState.INDIALOGUE;
         }
         else if (this.InteractableInRange is ItemContainer chest && chest != null)
@@ -313,9 +305,10 @@ public class PlayerDungeon : MonoBehaviour
                     StopMovement();
                     this.state = KnightState.ININVENTORY;
                 }
-                if (this.InteractFlagSet)
+                if (this.InteractFlagSet || onPointerClickFlag)
                 {
                     this.InteractFlagSet = false;
+                    this.onPointerClickFlag = false;
 
                     if (this.InteractableInRange == null)
                     {
@@ -327,14 +320,10 @@ public class PlayerDungeon : MonoBehaviour
                 break;
             case KnightState.INDIALOGUE: // TODO TEST this state I think i fucked it
                 MyGuard.IsNotNull(dialogueBox);
-                if (this.InteractFlagSet)
+                if (this.InteractFlagSet || onPointerClickFlag)
                 {
                     this.InteractFlagSet = false;
-                    dialogueBox.PlayerInteractFlagSet = true;
-                }
-                else if (this.onPointerClick)
-                {
-                    onPointerClick = false;
+                    onPointerClickFlag = false;
                     dialogueBox.PlayerInteractFlagSet = true;
                 }
                 else if (this.dialogueBox.finishedInteractionFlag)
@@ -359,9 +348,9 @@ public class PlayerDungeon : MonoBehaviour
                     MyGuard.IsNotNull(this.pauseMenu);
                     this.menuToUseNext = this.pauseMenu.gameObject;
                 }
-                else if (this.onPointerClick)
+                else if (this.onPointerClickFlag)
                 {
-                    this.onPointerClick = false;
+                    this.onPointerClickFlag = false;
                     var itemOpButton = this.ContainerMenu.GetSelectedButton().GetComponentInParent<InventorySlot>();
 
                     if (itemOpButton == null || itemOpButton.Item == null)
@@ -380,17 +369,6 @@ public class PlayerDungeon : MonoBehaviour
                 }
                 break;
             case KnightState.INPAUSEMENU:
-                if (this.InteractFlagSet)
-                {
-                    MyGuard.IsNotNull(this.pauseMenu);
-
-                    this.InteractFlagSet = false;
-                    var button = this.pauseMenu.GetSelectedButton();
-
-                    var option = button.GetComponent<MenuButton>();
-
-                    Debug.Log($"selected {option}");
-                }
                 if (escKeyFlag)
                 {
                     escKeyFlag = false;
@@ -414,9 +392,9 @@ public class PlayerDungeon : MonoBehaviour
                     this.menuToUseNext = pauseMenu.gameObject;
                     this.state = KnightState.PLAYERCANMOVE;
                 }
-                if (this.onPointerClick)
+                if (this.onPointerClickFlag)
                 {
-                    this.onPointerClick = false;
+                    this.onPointerClickFlag = false;
                     MyGuard.IsNotNull(this.inventoryMenu);
                     var buttonGameObject = this.inventoryMenu.GetSelectedButton();
 
@@ -466,11 +444,7 @@ public class PlayerDungeon : MonoBehaviour
                 break;
         }
 
-        // reset flags if not used this frame.
-        if (InteractFlagSet)
-        {
-            InteractFlagSet = false;
-        }
+        ResetFlags();
     }
 
     /// <summary>
@@ -527,46 +501,12 @@ public class PlayerDungeon : MonoBehaviour
         return isValid;
     }
 
-    public void TakeDamage(float damage)
+    protected override void Die()
     {
-        Debug.Log("Check how the timing of StartShake and damage bar reducing works i dont remember but rewrite it so its clearly aligned.");
-        WellBeingObject.GetComponent<ShakeObject>().StartShake(1f, 5f);
-
-        this.currentWellbeing -= damage;
-        // if current damage will kill player make it go fast
-        if (this.currentWellbeing <= 0)
-        {
-            StartCoroutine(AnimateHealthLoss(0.1f, damage));
-            var canvas = FindObjectOfType<Canvas>();
-            Instantiate(this.deathScreenPrefab, canvas.transform);
-
-            // play death sound
-            this.DeathSFX.Play();
-            this.LevelMusic.Stop();
-        }
-        else
-        {
-            StartCoroutine(AnimateHealthLoss(0.5f, damage));
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="speedToFinish">seconds time for health bar to go to where after damage puts it</param>
-    /// <returns></returns>
-    private IEnumerator AnimateHealthLoss(float speedToFinish, float damage)
-    {
-        Log.Print("started animating health loss player");
-        var timeIncrement = 0.1f;
-        var damagePerTimeIncrement = damage / (speedToFinish / timeIncrement);
-        while (this.healthBarFillImage.fillAmount > Mathf.Clamp((this.currentWellbeing / this.maxWellbeing), 0, 1))
-        {
-            this.healthBarFillImage.fillAmount -= (damagePerTimeIncrement / 100);
-            yield return new WaitForSeconds(timeIncrement);
-        }
-
-        Log.Print("finished animating health loss player");
+        var canvas = FindObjectOfType<Canvas>();
+        Instantiate(this.deathScreenPrefab, canvas.transform);
+        this.DeathSFX.Play();
+        this.LevelMusic.Stop();
     }
 
     public void OnIKey(InputAction.CallbackContext context)
@@ -578,9 +518,6 @@ public class PlayerDungeon : MonoBehaviour
 
         iKeyFlag = true;
     }
-
-    private bool iKeyFlag;
-    private bool escKeyFlag;
 
     /// <summary>
     /// When esc key is pressed.
@@ -732,6 +669,6 @@ public class PlayerDungeon : MonoBehaviour
         }
 
         Log.Print("ClickFlagSet flag set");
-        this.onPointerClick = true;
+        this.onPointerClickFlag = true;
     }
 }

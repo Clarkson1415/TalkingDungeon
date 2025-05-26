@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Stab
   description: Stab with the pointy end
+  cooldown: 0
   image: {fileID: 439092206, guid: 70375e31e442a0c498a4bd2e1bfeead0, type: 3}
-  attackPower: 5
+  Effects:
+  - {fileID: 11400000, guid: f2f382972a10a7d4780b7065d4b57772, type: 2}

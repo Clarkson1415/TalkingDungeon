@@ -1,60 +1,36 @@
+using Assets.GracesScripts;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+#nullable enable
 
 /// <summary>
-/// Unit class, NOT the player
+/// Unit class, Player and NPCs both have abilities an equipped weapon and item and health.
 /// </summary>
-public class Unit : MonoBehaviour, IInteracble, IHasDialogue
+public abstract class Unit : MonoBehaviour
 {
-    public string unitName;
-    public GameObject prefabToUseInBattle;
     public float currentHealth = 100;
     public float maxHealth = 100;
-
-    /// <summary>
-    /// Used for not in battle scene.
-    /// </summary>
-    public DialogueSlide firstDialogueSlide;
-
-    /// <summary>
-    /// For talking in battle Scene TODO not setup yet
-    /// </summary>
-    public DialogueSlide battleSceneDialogueSlide;
-
-    public List<Ability> abilities;
-
-    private void Awake()
-    {
-        if(this.unitName == null)
-        {
-            Debug.LogError($"this guy {this.gameObject.name} cannot have no Unitname on Unit.cs");
-        }
-
-        if (this.abilities.Count == 0)
-        {
-            Debug.LogError($"this guy: {this.gameObject.name} cannot have no abilities at least have default Push ability assign in inspector");
-        }
-    }
-
-    public DialogueSlide GetFirstDialogueSlide()
-    {
-        MyGuard.IsNotNull(this.firstDialogueSlide);
-        return this.firstDialogueSlide;
-    }
+    public List<Ability> Abilities => this.equippedWeapon.Abilities;
+    protected List<Item?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
+    public Item equippedWeapon;
+    public Item? equippedSpecialItem;
+    public List<Item> Inventory = new();
+    public float Power => this.EquippedItems.Sum(x => x != null ? x.AttackStat : 0);
+    public float Defence => this.EquippedItems.Sum(x => x != null ? x.DefenceStat : 0);
 
     // this to go in Unit in a battle
-    public GameObject HealthBarObject;
-    public Image enemyHealthFill;
+    [HideInInspector] public GameObject HealthBarObject;
+    [HideInInspector] public Image healthBarFill;
 
     public void SetupUnitForBattle()
     {
         Debug.Log("EVERYTHING BELOW GETFIRSTDIALOGUE SLIDE TO GO IN UNITFORBATTEL.CS an extension of this class for the turn based battle. NAH maybe not? thogh animate enemy health in here is conveintint because dont have to setup UI on the new object when battle starts");
-        MyGuard.IsNotNull(enemyHealthFill);
-        MyGuard.IsNotNull(HealthBarObject);
-        this.enemyHealthFill.fillAmount = this.currentHealth / this.maxHealth;
+        MyGuard.IsNotNull(this.healthBarFill);
+        MyGuard.IsNotNull(this.HealthBarObject);
+        this.healthBarFill.fillAmount = this.currentHealth / this.maxHealth;
     }
 
     /// <summary>
@@ -62,22 +38,41 @@ public class Unit : MonoBehaviour, IInteracble, IHasDialogue
     /// </summary>
     public void TakeDamage(float damage)
     {
-        Debug.Log("take damage is the same in player and unit in battle.cs so should be an interface.");
-        this.HealthBarObject.GetComponent<ShakeObject>().StartShake(1f, 5f);
+        Debug.Log("Check how the timing of StartShake and damage bar reducing works i dont remember but rewrite it so its clearly aligned.");
+        var objectToShake = this.HealthBarObject.GetComponent<ShakeObject>();
+        objectToShake.StartShake(1f, 5f);
         this.currentHealth -= damage;
-        StartCoroutine(AnimateEnemyHealthLoss());
-    }
-
-    private IEnumerator AnimateEnemyHealthLoss()
-    {
-        float damagePerSecond = 2f;
-
-        while (this.enemyHealthFill.fillAmount > (this.currentHealth / this.maxHealth))
+        // if current damage will kill Unit make it go down faster
+        if (this.currentHealth <= 0)
         {
-            this.enemyHealthFill.fillAmount -= (damagePerSecond / 100);
-            yield return new WaitForSeconds(0.1f);
+            StartCoroutine(AnimateHealthLoss(0.1f, damage));
+            this.Die();
+        }
+        else
+        {
+            StartCoroutine(AnimateHealthLoss(0.5f, damage));
         }
 
-        yield return new WaitForSeconds(1f);
+        //this.HealthBarObject.GetComponent<ShakeObject>().StartShake(1f, 5f);
+        //this.currentHealth -= damage;
+        //StartCoroutine(AnimateEnemyHealthLoss());
+    }
+
+    protected abstract void Die();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="shakeLength">seconds time for health bar to go to where after damage puts it</param>
+    /// <returns></returns>
+    private IEnumerator AnimateHealthLoss(float shakeLength, float damage)
+    {
+        var timeIncrement = 0.1f;
+        var damagePerTimeIncrement = damage / (shakeLength / timeIncrement);
+        while (this.healthBarFill.fillAmount > Mathf.Clamp((this.currentHealth / this.maxHealth), 0, 1))
+        {
+            this.healthBarFill.fillAmount -= (damagePerTimeIncrement / 100);
+            yield return new WaitForSeconds(timeIncrement);
+        }
     }
 }

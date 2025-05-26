@@ -10,7 +10,7 @@ namespace Assets.GracesScripts.UI
     /// </summary>
     public class PageWithSlots : BookPage
     {
-        [SerializeField] private PlayerInfo playerInfoSection;
+        [SerializeField] private PlayerInfoPage playerInfoSection;
         [SerializeField] private ItemView itemView;
         [SerializeField] private List<InventorySlot> InventorySlots;
         public ItemType ItemType;

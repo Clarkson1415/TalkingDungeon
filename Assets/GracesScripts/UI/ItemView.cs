@@ -63,7 +63,6 @@ namespace Assets.GracesScripts.UI
             {
                 this.AbilitySlots[i].gameObject.SetActive(true);
                 this.AbilitySlots[i].SetAbilityAndImage(abilities[i]);
-                this.AbilitySlots[i].UpdateToolTip($"{abilities[i].name}: {abilities[i].description}");
             }
 
             for (int j = abilities.Count; j < this.AbilitySlots.Count; j++)

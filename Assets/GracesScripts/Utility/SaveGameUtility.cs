@@ -10,8 +10,8 @@ public static class SaveGameUtility
         PlayerPrefs.SetString(SaveKeys.LastScene, SceneManager.GetActiveScene().name);
         PlayerPrefs.SetFloat(SaveKeys.PlayerPosX, player.gameObject.transform.position.x);
         PlayerPrefs.SetFloat(SaveKeys.PlayerPosY, player.gameObject.transform.position.y);
-        PlayerPrefs.SetFloat(SaveKeys.CurrentWellbeing, player.currentWellbeing);
-        PlayerPrefs.SetFloat(SaveKeys.MaxWellbeing, player.maxWellbeing);
+        PlayerPrefs.SetFloat(SaveKeys.CurrentWellbeing, player.currentHealth);
+        PlayerPrefs.SetFloat(SaveKeys.MaxWellbeing, player.maxHealth);
 
         // save path of scriptableobjects
         string equippedWeaponPath = player.equippedWeapon?.Path ?? string.Empty;
@@ -82,8 +82,8 @@ public static class SaveGameUtility
         string itemsJson = PlayerPrefs.GetString(SaveKeys.InventoryItemsPaths);
         player.Inventory = DeserializeSavedStrings<Item>(itemsJson);
 
-        player.currentWellbeing = PlayerPrefs.GetFloat(SaveKeys.CurrentWellbeing);
-        player.maxWellbeing = PlayerPrefs.GetFloat(SaveKeys.MaxWellbeing);
+        player.currentHealth = PlayerPrefs.GetFloat(SaveKeys.CurrentWellbeing);
+        player.maxHealth = PlayerPrefs.GetFloat(SaveKeys.MaxWellbeing);
 
         string weaponPath = PlayerPrefs.GetString(SaveKeys.EquippedWeaponPath);
         if (!string.IsNullOrEmpty(weaponPath))

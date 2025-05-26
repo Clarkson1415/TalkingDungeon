@@ -32,7 +32,7 @@ public class InventorySlot : DungeonButton
     public void UpdateToolTip(string text)
     {
         var toolTip = this.GetComponentInParent<HasATooltip>();
-        MyGuard.IsNotNull(toolTip, "No tooltip founnd in parent");
+        MyGuard.IsNotNull(toolTip, "No has a tooltip component founnd in parent");
         toolTip.ChangeToolTipText(text);
     }
 
@@ -49,6 +49,7 @@ public class InventorySlot : DungeonButton
 
         var spriteImageComponent = this.gameObject.GetComponentInChildren<InventorySlotImage>();
         spriteImageComponent.SetImage(Ability.image);
+        this.gameObject.GetComponent<AbilityButtonToolTip>().UpdateAbilityToolTip();
     }
 
     public void ReplaceSlotWithBlanks()

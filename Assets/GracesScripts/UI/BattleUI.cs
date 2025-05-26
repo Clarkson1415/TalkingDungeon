@@ -12,7 +12,10 @@ public class BattleUI : MonoBehaviour
 {
     [Header("Player")]
     private PlayerDungeon player;
-    [HideInInspector] public bool IsPlayerHealthBarPlayingAnimation => player.healthBarFillImage.fillAmount > Mathf.Clamp((player.currentWellbeing / player.maxWellbeing), 0, 1);
+    [SerializeField] private GameObject PlayerHealthBarAndNameToShake;
+    [SerializeField] private Image PlayerHealthFill;
+    [HideInInspector] public bool IsPlayerHealthBarPlayingAnimation => player.healthBarFill.fillAmount > Mathf.Clamp((player.currentHealth / player.maxHealth), 0, 1);
+    [HideInInspector] public bool IsEnemyDamageAnimationPlaying => enemyYouFightin.healthBarFill.fillAmount > Mathf.Clamp((enemyYouFightin.currentHealth / enemyYouFightin.maxHealth), 0, 1);
 
     [Header("UI")]
     [SerializeField] TransitionSettings exitBattleTransition;
@@ -24,11 +27,13 @@ public class BattleUI : MonoBehaviour
     [SerializeField] GameObject abilityButtonSceen;
     [SerializeField] GameObject itemScreen;
     [SerializeField] private GameObject battleDialogueBox;
+    private TMP_Text battleDialogBoxAboveText;
 
     [Header("Enemy")]
-    private Unit enemyYouFightin;
+    private Unit_NPC enemyYouFightin;
     [SerializeField] private TMP_Text enemyNameField;
     [SerializeField] private GameObject enemyHealthBarAndNameToShake;
+    [SerializeField] private Image enemyHealthFill;
 
     private Battle state;
     private EventSystem evSys;
@@ -43,21 +48,24 @@ public class BattleUI : MonoBehaviour
     /// </summary>
     private List<GameObject> BattleScreens => new() { this.actionButtonScreen, this.abilityButtonSceen };
 
-    private IEnumerator TestDialogueBox(string text)
+    private void Awake()
+    {
+        battleDialogueBox.SetActive(true);
+        battleDialogBoxAboveText = this.battleDialogueBox.GetComponentInChildren<TMP_Text>();
+    }
+
+    private IEnumerator TestDialogueBox(string text, Color color)
     {
         foreach (var screen in this.BattleScreens)
         {
             screen.SetActive(false);
         }
 
-        this.battleDialogueBox.SetActive(true);
         this.isDialoguePrinting = true;
-        Debug.Log("... printing text...");
-        this.battleDialogueBox.GetComponentInChildren<TMP_Text>().text = text;
+        battleDialogBoxAboveText.text = text;
+        battleDialogBoxAboveText.color = color;
         yield return new WaitForSeconds(2f);
         this.isDialoguePrinting = false;
-        this.battleDialogueBox.SetActive(false);
-        Debug.Log("dialogue not printing anymore");
     }
 
     // Start is called before the first frame update
@@ -65,30 +73,30 @@ public class BattleUI : MonoBehaviour
     {
         evSys = FindObjectOfType<EventSystem>();
         player = FindObjectOfType<PlayerDungeon>();
-
+        MyGuard.IsNotNull(player, "could not find player");
+        player.healthBarFill = this.PlayerHealthFill;
+        player.HealthBarObject = this.PlayerHealthBarAndNameToShake;
         state = Battle.PlayerPickActionTurn;
-
         // TODO do i want the dialogue box to maybe say stuff on opening, like enemy approached...
-        this.battleDialogueBox.SetActive(false);
         this.abilityButtonSceen.SetActive(false);
         this.actionButtonScreen.SetActive(true);
         itemScreen.SetActive(false);
+        StartCoroutine(TestDialogueBox("Your turn", Color.black));
     }
 
     public void SetupEnemyAfterSpawned()
     {
-        enemyYouFightin = FindObjectOfType<Unit>();
+        enemyYouFightin = FindObjectOfType<Unit_NPC>();
         if (enemyYouFightin == null)
         {
             throw new ArgumentNullException("enemy cannot be null in battle scene.");
         }
 
         enemyNameField.text = this.enemyYouFightin.unitName;
+        enemyYouFightin.HealthBarObject = this.enemyHealthBarAndNameToShake;
+        enemyYouFightin.healthBarFill = this.enemyHealthFill;
         this.enemyYouFightin.SetupUnitForBattle();
-    }
-
-    private void DamageEnemy(float damage)
-    {
+        this.actionButtonScreen.SetActive(true);
     }
 
     private enum Battle
@@ -107,7 +115,6 @@ public class BattleUI : MonoBehaviour
         inItemMenu,
     }
 
-    bool isEnemyTakingDamageHealthBarAnimPlaying;
     private GameObject currentSelectedButton;
 
     private void SetupAbilityButtons()
@@ -125,7 +132,6 @@ public class BattleUI : MonoBehaviour
         {
             this.AbilityButtons[i].gameObject.SetActive(true);
             this.AbilityButtons[i].SetAbilityAndImage(player.Abilities[i]);
-            this.AbilityButtons[i].GetComponent<Button>().onClick.AddListener(OnAbilityButtonClicked);
         }
 
         for (int j = player.Abilities.Count; j < this.AbilityButtons.Count; j++)
@@ -159,6 +165,10 @@ public class BattleUI : MonoBehaviour
         switch (state)
         {
             case Battle.PlayerPickActionTurn:
+                if (!this.actionButtonScreen.activeSelf)
+                {
+                    this.actionButtonScreen.SetActive(true);
+                }
                 if (this.actionClickedFlag)
                 {
                     this.actionClickedFlag = false;
@@ -184,20 +194,21 @@ public class BattleUI : MonoBehaviour
                             break;
                         case TurnBasedActions.RUN:
                             bool runSuccesss = true;
-                            if (player.currentWellbeing <= (enemyYouFightin.currentHealth))
+                            if (player.currentHealth <= (enemyYouFightin.currentHealth))
                             {
+                                Debug.Log("Getaway based on if you have more wellbeing than enemy thats all");
                                 runSuccesss = false;
                             }
 
                             if (runSuccesss)
                             {
-                                StartCoroutine(TestDialogueBox("you got away!"));
+                                StartCoroutine(TestDialogueBox("you got away!", Color.black));
                                 this.state = Battle.RunAwaySuccess;
                             }
                             else
                             {
-                                StartCoroutine(TestDialogueBox("your wounds are too great and the enemy is too strong. Failed to get away."));
-                                this.state = Battle.ExecutingPlayerTurn;
+                                StartCoroutine(TestDialogueBox("your wounds are too great and the enemy is too strong. Failed to get away.", Color.black));
+                                this.state = Battle.EnemyTurn;
                             }
                             break;
                         case TurnBasedActions.ITEM:
@@ -212,6 +223,9 @@ public class BattleUI : MonoBehaviour
                         case TurnBasedActions.TALK:
                             // TODO 
                             StartDialogue(this.enemyYouFightin.battleSceneDialogueSlide);
+                            break;
+                        default:
+                            throw new ArgumentNullException("No matching action.");
                             break;
                     }
                 }
@@ -232,11 +246,11 @@ public class BattleUI : MonoBehaviour
                 if (this.abilityClickedFlag)
                 {
                     this.abilityClickedFlag = false;
-                    var abilityUsed = evSys.currentSelectedGameObject.GetComponent<TurnBasedAbilityButton>().Ability;
-                    Log.Print($"You used {abilityUsed.name} on {enemyYouFightin.unitName} for {abilityUsed.attackPower}");
-                    Debug.Log("have damage calculation that calculates damage from base item damage + ability damage.");
-                    this.enemyYouFightin.TakeDamage(abilityUsed.attackPower);
-                    StartCoroutine(TestDialogueBox($"player used {abilityUsed.Name} for {abilityUsed.attackPower}"));
+                    var abilityUsed = evSys.currentSelectedGameObject.GetComponent<InventorySlot>().Ability;
+                    Log.Print($"You used {abilityUsed.name} on {enemyYouFightin.unitName} To {abilityUsed.Effects}");
+                    Debug.Log("Apply ability effect");
+
+                    ShowAbilityUsedText(this.player, abilityUsed);
                     this.state = Battle.ExecutingPlayerTurn;
                 }
                 if (this.backButtonClicked)
@@ -250,22 +264,34 @@ public class BattleUI : MonoBehaviour
             case Battle.ExecutingPlayerTurn:
                 // wait until enemy health bar anim finished then take enemies turn
                 // when finished showing player move text go to enemy move
-                if (!isEnemyTakingDamageHealthBarAnimPlaying && !isDialoguePrinting)
+                if (!IsEnemyDamageAnimationPlaying && !isDialoguePrinting)
                 {
-                    this.state = Battle.EnemyTurn;
+                    if (enemyYouFightin.currentHealth > 0)
+                    {
+                        StartCoroutine(TestDialogueBox("Enemy Turn", Color.black));
+                        this.state = Battle.EnemyTurn;
+                    }
+                    else
+                    {
+                        Debug.Log("player won");
+                        StartCoroutine(TestDialogueBox("You Won", Color.black));
+                        this.state = Battle.PlayerWon;
+                    }
                 }
                 break;
             case Battle.EnemyTurn:
-                var enemyAbility = PickRandomAbility(this.enemyYouFightin.abilities);
+                // or enemy could use an item.
+                Debug.Log("not finished setup here. need to calculate damage based on units current defence stat also?");
+                var enemyAbility = PickRandomAbility(this.enemyYouFightin.Abilities);
                 // TODO take into account attack power defence and units. 
                 // calculate damage = unit (necromancer) power * ability power
                 // player damage taken = damage - player defence
-                this.player.TakeDamage(enemyAbility.attackPower);
-                // TODO display damage turn text on screen
-                Log.Print("current wellbeing " + this.player.currentWellbeing);
+                ShowAbilityUsedText(this.enemyYouFightin, enemyAbility);
 
-                StartCoroutine(TestDialogueBox($"{enemyYouFightin.unitName} used {enemyAbility.Name} for {enemyAbility.attackPower} damage!!"));
-                if (this.player.currentWellbeing <= 0)
+                // TODO display damage turn text on screen
+                Log.Print("current wellbeing " + this.player.currentHealth);
+
+                if (this.player.currentHealth <= 0)
                 {
                     // TODO note this will not take into account the animation perhaps I could speed it up if the player health will be dead
                     state = Battle.PlayerLost;
@@ -280,6 +306,7 @@ public class BattleUI : MonoBehaviour
                 if (!this.IsPlayerHealthBarPlayingAnimation && !isDialoguePrinting)
                 {
                     this.actionButtonScreen.SetActive(true);
+                    StartCoroutine(TestDialogueBox("Your Turn", Color.black));
                     this.state = Battle.PlayerPickActionTurn;
                 }
                 break;
@@ -311,11 +338,30 @@ public class BattleUI : MonoBehaviour
         }
     }
 
+    private void ShowAbilityUsedText(Unit user, Ability abilityUsed)
+    {
+        var color = new Color(12, 117, 8, 1);
+        
+        if (user is Unit_NPC)
+        {
+            color = Color.red;
+        }
+
+        var turnInfoString = $"player used {player.equippedWeapon} to {abilityUsed.name} to {abilityUsed.description}:\n";
+        foreach (var effect in abilityUsed.Effects)
+        {
+            effect.Apply(this.player, this.enemyYouFightin);
+            turnInfoString += $"{effect.Description}\n";
+        }
+
+        StartCoroutine(TestDialogueBox(turnInfoString, color));
+    }
+
     private static readonly System.Random Random = new();
 
     private Ability PickRandomAbility(List<Ability> abilities)
     {
-        var abilityIndex = Random.Next(0, this.enemyYouFightin.abilities.Count - 1);
+        var abilityIndex = Random.Next(0, this.enemyYouFightin.Abilities.Count - 1);
         return abilities[abilityIndex];
     }
 

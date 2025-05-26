@@ -34,6 +34,12 @@ public class WalkingBackAndForthUnit : Unit
         IDLEING,
     }
 
+    protected override void Die()
+    {
+        Debug.Log("DIE? do i need todo?");
+        throw new NotImplementedException("walking dog dies");
+    }
+
     private void Awake()
     {
         animatedLayers = GetComponent<UseAnimatedLayers>();
