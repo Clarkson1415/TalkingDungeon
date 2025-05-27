@@ -9,11 +9,17 @@ public class ContainerMenu : MenuWithItemSlots
     [Header("Item UI description")]
     [SerializeField] private ItemView itemView;
     [SerializeField] private List<InventorySlot> slots = new();
+    [HideInInspector] public bool TellPlayerContainerButtonClicked;
 
     public void RemoveOldItem(InventorySlot itemToRemove)
     {
         this.itemView.SetItemViewToEmptyItem();
         itemToRemove.ReplaceSlotWithBlanks();
+    }
+
+    public void OnContainerButtonClicked()
+    {
+        TellPlayerContainerButtonClicked = true;
     }
 
     protected override void UpdateItemView(InventorySlot slot)

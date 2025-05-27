@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2364396357852031731}
   - component: {fileID: 1556186791744587721}
-  - component: {fileID: 6406634045829655983}
   - component: {fileID: 3334640015808996115}
+  - component: {fileID: 5197784359194099944}
   m_Layer: 0
   m_Name: KING
   m_TagString: Untagged
@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 116538399
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ad220ad5e893023489c4c0d16ada8055, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -87,21 +87,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6406634045829655983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 309710549847298083}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db057ab8473bd4e4b812275ae5cdf7fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: 100
-  maxHealth: 100
-  firstDialogueSlide: {fileID: 11400000, guid: f9291584e47b82a4484e32d5fe078d5a, type: 2}
 --- !u!61 &3334640015808996115
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -147,6 +132,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.8568877, y: 0.88086903}
   m_EdgeRadius: 0
+--- !u!114 &5197784359194099944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309710549847298083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95903e89861a52e47af0425dc2d877bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 100
+  maxHealth: 100
+  equippedWeapon: {fileID: 0}
+  equippedSpecialItem: {fileID: 0}
+  Inventory: []
+  HealthBarObject: {fileID: 0}
+  healthBarFill: {fileID: 0}
+  basePower: 0
+  powerModifier: 0
+  baseDefence: 0
+  defenceModifier: 0
+  unitName: King
+  prefabToUseInBattle: {fileID: 0}
+  firstDialogueSlide: {fileID: 11400000, guid: f9291584e47b82a4484e32d5fe078d5a, type: 2}
+  battleSceneDialogueSlide: {fileID: 0}
 --- !u!1 &3091229150100281279
 GameObject:
   m_ObjectHideFlags: 0

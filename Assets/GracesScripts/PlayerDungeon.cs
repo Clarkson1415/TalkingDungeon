@@ -3,6 +3,7 @@ using Assets.GracesScripts.ScriptableObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -17,7 +18,6 @@ using static SaveGameUtility;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : Unit
 {
-    private Weapon defaultWeaponHands;
     [SerializeField] private float movementSpeed = 1f;
     private Rigidbody2D rb;
     private Vector2 direction;
@@ -41,6 +41,11 @@ public class PlayerDungeon : Unit
 # if UNITY_EDITOR
     [Header("For While Testing In Unity Editor its made public but do not remove just make hide in inspector.")]
     public List<string> scenesTraversed = new();
+
+    /// <summary>
+    /// For testing purposes only so that the savegame is not loaded for for me when I want to test specific items and stuff.
+    /// </summary>
+    public bool RestartGameFromThisScene;
 # endif
     [HideInInspector] public IInteracble? InteractableInRange { get; private set; } = null;
 
@@ -52,14 +57,12 @@ public class PlayerDungeon : Unit
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
     /// </summary>
     private bool InteractFlagSet;
-    private bool onPointerClickFlag;
     private bool iKeyFlag;
     private bool escKeyFlag;
 
     private void ResetFlags()
     {
         InteractFlagSet = false;
-        onPointerClickFlag = false;
         iKeyFlag = false;
         escKeyFlag = false;
     }
@@ -91,7 +94,7 @@ public class PlayerDungeon : Unit
         StartCoroutine(WaitForSceneLoadedThenLoadComponents());
 
 #if UNITY_EDITOR // save whats set in the inspector then load it 
-        if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
+        if (this.RestartGameFromThisScene)
         {
             SaveGameUtility.SaveGame(this);
         }
@@ -102,13 +105,11 @@ public class PlayerDungeon : Unit
             SaveGameUtility.LoadSaveDataFromLastScene(this);
         }
 
-        // do not save if in battle scene though
+        // Save upon entering new scene do not save if in battle scene though
         if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
         {
             SaveGameUtility.SaveGame(this);
         }
-
-        this.healthBarFill.fillAmount = this.currentHealth / this.maxHealth;
 
         if (Abilities.Count < 1)
         {
@@ -223,10 +224,10 @@ public class PlayerDungeon : Unit
         footstepsSound = GetComponentInChildren<AudioSource>();
         MyGuard.IsNotNull(this.pauseMenu);
         this.menuToUseNext = this.pauseMenu.gameObject;
-        this.healthBarFill = FindFirstObjectByType<HealthBarFill>().GetComponent<Image>();
+        this.healthBarFill = FindFirstObjectByType<PlayerHealthBarFill>().GetComponent<Image>();
+        MyGuard.IsNotNull(healthBarFill);
         this.HealthBarObject = this.healthBarFill.transform.parent.gameObject;
-        
-
+        this.healthBarFill.fillAmount = this.currentHealth / this.maxHealth;
     }
 
     private void StartInteraction()
@@ -286,7 +287,6 @@ public class PlayerDungeon : Unit
         {
             case KnightState.PLAYERCANMOVE:
                 this.rb.velocity = direction * movementSpeed;
-
                 if (escKeyFlag)
                 {
                     escKeyFlag = false;
@@ -307,10 +307,9 @@ public class PlayerDungeon : Unit
                     StopMovement();
                     this.state = KnightState.ININVENTORY;
                 }
-                if (this.InteractFlagSet || onPointerClickFlag)
+                if (this.InteractFlagSet)
                 {
                     this.InteractFlagSet = false;
-                    this.onPointerClickFlag = false;
 
                     if (this.InteractableInRange == null)
                     {
@@ -322,11 +321,9 @@ public class PlayerDungeon : Unit
                 break;
             case KnightState.INDIALOGUE: // TODO TEST this state I think i fucked it
                 MyGuard.IsNotNull(dialogueBox);
-                if (this.InteractFlagSet || onPointerClickFlag)
+                if (this.InteractFlagSet)
                 {
-                    this.InteractFlagSet = false;
-                    onPointerClickFlag = false;
-                    dialogueBox.PlayerInteractFlagSet = true;
+                    this.dialogueBox.PlayerInteractFlagSet = true;
                 }
                 else if (this.dialogueBox.finishedInteractionFlag)
                 {
@@ -350,17 +347,14 @@ public class PlayerDungeon : Unit
                     MyGuard.IsNotNull(this.pauseMenu);
                     this.menuToUseNext = this.pauseMenu.gameObject;
                 }
-                else if (this.onPointerClickFlag)
+                else if (this.ContainerMenu.TellPlayerContainerButtonClicked)
                 {
-                    this.onPointerClickFlag = false;
-                    var itemOpButton = this.ContainerMenu.GetSelectedButton().GetComponentInParent<InventorySlot>();
-
-                    if (itemOpButton == null || itemOpButton.Item == null)
+                    var selected = this.ContainerMenu.GetSelectedButton();
+                    var itemOpButton = selected.GetComponentInParent<InventorySlot>();
+                    if (itemOpButton.Item == null)
                     {
                         return;
                     }
-
-                    itemOpButton.PlaySelectSound();
 
                     if (this.InteractableInRange is ItemContainer chest && chest != null)
                     {
@@ -394,9 +388,9 @@ public class PlayerDungeon : Unit
                     this.menuToUseNext = pauseMenu.gameObject;
                     this.state = KnightState.PLAYERCANMOVE;
                 }
-                if (this.onPointerClickFlag)
+                if (this.InteractFlagSet)
                 {
-                    this.onPointerClickFlag = false;
+                    this.InteractFlagSet = false;
                     MyGuard.IsNotNull(this.inventoryMenu);
                     var buttonGameObject = this.inventoryMenu.GetSelectedButton();
 
@@ -405,13 +399,6 @@ public class PlayerDungeon : Unit
                         Debug.Log("clicked on nothing");
                         return;
                     }
-
-                    if (buttonGameObject.TryGetComponent<BookTab>(out var selectedTab))
-                    {
-                        this.inventoryMenu.OnTabClick(selectedTab);
-                        return;
-                    }
-
                     if (!buttonGameObject.TryGetComponent<InventorySlot>(out var selectedItemOp))
                     {
                         // clicked on something else
@@ -461,7 +448,7 @@ public class PlayerDungeon : Unit
 
         if (itemToRemove.name == equippedWeapon.name)
         {
-            equippedWeapon = defaultWeaponHands;
+            equippedWeapon = DefaultWeaponHands;
         }
         else if (equippedSpecialItem != null && (itemToRemove.name == equippedSpecialItem.name))
         {
@@ -562,9 +549,6 @@ public class PlayerDungeon : Unit
         if (context.started)
         {
             footstepsSound.Play();
-
-            Log.Print("on move started");
-            Log.Print($"dir: {this.direction.x}, {this.direction.y}");
             this.animatedLayers.SetFloats("LastXDir", this.direction.x);
             this.animatedLayers.SetFloats("LastYDir", this.direction.y);
         }
@@ -658,16 +642,5 @@ public class PlayerDungeon : Unit
         Log.Print("Interact flag set");
 
         this.InteractFlagSet = true;
-    }
-
-    public void OnMouseClick(InputAction.CallbackContext context)
-    {
-        if (!context.started)
-        {
-            return;
-        }
-
-        Log.Print("ClickFlagSet flag set");
-        this.onPointerClickFlag = true;
     }
 }

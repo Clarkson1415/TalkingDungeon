@@ -67,8 +67,9 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
         StartCoroutine(WaitForBookAnimThenSetup());
     }
 
-    public void OnTabClick(BookTab selectedTab)
+    public void OnTabClick()
     {
+        var selectedTab = this.lastHighlightedItem.GetComponentInParent<BookTab>();
         MyGuard.IsNotNull(selectedTab);
         this.selectedTab = selectedTab;
         DeactivateAllPages();

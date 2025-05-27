@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a156be33d07e5dd44bee66b3a39d11c0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 168746454be0d6943acfb1f85ba8eaf6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -109,7 +109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 53.5, y: -8.6}
+  m_AnchoredPosition: {x: 46.3, y: -9.4}
   m_SizeDelta: {x: 307.4662, y: 51.0506}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &20009855552557081
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Give Feedback
+  m_text: Quit
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3fb1560187c4586429fae89d10d353b9, type: 2}
   m_sharedMaterial: {fileID: -4576902391450975989, guid: 3fb1560187c4586429fae89d10d353b9,
@@ -750,6 +750,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 4392661623980427589}
+        m_TargetAssemblyTypeName: MenuButton, Assembly-CSharp
+        m_MethodName: QuitApplication
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1878482039378798694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -892,7 +904,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 920c687bb364829479d0199c6b5f0af7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cbd7687335ade57468174aa9f691631f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -967,7 +979,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: dd7bbec1e5174664abdf8314a4814fc9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a243fba376be7b34793db93e29d96829, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1042,7 +1054,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b919fca173e366e4988be2b95b4d4c5f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4eee4f79c6f7a14428db2d6166ddbc94, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -1,11 +1,12 @@
 using Assets.GracesScripts;
 using Assets.GracesScripts.UI;
 using EasyTransition;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]
@@ -17,13 +18,9 @@ public class DialogueTextBox : MenuWithButtons
     public BoxState State { get; private set; } = BoxState.WAITINGFORINTERACTION;
     [SerializeField] private float textspeed = 0.1f;
     [SerializeField] private float underscorePauseTime = 0.01f;
-    [SerializeField] GameObject prefabButton;
     [SerializeField] AudioSource audioSource;
-    [SerializeField] List<GameObject> buttonPositionsTopToBottom;
     [SerializeField] AudioClip dialoguePrintingAudio;
-
-    readonly List<GameObject> buttons = new();
-    [HideInInspector] public bool PlayerInteractFlagSet;
+    [SerializeField] private List<DialogueOptionButton> buttons;
     private Coroutine? writeSlidesOverTimeCoroutine = null;
     private bool startInteactionFlag;
     private bool FinishedWritingSlideOverTime;
@@ -36,6 +33,21 @@ public class DialogueTextBox : MenuWithButtons
     /// for the player statemachine to recognise the interaction has finished.
     /// </summary>
     [HideInInspector] public bool finishedInteractionFlag;
+    [HideInInspector] public bool PlayerInteractFlagSet;
+    [HideInInspector] public bool ButtonClickedFlagSet;
+
+    private void ResetAllFlags()
+    {
+        finishedInteractionFlag = false;
+        PlayerInteractFlagSet = false;
+        ButtonClickedFlagSet = false;
+    }
+
+    public void OnDialogueButtonSelected()
+    {
+        ButtonClickedFlagSet = true;
+        lastHighlightedItem = this.UIEventSystem.currentSelectedGameObject;
+    }
 
     private void PlayDialoguePrintAudio()
     {
@@ -51,6 +63,7 @@ public class DialogueTextBox : MenuWithButtons
     {
         this.startInteactionFlag = true;
         currentSpeaker = speaker;
+        DeactivateAllButtons();
         this.UpdateCurrentSlide(firstSlide);
     }
 
@@ -114,82 +127,88 @@ public class DialogueTextBox : MenuWithButtons
             case BoxState.WAITINGONSLIDE:
                 if (this.PlayerInteractFlagSet)
                 {
-                    this.PlayerInteractFlagSet = false;
                     MyGuard.IsNotNull(this.CurrentSlide);
-
-                    if (this.CurrentSlide.startFight)
+                    // if no options on slide and player clicked then they want to go to the next slide or end dialogue.
+                    if (!this.CurrentSlide.dialogueOptions.Any())
                     {
-                        var player = FindObjectOfType<PlayerDungeon>();
-                        MyGuard.IsNotNull(player);
-                        SaveGameUtility.SaveGame(player);
-
-                        if (player.InteractableInRange is Unit_NPC enemy)
-                        {
-                            MyGuard.IsNotNull(enemy);
-                            MyGuard.IsNotNull(player.enemyLoader);
-                            MyGuard.IsNotNull(enemy.prefabToUseInBattle);
-                            player.enemyLoader.enemyWasTalkingTo = enemy.gameObject;
-                            DontDestroyOnLoad(enemy.gameObject);
-                        }
-
-                        TransitionManager.Instance().Transition(TalkingDungeonScenes.Battle, this.transitionForGoingToBattleScene, 0f);
+                        FinishedWithSlide(this.CurrentSlide.nextSlide);
                         return;
                     }
-
-                    // if its null no buttons so either go to next slide or exit dialogue
-                    if (this.lastHighlightedItem == null && this.CurrentSlide.nextSlide != null)
-                    {
-                        // var selectedDiaOption = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
-                        this.UpdateCurrentSlide(CurrentSlide.nextSlide);
-                        this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
-                        //Log.Print("state writing after waiting");
-                        this.State = BoxState.WRITINGSLIDE;
-                    }
-                    else if (lastHighlightedItem == null)
-                    {
-                        UpdateCurrentSlide(null);
-                        //Log.Print("state INVIS INACTIVE");
-                        finishedInteractionFlag = true;
-                        this.State = BoxState.WAITINGFORINTERACTION;
-                        Debug.Log("text box state set to waiting for interaction");
-                        this.gameObject.SetActive(false);
-                    }
-                    else // a button was clicked
-                    {
-                        var selected = lastHighlightedItem;
-
-                        var buttonOption = selected.GetComponentInParent<DialogueOptionButton>();
-
-                        if (buttonOption == null)
-                        {
-                            return;
-                        }
-
-                        if (buttonOption.NextDialogueSlide == null)
-                        {
-                            // end converstiona
-                            // TODO THIS AS A FUCNTION USED ABOVE
-                            UpdateCurrentSlide(null);
-                            //Log.Print("state INVIS INACTIVE");
-                            finishedInteractionFlag = true;
-                            this.State = BoxState.WAITINGFORINTERACTION;
-                            Debug.Log("Box in Set to waiting for interaction");
-                            this.gameObject.SetActive(false);
-                        }
-                        else
-                        {
-                            // var selectedDiaOption = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
-                            this.UpdateCurrentSlide(buttonOption.NextDialogueSlide);
-                            this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
-                            //Log.Print("state writing after waiting");
-                            this.State = BoxState.WRITINGSLIDE;
-                        }
-                    }
+                }
+                else if (this.ButtonClickedFlagSet)
+                {
+                    MyGuard.IsNotNull(this.CurrentSlide);                  
+                    var buttonOption = lastHighlightedItem.GetComponentInParent<DialogueOptionButton>();
+                    lastHighlightedItem = null;
+                    MyGuard.IsNotNull(buttonOption, "Button clicked flag set cannot have no button clicked");
+                    FinishedWithSlide(buttonOption.NextDialogueSlide);
                 }
                 break;
             default:
                 State = BoxState.WAITINGFORINTERACTION;
                 break;
+        }
+
+        ResetAllFlags();
+    }
+
+    private void StartNextSlide(DialogueSlide nextSlide)
+    {
+        // var selectedDiaOption = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
+        this.UpdateCurrentSlide(nextSlide);
+        this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
+        //Log.Print("state writing after waiting");
+        this.State = BoxState.WRITINGSLIDE;
+    }
+
+    private void EndConversation()
+    {
+        UpdateCurrentSlide(null);
+        //Log.Print("state INVIS INACTIVE");
+        finishedInteractionFlag = true;
+        this.State = BoxState.WAITINGFORINTERACTION;
+        this.gameObject.SetActive(false);
+    }
+
+    private void StartFight()
+    {
+        var player = FindObjectOfType<PlayerDungeon>();
+        MyGuard.IsNotNull(player);
+        SaveGameUtility.SaveGame(player);
+
+        if (player.InteractableInRange is Unit_NPC enemy)
+        {
+            MyGuard.IsNotNull(enemy);
+            MyGuard.IsNotNull(player.enemyLoader);
+            MyGuard.IsNotNull(enemy.prefabToUseInBattle);
+            player.enemyLoader.enemyWasTalkingTo = enemy.gameObject;
+            DontDestroyOnLoad(enemy.gameObject);
+        }
+
+        TransitionManager.Instance().Transition(TalkingDungeonScenes.Battle, this.transitionForGoingToBattleScene, 0f);
+        return;
+    }
+
+    /// <summary>
+    /// When player Clicked on the slide with no options potentialnext slide = currentslide.next.
+    /// Or when clicked on an option the potential slide = button option slide.
+    /// </summary>
+    /// <param name="potentialNextSlide"></param>
+    private void FinishedWithSlide(DialogueSlide? potentialNextSlide)
+    {
+        MyGuard.IsNotNull(CurrentSlide);
+        Debug.Log("If i want only a specific dialogue option to start a fight add that here");
+        if (this.CurrentSlide.startFight)
+        {
+            StartFight();
+        }
+        else if (potentialNextSlide != null)
+        {
+            StartNextSlide(potentialNextSlide);
+        }
+        else
+        {
+            EndConversation();
         }
     }
 
@@ -223,36 +242,24 @@ public class DialogueTextBox : MenuWithButtons
             return;
         }
 
-        if (this.CurrentSlide.dialogueOptions.Count > 0)
+        for (var i = 0; i < this.CurrentSlide.dialogueOptions.Count; i++)
         {
-            for (int i = 0; i < this.CurrentSlide.dialogueOptions.Count; i++)
-            {
-                // Instantiate new button with that gameobject as parent.
-                var buttonGameObj = Instantiate(this.prefabButton, this.buttonPositionsTopToBottom[i].transform);
-
-                // set button Dialogue Option to the Dialogue Option.
-                // REMEBER THIS IS NOT THE SAME OBJECT AS IN THE CURRENT SLIDE.OPTIONS
-                buttonGameObj.GetComponent<DialogueOptionButton>().SetValues(this.CurrentSlide.dialogueOptions[i].optionText, this.CurrentSlide.dialogueOptions[i].nextSlide);
-                this.buttons.Add(buttonGameObj);
-            }
+            this.buttons[i].gameObject.SetActive(true);
+            this.buttons[i].SetValues(this.CurrentSlide.dialogueOptions[i].optionText, this.CurrentSlide.dialogueOptions[i].nextSlide);
         }
+    }
 
-        // draw options
-        if (this.buttons.Count > 0)
+    private void DeactivateAllButtons()
+    {
+        foreach (var button in this.buttons)
         {
-            foreach (var button in this.buttons)
-            {
-                button.GetComponentInChildren<TMP_Text>().text = button.GetComponent<DialogueOptionButton>().OptionText;
-            }
+            button.gameObject.SetActive(false);
         }
     }
 
     private IEnumerator WriteSlideOverTime()
     {
-        // remove old buttons 
-        this.buttons.ForEach(x => Destroy(x));
-        this.buttons.Clear();
-
+        DeactivateAllButtons();
         MyGuard.IsNotNull(this.CurrentSlide);
         MyGuard.IsNotNull(this.CurrentSlide.dialogue);
         for (int i = 0; i < this.CurrentSlide.dialogue.Length; i++)

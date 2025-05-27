@@ -195,6 +195,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b58dd9fac9b3661488b2a2ce0ac93620, type: 2}
   HealthBarObject: {fileID: 0}
   healthBarFill: {fileID: 0}
+  basePower: 0
+  powerModifier: 0
+  baseDefence: 0
+  defenceModifier: 0
   movementSpeed: 3
   startingState: 1
   deathScreenPrefab: {fileID: 3716218083612978094, guid: 4af77ded6b806af42911a80999ee1106,
@@ -316,19 +320,7 @@ MonoBehaviour:
     m_ActionId: 716f293e-0a08-406a-95a3-66c156dd32ab
     m_ActionName: UI/Point[/Mouse/position]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5275466657955505087}
-        m_TargetAssemblyTypeName: PlayerDungeon, Assembly-CSharp
-        m_MethodName: OnMouseClick
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 69a967fa-43b3-44a3-ba35-acd66d3a73b4
     m_ActionName: UI/Click[/Mouse/leftButton]
   m_NeverAutoSwitchControlSchemes: 0
@@ -494,7 +486,7 @@ MonoBehaviour:
   - {x: -0.000056147575, y: -0.3732252, z: 0.0000000121071935}
   m_ShapePathHash: -382328611
   m_Mesh: {fileID: 0}
-  m_InstanceId: 52862
+  m_InstanceId: -28560
   m_LocalBounds:
     m_Center: {x: 0.0012224317, y: 0.1249226, z: 0}
     m_Extent: {x: 0.21986264, y: 0.5010518, z: 0}
@@ -799,7 +791,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a6c06f907d7c87249ac2ac32a239b3c4, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6792453, g: 0.30670115, b: 0.022427924, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

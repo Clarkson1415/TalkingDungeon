@@ -26,10 +26,6 @@ namespace Assets.GracesScripts.UI
 
             var SLotsParentGameObject = this.InventorySlots[0].gameObject.transform.parent.gameObject;
             SLotsParentGameObject.SetActive(OnOff);
-
-            Debug.Log("toggle on or off page happened. need to have page content toggle off before page turn and on after.");
-            Debug.Log("also need to toggle Tabs lol.");
-            Debug.Log("Then also add closing. so disable, flip page the other way, then play close book animation.");
         }
 
         /// <summary>

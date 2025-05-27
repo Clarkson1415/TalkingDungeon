@@ -7,7 +7,7 @@ namespace Assets.GracesScripts.ScriptableObjects
     [CreateAssetMenu(fileName = "Weapon", menuName = "DungeonItems/Weapon", order = 1)]
     public class Weapon : DungeonItem
     {
-        public List<Ability> Abilities;
+        public List<Ability> Abilities = new();
 
         /// <summary>
         /// Multiplies power of all abilities this weapon can do.

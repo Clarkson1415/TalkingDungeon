@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEngine;
 [System.Serializable]
 
 public class DialogueOptionButton : DungeonButton
@@ -6,10 +7,11 @@ public class DialogueOptionButton : DungeonButton
     public DialogueSlide NextDialogueSlide { get; set; }
 
     public string OptionText { get; set; }
+    [SerializeField] TMP_Text textObj;
 
     public void UpdateButtonText()
     {
-        this.GetComponentInChildren<TMP_Text>().text = this.OptionText;
+        textObj.text = this.OptionText;
     }
 
     /// <summary>
@@ -19,6 +21,7 @@ public class DialogueOptionButton : DungeonButton
     public void SetValues(string text, DialogueSlide nextSlide)
     {
         this.OptionText = text;
+        UpdateButtonText();
         this.NextDialogueSlide = nextSlide;
     }
 }

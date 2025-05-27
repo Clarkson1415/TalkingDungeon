@@ -15,7 +15,8 @@ public abstract class Unit : MonoBehaviour
 {
     public float currentHealth = 100;
     public float maxHealth = 100;
-    public List<Ability> Abilities => this.equippedWeapon.Abilities;
+    protected Weapon DefaultWeaponHands => GetDefaultHands();
+    public List<Ability> Abilities => this.equippedWeapon == null ? DefaultWeaponHands.Abilities : this.equippedWeapon.Abilities;
     protected List<DungeonItem?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
     public Weapon equippedWeapon;
     public SpecialItem? equippedSpecialItem;
@@ -37,6 +38,12 @@ public abstract class Unit : MonoBehaviour
     public float defenceModifier = 0;
     public float Defence => defenceModifier * (this.equippedWeapon.DefenceStat + baseDefence);
 
+    private Weapon GetDefaultHands()
+    {
+        var hands = Resources.Load<Weapon>("Items/Weapon/Hands");
+        MyGuard.IsNotNull(hands);
+        return hands;
+    }
 
     public void SetupUnitForBattle()
     {
