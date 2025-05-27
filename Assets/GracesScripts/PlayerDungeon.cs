@@ -92,8 +92,6 @@ public class PlayerDungeon : Unit
 
         this.state = startingState;
 
-        StartCoroutine(WaitForSceneLoadedThenLoadComponents());
-
 #if UNITY_EDITOR // save whats set in the inspector then load it 
         if (this.RestartGameFromThisScene)
         {
@@ -112,39 +110,12 @@ public class PlayerDungeon : Unit
             SaveGameUtility.SaveGame(this);
         }
 
+        this.LoadPlayerComponents();
+
         if (Abilities.Count < 1)
         {
             throw new ArgumentException("canont have less than 1 ability at least would have push on hands.");
         }
-    }
-
-    /// <summary>
-    /// Called after all the save data has been loaded.
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator WaitForSceneLoadedThenLoadComponents()
-    {
-        Scene currentScene = SceneManager.GetActiveScene();
-
-        var dialogueBox = FindObjectOfType<DialogueTextBox>();
-
-        while ((currentScene.name != "TurnBased") && dialogueBox == null)
-        {
-            if (currentScene.name == "TurnBased")
-            {
-                yield return null;
-                break;
-            }
-
-            // if loading from save the dialogue Box will be null in awake. and if loading for the first time for a player playing the game it will not be null and can continue;
-            ActivateAllCanvasObjects();
-            dialogueBox = FindObjectOfType<DialogueTextBox>();
-            // if it is a turn based scene we should load everything as turn based scenes are alwyas loaded from another scene before not save data
-            yield return null;
-        }
-
-        this.InitializeMenusAndSaveText();
-        this.LoadPlayerComponents();
     }
 
     /// <summary>
@@ -163,70 +134,17 @@ public class PlayerDungeon : Unit
         }
     }
 
-    private void ActivateAllCanvasObjects()
-    {
-        var canvas = FindFirstObjectByType<Canvas>();
-
-        foreach (Transform child in canvas.transform)
-        {
-            child.gameObject.SetActive(true);
-            if (child.TryGetComponent<SavedAnimationText>(out var saveText))
-            {
-                saveText.MakeTransparent();
-            }
-        }
-    }
-
-    private void InitializeMenusAndSaveText()
-    {
-        // has to be active to find it so set all menus active then off saves setting player serialised files in every scene and idk if it i could even do that now I have persistant data 
-        ActivateAllCanvasObjects();
-
-        Scene currentScene = SceneManager.GetActiveScene();
-
-        this.dialogueBox = FindFirstObjectByType<DialogueTextBox>();
-        if (this.dialogueBox == null && (currentScene.name == "TurnBased"))
-        {
-            Debug.Log("no Inventory Menu in Turn Based Scene");
-        }
-        else
-        {
-            MyGuard.IsNotNull(this.dialogueBox);
-            this.dialogueBox.gameObject.SetActive(false);
-        }
-
-        this.ContainerMenu = FindFirstObjectByType<ContainerMenu>();
-        if (this.ContainerMenu == null && (currentScene.name == "TurnBased"))
-        {
-            Debug.Log("As expected no Inventory Menu in Turn Based Scene");
-        }
-        else
-        {
-            MyGuard.IsNotNull(this.ContainerMenu);
-            this.ContainerMenu.gameObject.SetActive(false);
-        }
-
-        pauseMenu = FindFirstObjectByType<PauseMenu>();
-        this.pauseMenu.gameObject.SetActive(false);
-
-        inventoryMenu = FindFirstObjectByType<InventoryMenu>();
-        if (inventoryMenu == null && (currentScene.name == "TurnBased"))
-        {
-            Debug.Log("no Inventory Menu in Turn Based Scene");
-        }
-        else
-        {
-            MyGuard.IsNotNull(this.inventoryMenu);
-            this.inventoryMenu.gameObject.SetActive(false);
-        }
-    }
-
     // Start is called before the first frame update
     private void LoadPlayerComponents()
     {
         animatedLayers = GetComponent<UseAnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
         footstepsSound = GetComponentInChildren<AudioSource>();
+        var menuReferences = FindObjectOfType<MenuReferences>();
+        this.dialogueBox = menuReferences.dialogueTextBox;
+        this.pauseMenu = menuReferences.PauseMenu;
+        this.ContainerMenu = menuReferences.containerMenu;
+        this.inventoryMenu = menuReferences.Inventory;
         MyGuard.IsNotNull(this.pauseMenu);
         this.menuToUseNext = this.pauseMenu.gameObject;
         this.healthBarFill = FindFirstObjectByType<PlayerHealthBarFill>().GetComponent<Image>();
@@ -250,7 +168,9 @@ public class PlayerDungeon : Unit
             menuToUseNext = this.dialogueBox.gameObject;
             this.dialogueBox.gameObject.SetActive(true);
             dialogueBox.PlayerInteractFlagSet = true;
-            this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide(), interactableWithDialogue as Unit_NPC);
+            var talkingTo = interactableWithDialogue as Unit_NPC;
+            MyGuard.IsNotNull(talkingTo);
+            this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide(), talkingTo);
             this.state = KnightState.INDIALOGUE;
         }
         else if (this.InteractableInRange is ItemContainer chest && chest != null)
@@ -324,7 +244,7 @@ public class PlayerDungeon : Unit
                     StartInteraction();
                 }
                 break;
-            case KnightState.INDIALOGUE: // TODO TEST this state I think i fucked it
+            case KnightState.INDIALOGUE:
                 MyGuard.IsNotNull(dialogueBox);
                 if (this.InteractFlagSet)
                 {
@@ -433,7 +353,8 @@ public class PlayerDungeon : Unit
                 }
                 break;
             case KnightState.InTurnBased:
-                // controlled by BattleUI and never exits. We change states when the next scene after the battle is loaded and the player in that scene will be used with its starting state.
+                // controlled by BattleUI and never exits.
+                // We change states next when battle is won and the new scene is loaded.
                 break;
             default:
                 this.state = KnightState.PLAYERCANMOVE;
@@ -443,10 +364,6 @@ public class PlayerDungeon : Unit
         ResetFlags();
     }
 
-    /// <summary>
-    /// Idk if comparing name string is neccessary though I
-    /// </summary>
-    /// <param name="itemToRemove"></param>
     private void RemoveFromPlayerEquipped(InventorySlot itemButton)
     {
         var itemToRemove = itemButton.Item;

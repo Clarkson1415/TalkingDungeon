@@ -311,6 +311,7 @@ GameObject:
   - component: {fileID: 8290734294078069539}
   - component: {fileID: 2700419494951243715}
   - component: {fileID: 2162065583158857856}
+  - component: {fileID: 6293897484214614494}
   m_Layer: 5
   m_Name: DungeonCanvas_Book
   m_TagString: Untagged
@@ -407,6 +408,23 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6293897484214614494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311435838646201615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250819ddcde80164fae8914aef8c2c76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueTextBox: {fileID: 6963117402492518297}
+  containerMenu: {fileID: 3974754524441776529}
+  Inventory: {fileID: 4058548019318212105}
+  PauseMenu: {fileID: 1946909631949403365}
+  saveText: {fileID: 5682425702972926858}
 --- !u!1 &311438455430985141
 GameObject:
   m_ObjectHideFlags: 0
@@ -4294,7 +4312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &640052457302180547
 RectTransform:
   m_ObjectHideFlags: 0

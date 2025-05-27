@@ -30,16 +30,27 @@ namespace Assets.GracesScripts.UI
         {
             var highlightedButton = eventData.hovered.FirstOrDefault(x => x.gameObject.transform.parent.TryGetComponent<DungeonButton>(out _));
 
-            if (highlightedButton == null)
+            if (highlightedButton != null)
             {
-                Debug.Log($"{eventData.hovered} was highlighted by mouse but is not a Dungeon button");
-                return null;
+                lastHighlightedItem = highlightedButton;
+
+                var button = highlightedButton.GetComponentInParent<DungeonButton>();
+                return button;
             }
+            else
+            {
+                highlightedButton = eventData.hovered.FirstOrDefault(x => x.gameObject.TryGetComponent<DungeonButton>(out _));
 
-            lastHighlightedItem = highlightedButton;
+                if (highlightedButton == null)
+                {
+                    Debug.Log($"{eventData.hovered} was highlighted by mouse but is not a Dungeon button");
+                    return null;
+                }
 
-            var button = highlightedButton.GetComponentInParent<DungeonButton>();
-            return button;
+                lastHighlightedItem = highlightedButton;
+                var button = highlightedButton.GetComponent<DungeonButton>();
+                return button;
+            }
         }
     }
 }

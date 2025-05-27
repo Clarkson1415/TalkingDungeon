@@ -10,36 +10,18 @@ public class SavedAnimationText : MonoBehaviour
     [SerializeField] float fadeDuration = 0.3f;
     [SerializeField] float delayBetweenLetters = 0.1f;
 
+    private void Awake()
+    {
+        TMP = GetComponent<TMP_Text>();
+        this.MakeTransparent();
+    }
+
     private void Start()
     {
         TMP = GetComponent<TMP_Text>();
-        StartCoroutine(SetTextAlphaToZero());
+        MakeTransparent();
     }
 
-    private IEnumerator SetTextAlphaToZero()
-    {
-        yield return null; // Wait one frame to ensure text is fully rendered
-
-        TMP.ForceMeshUpdate();
-        TMP_TextInfo textInfo = TMP.textInfo;
-
-        for (int i = 0; i < textInfo.characterCount; i++)
-        {
-            var charInfo = textInfo.characterInfo[i];
-            if (!charInfo.isVisible) continue;
-
-            int meshIndex = charInfo.materialReferenceIndex;
-            int vertexIndex = charInfo.vertexIndex;
-            Color32[] vertexColors = textInfo.meshInfo[meshIndex].colors32;
-
-            for (int j = 0; j < 4; j++)
-            {
-                vertexColors[vertexIndex + j].a = 0;
-            }
-        }
-
-        TMP.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
-    }
 
     [SerializeField] private bool FadeInIndivualLetters = false;
     [SerializeField] float FadeTogetherDuration = 1f;

@@ -351,7 +351,7 @@ public class BattleUI : MenuWithButtons
             person = enemyYouFightin.unitName;
         }
 
-        var turnInfoString = $"{person} used {player.equippedWeapon} to {abilityUsed.name} to {abilityUsed.description}:\n";
+        var turnInfoString = $"{person} used {player.equippedWeapon} to {abilityUsed.Name} to {abilityUsed.description}:\n";
         foreach (var effect in abilityUsed.Effects)
         {
             effect.Apply(this.player, this.enemyYouFightin);
