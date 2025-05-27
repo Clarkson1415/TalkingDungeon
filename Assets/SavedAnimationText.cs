@@ -59,11 +59,10 @@ public class SavedAnimationText : MonoBehaviour
         }
     }
 
-    IEnumerator FadeInLetters()
+    public void MakeTransparent()
     {
-        this.TMP.ForceMeshUpdate();
+        TMP = GetComponent<TMP_Text>();
         TMP_TextInfo textInfo = this.TMP.textInfo;
-
         // Make all characters transparent initially
         for (int i = 0; i < textInfo.characterCount; i++)
         {
@@ -80,6 +79,15 @@ public class SavedAnimationText : MonoBehaviour
                 vertexColors[vertexIndex + j].a = 0;
             }
         }
+    }
+
+    IEnumerator FadeInLetters()
+    {
+        this.TMP.ForceMeshUpdate();
+        TMP_TextInfo textInfo = this.TMP.textInfo;
+
+        // Make all characters transparent initially
+        MakeTransparent();
 
         this.TMP.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
 

@@ -26,6 +26,7 @@ public class BattleUI : MenuWithButtons
     [SerializeField] GameObject actionButtonScreen;
     [SerializeField] GameObject abilityButtonSceen;
     [SerializeField] GameObject itemScreen;
+    [SerializeField] GameObject talkScreen;
     [SerializeField] private GameObject battleDialogueBox;
     private TMP_Text battleDialogBoxAboveText;
 
@@ -89,6 +90,7 @@ public class BattleUI : MenuWithButtons
         this.abilityButtonSceen.SetActive(false);
         this.actionButtonScreen.SetActive(true);
         itemScreen.SetActive(false);
+        talkScreen.SetActive(false);
         StartCoroutine(TestDialogueBox("Your turn", Color.black));
     }
 
@@ -121,9 +123,8 @@ public class BattleUI : MenuWithButtons
         TransitioningOutOfBattle,
         Paused,
         inItemMenu,
+        InTalkMenu,
     }
-
-    private GameObject currentSelectedButton;
 
     private void SetupAbilityButtons()
     {
@@ -196,13 +197,15 @@ public class BattleUI : MenuWithButtons
                             }
                             else
                             {
-                                StartCoroutine(TestDialogueBox("your wounds are too great and the enemy is too strong. Failed to get away.", Color.black));
+                                StartCoroutine(TestDialogueBox("Failed to get away.", Color.red));
                                 this.state = Battle.EnemyTurn;
                             }
                             break;
                         case TurnBasedActions.ITEM:
+                            talkScreen.SetActive(true);
+                            state = Battle.inItemMenu;
                             Debug.Log("TODO will be able to use Item equipped or use a turn to equip an item.");
-                            throw new NotImplementedException("not setup yet");
+                            // throw new NotImplementedException("not setup yet");
                             //itemScreen.SetActive(true);
                             //this.itemScreen.GetComponentInChildren<Button>().gameObject.SetActive(true);
                             //itemScreen.GetComponent<ItemMenuBattle>().SlideIn();
@@ -211,7 +214,9 @@ public class BattleUI : MenuWithButtons
                             break;
                         case TurnBasedActions.TALK:
                             // TODO 
-                            StartDialogue(this.enemyYouFightin.battleSceneDialogueSlide);
+                            talkScreen.SetActive(true);
+                            state = Battle.InTalkMenu;
+                            // StartDialogue(this.enemyYouFightin.battleSceneDialogueSlide);
                             break;
                         default:
                             throw new ArgumentNullException("No matching action.");
@@ -223,12 +228,18 @@ public class BattleUI : MenuWithButtons
                 if (this.backButtonClickedFlag)
                 {
                     this.backButtonClickedFlag = false;
-                    this.itemScreen.GetComponent<ItemMenuBattle>().CloseItemMenu();
+                    this.itemScreen.SetActive(false);
+                    state = Battle.PlayerPickActionTurn;
+                    //this.itemScreen.GetComponent<ItemMenuBattle>().CloseItemMenu();
                 }
-                if (!this.itemScreen.activeSelf)
+                break;
+            case Battle.InTalkMenu:
+                if (this.backButtonClickedFlag)
                 {
-                    this.state = Battle.EnemyTurn;
-                    this.evSys.SetSelectedGameObject(null);
+                    this.backButtonClickedFlag = false;
+                    this.talkScreen.SetActive(false);
+                    state = Battle.PlayerPickActionTurn;
+                    //this.itemScreen.GetComponent<ItemMenuBattle>().CloseItemMenu();
                 }
                 break;
             case Battle.PlayerPickAbilityTurn:
@@ -264,6 +275,7 @@ public class BattleUI : MenuWithButtons
                     {
                         Debug.Log("player won");
                         StartCoroutine(TestDialogueBox("You Won", Color.black));
+                        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Dungeon2, exitBattleTransition);
                         this.state = Battle.PlayerWon;
                     }
                 }

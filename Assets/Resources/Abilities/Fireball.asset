@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Fireball
   description: Throw fireball
+  cooldown: 0
   image: {fileID: 1934690802, guid: 70375e31e442a0c498a4bd2e1bfeead0, type: 3}
-  attackPower: 5
+  Effects:
+  - {fileID: 11400000, guid: 72f68dc6b2e90274791b1850290c9d74, type: 2}

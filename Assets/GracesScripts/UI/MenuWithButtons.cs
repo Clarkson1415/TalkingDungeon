@@ -36,7 +36,6 @@ namespace Assets.GracesScripts.UI
                 return null;
             }
 
-            this.UIEventSystem.SetSelectedGameObject(highlightedButton);
             lastHighlightedItem = highlightedButton;
 
             var button = highlightedButton.GetComponentInParent<DungeonButton>();

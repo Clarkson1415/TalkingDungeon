@@ -16,7 +16,6 @@ namespace Assets.GracesScripts.UI
         public GameObject GetSelectedButton()
         {
             var selected = this.UIEventSystem.currentSelectedGameObject;
-            this.UIEventSystem.SetSelectedGameObject(null);
             return selected;
         }
     }

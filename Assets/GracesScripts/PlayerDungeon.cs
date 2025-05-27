@@ -3,6 +3,7 @@ using Assets.GracesScripts.ScriptableObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -169,6 +170,10 @@ public class PlayerDungeon : Unit
         foreach (Transform child in canvas.transform)
         {
             child.gameObject.SetActive(true);
+            if (child.TryGetComponent<SavedAnimationText>(out var saveText))
+            {
+                saveText.MakeTransparent();
+            }
         }
     }
 
@@ -349,8 +354,10 @@ public class PlayerDungeon : Unit
                 }
                 else if (this.ContainerMenu.TellPlayerContainerButtonClicked)
                 {
+                    this.ContainerMenu.TellPlayerContainerButtonClicked = false;
                     var selected = this.ContainerMenu.GetSelectedButton();
-                    var itemOpButton = selected.GetComponentInParent<InventorySlot>();
+                    var itemOpButton = selected.GetComponent<InventorySlot>();
+                    itemOpButton.PlaySelectSound();
                     if (itemOpButton.Item == null)
                     {
                         return;
