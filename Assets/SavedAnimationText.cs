@@ -44,6 +44,7 @@ public class SavedAnimationText : MonoBehaviour
     public void MakeTransparent()
     {
         TMP = GetComponent<TMP_Text>();
+        TMP.ForceMeshUpdate();
         TMP_TextInfo textInfo = this.TMP.textInfo;
         // Make all characters transparent initially
         for (int i = 0; i < textInfo.characterCount; i++)
@@ -61,6 +62,8 @@ public class SavedAnimationText : MonoBehaviour
                 vertexColors[vertexIndex + j].a = 0;
             }
         }
+
+        TMP.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
     }
 
     IEnumerator FadeInLetters()
