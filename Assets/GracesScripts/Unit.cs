@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
+using static UnityEngine.Rendering.DebugUI;
 #nullable enable
 
 /// <summary>
@@ -56,26 +57,33 @@ public abstract class Unit : MonoBehaviour
     /// <summary>
     /// Shake health bar and animate health bar fill.
     /// </summary>
-    public void TakeDamage(float damage)
+    public void TakeDamage(float value)
     {
         Debug.Log("Check how the timing of StartShake and damage bar reducing works i dont remember but rewrite it so its clearly aligned.");
         var objectToShake = this.HealthBarObject.GetComponent<ShakeObject>();
         objectToShake.StartShake(1f, 5f);
-        this.currentHealth -= damage;
+        this.currentHealth -= value;
         // if current damage will kill Unit make it go down faster
         if (this.currentHealth <= 0)
         {
-            StartCoroutine(AnimateHealthLoss(0.1f, damage));
+            StartCoroutine(AnimateHealthBarFill(0.1f, -value));
             this.Die();
         }
         else
         {
-            StartCoroutine(AnimateHealthLoss(0.5f, damage));
+            StartCoroutine(AnimateHealthBarFill(0.5f, -value));
         }
+    }
 
-        //this.HealthBarObject.GetComponent<ShakeObject>().StartShake(1f, 5f);
-        //this.currentHealth -= damage;
-        //StartCoroutine(AnimateEnemyHealthLoss());
+    /// <summary>
+    /// Add health to this unit and animate health bar fill increasing.
+    /// </summary>
+    /// <param name="healAmount"></param>
+    public void Heal(float healAmount)
+    {
+        Debug.Log("Heal play heal animation");
+        this.currentHealth += healAmount;
+        StartCoroutine(AnimateHealthBarFill(0.5f, healAmount));
     }
 
     protected abstract void Die();
@@ -83,15 +91,16 @@ public abstract class Unit : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="shakeLength">seconds time for health bar to go to where after damage puts it</param>
+    /// <param name="animationLength">seconds time for health bar to go to where after damage puts it</param>
+    /// <param name="healthChange">positive value for healing negative for damaging.</param>
     /// <returns></returns>
-    private IEnumerator AnimateHealthLoss(float shakeLength, float damage)
+    private IEnumerator AnimateHealthBarFill(float animationLength, float healthChange)
     {
         var timeIncrement = 0.1f;
-        var damagePerTimeIncrement = damage / (shakeLength / timeIncrement);
+        var damagePerTimeIncrement = healthChange / (animationLength / timeIncrement);
         while (this.healthBarFill.fillAmount > Mathf.Clamp((this.currentHealth / this.maxHealth), 0, 1))
         {
-            this.healthBarFill.fillAmount -= (damagePerTimeIncrement / 100);
+            this.healthBarFill.fillAmount += (damagePerTimeIncrement / 100);
             yield return new WaitForSeconds(timeIncrement);
         }
     }

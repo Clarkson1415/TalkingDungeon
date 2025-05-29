@@ -248,8 +248,7 @@ public class BattleUI : MenuWithButtons
                     this.abilityClickedFlag = false;
                     var abilityUsed = evSys.currentSelectedGameObject.GetComponent<InventorySlot>().Ability;
                     Log.Print($"You used {abilityUsed.name} on {enemyYouFightin.unitName} To {abilityUsed.Effects}");
-                    Debug.Log("Apply ability effect");
-
+                    abilityUsed.Apply(player, enemyYouFightin);
                     ShowAbilityUsedText(this.player, abilityUsed);
                     this.state = Battle.ExecutingPlayerTurn;
                 }
@@ -351,13 +350,7 @@ public class BattleUI : MenuWithButtons
             person = enemyYouFightin.unitName;
         }
 
-        var turnInfoString = $"{person} used {player.equippedWeapon} to {abilityUsed.Name} to {abilityUsed.description}:\n";
-        foreach (var effect in abilityUsed.Effects)
-        {
-            effect.Apply(this.player, this.enemyYouFightin);
-            turnInfoString += $"{effect.Description}\n";
-        }
-
+        var turnInfoString = $"{person} used {player.equippedWeapon} to {abilityUsed.Name} to {abilityUsed.description}";
         StartCoroutine(TestDialogueBox(turnInfoString, color));
     }
 

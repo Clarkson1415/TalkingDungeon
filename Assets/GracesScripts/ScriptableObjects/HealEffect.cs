@@ -2,14 +2,15 @@
 
 namespace Assets.GracesScripts.ScriptableObjects
 {
-    [CreateAssetMenu(menuName = "Ability Effects/HealEffect")]
+    /// <summary>
+    /// Represents an ability effect that heals the user.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Ability Effects/Heal Effect")]
     public class HealEffect : AbilityEffect
     {
-        public int HealAmount;
-        public override void Apply(Unit user, Unit target)
+        protected override void ApplyEffect(Unit target, int value)
         {
-            Debug.Log($"Healing {HealAmount} HP.");
-            // target.GetComponent<Health>().Heal(HealAmount);
+            target.Heal(value);
         }
     }
 }

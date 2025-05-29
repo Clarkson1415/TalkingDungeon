@@ -12,7 +12,7 @@ using UnityEngine;
 /// ALSO: uses bools specific for the animation layer: the bool string is "Running"
 /// </summary>
 [RequireComponent(typeof(UseAnimatedLayers))]
-public class WalkingBackAndForthUnit : Unit
+public class WalkingBackAndForthUnit : Unit_NPC
 {
     [SerializeField] int runSpeed = 6;
     [SerializeField] int runTime = 3;

@@ -739,11 +739,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
-  equippedWeapon: {fileID: 11400000, guid: a2bcbb4ac0d22e74a882f171aa01a702, type: 2}
+  equippedWeapon: {fileID: 11400000, guid: 2bbbf6774d36fc241bb3ac0b3aec955e, type: 2}
   equippedSpecialItem: {fileID: 0}
-  Inventory: []
+  Inventory:
+  - {fileID: 11400000, guid: 2bbbf6774d36fc241bb3ac0b3aec955e, type: 2}
   HealthBarObject: {fileID: 0}
   healthBarFill: {fileID: 0}
+  basePower: 0
+  powerModifier: 0
+  baseDefence: 0
+  defenceModifier: 0
   unitName: Wizard
   prefabToUseInBattle: {fileID: 0}
   firstDialogueSlide: {fileID: 0}

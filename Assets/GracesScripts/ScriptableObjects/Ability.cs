@@ -7,7 +7,11 @@ public class Ability : ScriptableObject
 {
     public string Name;
     public string description;
-    public string Path => $"Abilities/{this.Name}";
+    
+    /// <summary>
+    /// Ability damage. multiplied by the weapons power.
+    /// </summary>
+    public int Value;
 
     /// <summary>
     /// Turns have to wait until can use again.
@@ -20,4 +24,12 @@ public class Ability : ScriptableObject
     public Sprite image;
 
     public List<AbilityEffect> Effects;
+
+    public void Apply(Unit user, Unit target)
+    {
+        foreach (var effect in this.Effects)
+        {
+            effect.ApplyToUnit(user, target, this.Value);
+        }
+    }
 }

@@ -1,10 +1,8 @@
 using Assets.GracesScripts;
 using Assets.GracesScripts.ScriptableObjects;
+using Assets.GracesScripts.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -32,7 +30,7 @@ public class PlayerDungeon : Unit
     private DialogueTextBox? dialogueBox;
     private ContainerMenu? ContainerMenu;
     private PauseMenu? pauseMenu;
-    private GameObject? menuToUseNext;
+    private Menu? menuToUseNext;
     private InventoryMenu? inventoryMenu;
 
     [Header("Death")]
@@ -124,14 +122,7 @@ public class PlayerDungeon : Unit
     /// <returns></returns>
     private bool AreComponentsLoaded()
     {
-        if (this.rb == null)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return this.rb != null;
     }
 
     // Start is called before the first frame update
@@ -146,7 +137,7 @@ public class PlayerDungeon : Unit
         this.ContainerMenu = menuReferences.containerMenu;
         this.inventoryMenu = menuReferences.Inventory;
         MyGuard.IsNotNull(this.pauseMenu);
-        this.menuToUseNext = this.pauseMenu.gameObject;
+        this.menuToUseNext = this.pauseMenu;
         this.healthBarFill = FindFirstObjectByType<PlayerHealthBarFill>().GetComponent<Image>();
         MyGuard.IsNotNull(healthBarFill);
         this.HealthBarObject = this.healthBarFill.transform.parent.gameObject;
@@ -164,27 +155,26 @@ public class PlayerDungeon : Unit
                 movingNPC.IsInDialogue = true;
             }
 
+            menuToUseNext = this.dialogueBox;
+            var npc = interactableWithDialogue as Unit_NPC;
+            MyGuard.IsNotNull(npc);
             MyGuard.IsNotNull(this.dialogueBox);
-            menuToUseNext = this.dialogueBox.gameObject;
             this.dialogueBox.gameObject.SetActive(true);
-            dialogueBox.PlayerInteractFlagSet = true;
-            var talkingTo = interactableWithDialogue as Unit_NPC;
-            MyGuard.IsNotNull(talkingTo);
-            this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide(), talkingTo);
+            this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide(), npc);
             this.state = KnightState.INDIALOGUE;
+            this.StopMovement();
         }
         else if (this.InteractableInRange is ItemContainer chest && chest != null)
         {
             MyGuard.IsNotNull(ContainerMenu);
-            menuToUseNext = this.ContainerMenu.gameObject;
+            menuToUseNext = this.ContainerMenu;
             this.ContainerMenu.gameObject.SetActive(true);
             chest.GetComponent<Animator>().SetTrigger("Opened");
             chest.PlayOpenSound();
             this.ContainerMenu.PopulateContainer(chest.Loot);
             this.state = KnightState.InItemContainer;
+            this.StopMovement();
         }
-
-        this.StopMovement();
     }
 
     private void StopMovement()
@@ -220,14 +210,14 @@ public class PlayerDungeon : Unit
                     this.pauseMenu.StartPauseMenu();
                     this.state = KnightState.INPAUSEMENU;
                     StopMovement();
-                    this.menuToUseNext = this.pauseMenu.gameObject;
+                    this.menuToUseNext = this.pauseMenu;
                 }
                 if (iKeyFlag)
                 {
                     MyGuard.IsNotNull(this.inventoryMenu);
                     iKeyFlag = false;
-                    this.menuToUseNext = inventoryMenu.gameObject;
-                    this.menuToUseNext.SetActive(true);
+                    this.menuToUseNext = inventoryMenu;
+                    this.menuToUseNext.gameObject.SetActive(true);
                     inventoryMenu.OpenInventory(Inventory, this.equippedWeapon, this.equippedSpecialItem);
                     StopMovement();
                     this.state = KnightState.ININVENTORY;
@@ -270,7 +260,7 @@ public class PlayerDungeon : Unit
 
                     this.state = KnightState.PLAYERCANMOVE;
                     MyGuard.IsNotNull(this.pauseMenu);
-                    this.menuToUseNext = this.pauseMenu.gameObject;
+                    this.menuToUseNext = this.pauseMenu;
                 }
                 else if (this.ContainerMenu.TellPlayerContainerButtonClicked)
                 {
@@ -312,7 +302,7 @@ public class PlayerDungeon : Unit
                     MyGuard.IsNotNull(menuToUseNext);
                     MyGuard.IsNotNull(pauseMenu);
                     this.menuToUseNext.GetComponent<InventoryMenu>().Close();
-                    this.menuToUseNext = pauseMenu.gameObject;
+                    this.menuToUseNext = pauseMenu;
                     this.state = KnightState.PLAYERCANMOVE;
                 }
                 if (this.InteractFlagSet)

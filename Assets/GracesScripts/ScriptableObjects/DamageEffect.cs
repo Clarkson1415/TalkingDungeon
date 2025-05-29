@@ -2,15 +2,17 @@
 
 namespace Assets.GracesScripts.ScriptableObjects
 {
-    [CreateAssetMenu(menuName = "Ability Effects/DamageEffect")]
+    /// <summary>
+    /// Represents an ability effect that damages the target.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Ability Effects/Damage Effect")]
     public class DamageEffect : AbilityEffect
     {
-        public int Damage;
-        public override void Apply(Unit user, Unit target)
+        protected override void ApplyEffect(Unit target, int value)
         {
-            Debug.Log($"{target.name} Dealing {Damage} damage. to {user.name}");
-            // target.GetComponent<Health>().TakeDamage(Damage);
-            target.TakeDamage(this.Damage);
+            Debug.Log("Damage effect applying animation and damage.");
+            Debug.Log("TODO white flashing of the sprite when he takes damage.");
+            target.TakeDamage(value);
         }
     }
 }

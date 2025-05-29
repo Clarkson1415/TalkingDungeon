@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9d1cb3e94f1b9742ab344d5a9a32bb4, type: 3}
   m_Name: Heal
   m_EditorClassIdentifier: 
-  Description: Heal by 5
-  HealAmount: 5
+  TargetUser: 1
+  effect: {fileID: 1320880661023696088, guid: 899d8875def85c04facf274f93ab1db3, type: 3}

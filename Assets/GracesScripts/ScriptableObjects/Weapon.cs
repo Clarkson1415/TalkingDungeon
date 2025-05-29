@@ -10,7 +10,7 @@ namespace Assets.GracesScripts.ScriptableObjects
         public List<Ability> Abilities = new();
 
         /// <summary>
-        /// Multiplies power of all abilities this weapon can do.
+        /// Multiplies power of all abilities this weapon can do. Even the defence Abilities also get boosted by this.
         /// </summary>
         public int PowerStat;
 

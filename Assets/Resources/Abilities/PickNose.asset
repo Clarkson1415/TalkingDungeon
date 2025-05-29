@@ -14,5 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: PickNose
   description: 1 in 5 chance to kill yourself.
+  Value: 0
+  cooldown: 0
   image: {fileID: -1493755867, guid: 70375e31e442a0c498a4bd2e1bfeead0, type: 3}
-  attackPower: 0
+  Effects:
+  - {fileID: 11400000, guid: 72f68dc6b2e90274791b1850290c9d74, type: 2}
