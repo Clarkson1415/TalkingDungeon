@@ -347,7 +347,7 @@ public class BattleUI : MenuWithButtons
             person = enemyYouFightin.unitName;
         }
 
-        var turnInfoString = $"{person} used {player.equippedWeapon} to {abilityUsed.Name} to {abilityUsed.description}";
+        var turnInfoString = $"{person} used {player.equippedWeapon.Name} to {abilityUsed.Name} to {abilityUsed.description}";
         StartCoroutine(TestDialogueBox(turnInfoString, color));
     }
 

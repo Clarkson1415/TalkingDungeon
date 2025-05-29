@@ -97,10 +97,10 @@ public abstract class Unit : MonoBehaviour
     private IEnumerator AnimateHealthBarFill(float animationLength, float healthChange)
     {
         var timeIncrement = 0.1f;
-        var damagePerTimeIncrement = healthChange / (animationLength / timeIncrement);
+        var changePerTimeIncrement = healthChange / (animationLength / timeIncrement);
         while (this.healthBarFill.fillAmount > Mathf.Clamp((this.currentHealth / this.maxHealth), 0, 1))
         {
-            this.healthBarFill.fillAmount += (damagePerTimeIncrement / 100);
+            this.healthBarFill.fillAmount += (changePerTimeIncrement / 100);
             yield return new WaitForSeconds(timeIncrement);
         }
     }
