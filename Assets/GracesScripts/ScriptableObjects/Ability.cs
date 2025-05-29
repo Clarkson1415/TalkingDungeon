@@ -25,11 +25,11 @@ public class Ability : ScriptableObject
 
     public List<AbilityEffect> Effects;
 
-    public void Apply(Unit user, Unit target)
+    public void Apply(int weaponUsedPower, Unit user, Unit target)
     {
         foreach (var effect in this.Effects)
         {
-            effect.ApplyToUnit(user, target, this.Value);
+            effect.ApplyToUnit(user, target, this.Value * weaponUsedPower);
         }
     }
 }

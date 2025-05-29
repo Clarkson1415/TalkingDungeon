@@ -248,7 +248,7 @@ public class BattleUI : MenuWithButtons
                     this.abilityClickedFlag = false;
                     var abilityUsed = evSys.currentSelectedGameObject.GetComponent<InventorySlot>().Ability;
                     Log.Print($"You used {abilityUsed.name} on {enemyYouFightin.unitName} To {abilityUsed.Effects}");
-                    abilityUsed.Apply(player, enemyYouFightin);
+                    abilityUsed.Apply(player.equippedWeapon.PowerStat, player, enemyYouFightin);
                     ShowAbilityUsedText(this.player, abilityUsed);
                     this.state = Battle.ExecutingPlayerTurn;
                 }
@@ -283,11 +283,8 @@ public class BattleUI : MenuWithButtons
                 // or enemy could use an item.
                 Debug.Log("not finished setup here. need to calculate damage based on units current defence stat also?");
                 var enemyAbility = PickRandomAbility(this.enemyYouFightin.Abilities);
-                // TODO take into account attack power defence and units. 
-                // calculate damage = unit (necromancer) power * ability power
-                // player damage taken = damage - player defence
+                enemyAbility.Apply(enemyYouFightin.equippedWeapon.PowerStat, enemyYouFightin, player);
                 ShowAbilityUsedText(this.enemyYouFightin, enemyAbility);
-
                 // TODO display damage turn text on screen
                 Log.Print("current wellbeing " + this.player.currentHealth);
 
