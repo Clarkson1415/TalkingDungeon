@@ -61,6 +61,7 @@ public class DialogueTextBox : MenuWithButtons
 
     public void BeginDialogue(DialogueSlide firstSlide, Unit_NPC speaker)
     {
+        this.TMPTextBox.text = "";
         this.startInteactionFlag = true;
         currentSpeaker = speaker;
         DeactivateAllButtons();
