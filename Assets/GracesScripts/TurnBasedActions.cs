@@ -1,8 +1,8 @@
 ﻿public enum TurnBasedActions
 {
-    ATTACK,
-    TALK,
-    RUN,
-    ITEM,
-    BACK,
+    Attack,
+    Talk,
+    Run,
+    Item,
+    Back,
 }

@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Globalization;
-using System.Xml;
 using TMPro;
 using UnityEngine;
 

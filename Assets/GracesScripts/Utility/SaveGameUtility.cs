@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public static class SaveGameUtility
+public class SaveGameUtility : MonoBehaviour
 {
     public static void SaveGame(PlayerDungeon player)
     {
@@ -31,6 +31,15 @@ public static class SaveGameUtility
         Debug.Log("at some point also need to save converstaions with NPCS? maybe? I won't have backtracking though so idk.");
 
         PlayerPrefs.Save();
+
+        var saveText = FindObjectOfType<SavedAnimationText>();
+        if (saveText == null)
+        {
+            Debug.LogWarning("not sure why savetext is null idk if it should be or not.");
+            return;
+        }
+
+        saveText.PlaySavedAnimation();
     }
 
     [Serializable]

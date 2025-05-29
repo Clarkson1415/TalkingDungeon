@@ -12,7 +12,6 @@ public class MenuButton : DungeonButton
     public TransitionSettings transition;
     [SerializeField] private string FeedbackFormURL;
     [SerializeField] public string sceneToLoad;
-    private SavedAnimationText saveText;
 
     /// <summary>
     /// Loads the 'IntroScene'
@@ -32,15 +31,6 @@ public class MenuButton : DungeonButton
         }
 
         SaveGameUtility.SaveGame(player);
-
-        this.saveText = FindObjectOfType<SavedAnimationText>();
-        if (saveText == null)
-        {
-            Debug.LogWarning("not sure why savetext is null idk if it should be or not.");
-            return;
-        }
-
-        this.saveText.PlaySavedAnimation();
     }
 
     public void LoadGameFromSave()

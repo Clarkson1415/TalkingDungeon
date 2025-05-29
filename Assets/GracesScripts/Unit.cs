@@ -1,12 +1,8 @@
-using Assets.GracesScripts;
 using Assets.GracesScripts.ScriptableObjects;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
-using static UnityEngine.Rendering.DebugUI;
 #nullable enable
 
 /// <summary>
@@ -26,7 +22,7 @@ public abstract class Unit : MonoBehaviour
     [HideInInspector] public GameObject HealthBarObject;
     [HideInInspector] public Image healthBarFill;
 
-    
+
     [SerializeField] private float basePower = 0;
     public float powerModifier;
     public float Power => powerModifier * (this.basePower + this.equippedWeapon.PowerStat);
@@ -96,12 +92,20 @@ public abstract class Unit : MonoBehaviour
     /// <returns></returns>
     private IEnumerator AnimateHealthBarFill(float animationLength, float healthChange)
     {
-        var timeIncrement = 0.1f;
-        var changePerTimeIncrement = healthChange / (animationLength / timeIncrement);
-        while (this.healthBarFill.fillAmount > Mathf.Clamp((this.currentHealth / this.maxHealth), 0, 1))
+        float startFillAmount = this.healthBarFill.fillAmount;
+        float targetFillAmount = Mathf.Clamp((this.currentHealth / this.maxHealth), 0, 1);
+
+        float timeIncrement = 0.1f;
+        float totalSteps = animationLength / timeIncrement;
+        float fillChangePerStep = (targetFillAmount - startFillAmount) / totalSteps;
+
+        while (Mathf.Abs(this.healthBarFill.fillAmount - targetFillAmount) > 0.01f)
         {
-            this.healthBarFill.fillAmount += (changePerTimeIncrement / 100);
+            this.healthBarFill.fillAmount += fillChangePerStep;
             yield return new WaitForSeconds(timeIncrement);
         }
+
+        // Ensure we end exactly at target
+        this.healthBarFill.fillAmount = targetFillAmount;
     }
 }

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1046ae07000c71478575c7a41a75686, type: 3}
-  m_Name: Eat Apple
+  m_Name: Drain Life
   m_EditorClassIdentifier: 
-  Name: Eat Apple
-  description: eat the apple
+  Name: Drain Life
+  _desc: Watch the life drain from your enemies eyes. Dealing {0} damage.
   Value: 5
   cooldown: 0
-  image: {fileID: 1934690802, guid: 70375e31e442a0c498a4bd2e1bfeead0, type: 3}
+  image: {fileID: 1597145580, guid: 70375e31e442a0c498a4bd2e1bfeead0, type: 3}
   Effects:
-  - {fileID: 11400000, guid: 72f68dc6b2e90274791b1850290c9d74, type: 2}
+  - {fileID: 11400000, guid: ddac9d84089604741892f614bd20c45f, type: 2}

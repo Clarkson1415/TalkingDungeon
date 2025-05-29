@@ -29,6 +29,7 @@ public class BattleUI : MenuWithButtons
     [SerializeField] GameObject talkScreen;
     [SerializeField] private GameObject battleDialogueBox;
     private TMP_Text battleDialogBoxAboveText;
+    [SerializeField] GameObject backButton;
 
     [Header("Enemy")]
     private Unit_NPC enemyYouFightin;
@@ -41,10 +42,6 @@ public class BattleUI : MenuWithButtons
 
     private static Color positiveGreen = new Color(0, 0.7f, 0);
 
-    /// <summary>
-    /// Screens that are in the bottom middle battle ui except for death that never needs to be turned off again.
-    /// </summary>
-    private List<GameObject> BattleScreens => new() { this.actionButtonScreen, this.abilityButtonSceen };
     private bool actionClickedFlag;
     private bool abilityClickedFlag;
     private bool backButtonClickedFlag;
@@ -65,11 +62,6 @@ public class BattleUI : MenuWithButtons
 
     private IEnumerator TestDialogueBox(string text, Color color)
     {
-        foreach (var screen in this.BattleScreens)
-        {
-            screen.SetActive(false);
-        }
-
         this.isDialoguePrinting = true;
         battleDialogBoxAboveText.text = text;
         battleDialogBoxAboveText.color = color;
@@ -89,6 +81,7 @@ public class BattleUI : MenuWithButtons
         // TODO do i want the dialogue box to maybe say stuff on opening, like enemy approached...
         this.abilityButtonSceen.SetActive(false);
         this.actionButtonScreen.SetActive(true);
+        this.backButton.SetActive(false);
         itemScreen.SetActive(false);
         talkScreen.SetActive(false);
         StartCoroutine(TestDialogueBox("Your turn", Color.black));
@@ -128,8 +121,6 @@ public class BattleUI : MenuWithButtons
 
     private void SetupAbilityButtons()
     {
-        this.abilityButtonSceen.SetActive(true);
-
         // TODO setup ability buttons
         // idk if this will change mid battle otherwise can do on start in an ability UI class on the ability UI object. or in here on start would be better maybe?
         if (player.Abilities.Count > 4)
@@ -155,10 +146,6 @@ public class BattleUI : MenuWithButtons
         switch (state)
         {
             case Battle.PlayerPickActionTurn:
-                if (!this.actionButtonScreen.activeSelf)
-                {
-                    this.actionButtonScreen.SetActive(true);
-                }
                 if (this.actionClickedFlag)
                 {
                     this.actionClickedFlag = false;
@@ -175,18 +162,20 @@ public class BattleUI : MenuWithButtons
                     }
 
                     this.actionButtonScreen.SetActive(false);
+                    backButton.SetActive(true);
 
                     switch (action)
                     {
-                        case TurnBasedActions.ATTACK:
+                        case TurnBasedActions.Attack:
+                            this.abilityButtonSceen.SetActive(true);
                             SetupAbilityButtons();
                             this.state = Battle.PlayerPickAbilityTurn;
                             break;
-                        case TurnBasedActions.RUN:
+                        case TurnBasedActions.Run:
                             bool runSuccesss = true;
                             if (player.currentHealth <= (enemyYouFightin.currentHealth))
                             {
-                                Debug.Log("Getaway based on if you have more wellbeing than enemy thats all");
+                                Debug.Log("Getaway based on if you have more wellbeing than enemy");
                                 runSuccesss = false;
                             }
 
@@ -201,7 +190,7 @@ public class BattleUI : MenuWithButtons
                                 this.state = Battle.EnemyTurn;
                             }
                             break;
-                        case TurnBasedActions.ITEM:
+                        case TurnBasedActions.Item:
                             talkScreen.SetActive(true);
                             state = Battle.inItemMenu;
                             Debug.Log("TODO will be able to use Item equipped or use a turn to equip an item.");
@@ -212,7 +201,7 @@ public class BattleUI : MenuWithButtons
                             //this.evSys.SetSelectedGameObject(this.itemScreen.GetComponentInChildren<Button>().gameObject);
                             //this.state = Battle.inItemMenu;
                             break;
-                        case TurnBasedActions.TALK:
+                        case TurnBasedActions.Talk:
                             // TODO 
                             talkScreen.SetActive(true);
                             state = Battle.InTalkMenu;
@@ -227,25 +216,18 @@ public class BattleUI : MenuWithButtons
             case Battle.inItemMenu:
                 if (this.backButtonClickedFlag)
                 {
-                    this.backButtonClickedFlag = false;
-                    this.itemScreen.SetActive(false);
-                    state = Battle.PlayerPickActionTurn;
-                    //this.itemScreen.GetComponent<ItemMenuBattle>().CloseItemMenu();
+                    BackCLickedGoBackToPlayerAction(this.itemScreen);
                 }
                 break;
             case Battle.InTalkMenu:
                 if (this.backButtonClickedFlag)
                 {
-                    this.backButtonClickedFlag = false;
-                    this.talkScreen.SetActive(false);
-                    state = Battle.PlayerPickActionTurn;
-                    //this.itemScreen.GetComponent<ItemMenuBattle>().CloseItemMenu();
+                    BackCLickedGoBackToPlayerAction(this.talkScreen);
                 }
                 break;
             case Battle.PlayerPickAbilityTurn:
                 if (this.abilityClickedFlag)
                 {
-                    this.abilityClickedFlag = false;
                     var abilityUsed = evSys.currentSelectedGameObject.GetComponent<InventorySlot>().Ability;
                     Log.Print($"You used {abilityUsed.name} on {enemyYouFightin.unitName} To {abilityUsed.Effects}");
                     abilityUsed.Apply(player.equippedWeapon.PowerStat, player, enemyYouFightin);
@@ -254,16 +236,16 @@ public class BattleUI : MenuWithButtons
                 }
                 if (this.backButtonClickedFlag)
                 {
-                    this.backButtonClickedFlag = false;
-                    this.abilityButtonSceen.SetActive(false);
-                    this.actionButtonScreen.SetActive(true);
-                    this.state = Battle.PlayerPickActionTurn;
+                    BackCLickedGoBackToPlayerAction(this.abilityButtonSceen);
                 }
                 break;
             case Battle.ExecutingPlayerTurn:
                 // wait until enemy health bar anim finished then take enemies turn
                 // when finished showing player move text go to enemy move
-                if (!IsEnemyDamageAnimationPlaying && !isDialoguePrinting)
+                // also need to wait for player health bar anim for healing etc.
+                // also somehow will need to Wait for whatever effect animation is playing.
+                // maybe use animation state but need to make 1 anim override for effect animations then.
+                if (!IsEnemyDamageAnimationPlaying && !IsPlayerHealthBarPlayingAnimation && !isDialoguePrinting)
                 {
                     if (enemyYouFightin.currentHealth > 0)
                     {
@@ -337,6 +319,14 @@ public class BattleUI : MenuWithButtons
         ResetFlags();
     }
 
+    private void BackCLickedGoBackToPlayerAction(GameObject screenToDeactivate)
+    {
+        screenToDeactivate.SetActive(false);
+        this.actionButtonScreen.SetActive(true);
+        state = Battle.PlayerPickActionTurn;
+        backButton.SetActive(false);
+    }
+
     private void ShowAbilityUsedText(Unit user, Ability abilityUsed)
     {
         var color = positiveGreen;
@@ -347,7 +337,7 @@ public class BattleUI : MenuWithButtons
             person = enemyYouFightin.unitName;
         }
 
-        var turnInfoString = $"{person} used {player.equippedWeapon.Name} to {abilityUsed.Name} to {abilityUsed.description}";
+        var turnInfoString = $"{person} used {player.equippedWeapon.Name} to {abilityUsed.Name} to {abilityUsed.Description}";
         StartCoroutine(TestDialogueBox(turnInfoString, color));
     }
 
@@ -355,7 +345,7 @@ public class BattleUI : MenuWithButtons
 
     private Ability PickRandomAbility(List<Ability> abilities)
     {
-        var abilityIndex = Random.Next(0, this.enemyYouFightin.Abilities.Count - 1);
+        var abilityIndex = Random.Next(0, this.enemyYouFightin.Abilities.Count);
         return abilities[abilityIndex];
     }
 

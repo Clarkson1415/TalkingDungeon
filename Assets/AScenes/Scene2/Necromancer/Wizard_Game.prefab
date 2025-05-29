@@ -721,7 +721,7 @@ MonoBehaviour:
   - {x: 0.20956945, y: -0.33007544, z: 0}
   m_ShapePathHash: -1879964053
   m_Mesh: {fileID: 0}
-  m_InstanceId: -456790
+  m_InstanceId: -3421536
   m_LocalBounds:
     m_Center: {x: 0.0034968853, y: 0.12459642, z: 0}
     m_Extent: {x: 0.26178432, y: 0.5010983, z: 0}
@@ -739,9 +739,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
-  equippedWeapon: {fileID: 11400000, guid: a2bcbb4ac0d22e74a882f171aa01a702, type: 2}
+  equippedWeapon: {fileID: 11400000, guid: 0e6b178b3c20c484883cb459297b5054, type: 2}
   equippedSpecialItem: {fileID: 0}
-  Inventory: []
+  Inventory:
+  - {fileID: 11400000, guid: 0e6b178b3c20c484883cb459297b5054, type: 2}
   HealthBarObject: {fileID: 0}
   healthBarFill: {fileID: 0}
   basePower: 0

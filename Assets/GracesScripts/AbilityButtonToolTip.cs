@@ -15,7 +15,7 @@ public class AbilityButtonToolTip : HasATooltip
         var text = "Empty Ability Slot";
         if (ab != null)
         {
-            text = $"{ab.Name}: {ab.description}";
+            text = $"{ab.Name}: {ab.Description}";
         }
         tmp.text = text;
         this.gameObject.SetActive(initialSteate);

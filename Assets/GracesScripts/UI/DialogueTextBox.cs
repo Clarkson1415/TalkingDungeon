@@ -22,7 +22,6 @@ public class DialogueTextBox : MenuWithButtons
     [SerializeField] AudioClip dialoguePrintingAudio;
     [SerializeField] private List<DialogueOptionButton> buttons;
     private Coroutine? writeSlidesOverTimeCoroutine = null;
-    private bool startInteactionFlag;
     private bool FinishedWritingSlideOverTime;
     private const char pauseCharacterToNotPrint = '_';
     private TMP_Text TMPTextBox;
@@ -35,12 +34,14 @@ public class DialogueTextBox : MenuWithButtons
     [HideInInspector] public bool finishedInteractionFlag;
     [HideInInspector] public bool PlayerInteractFlagSet;
     [HideInInspector] public bool ButtonClickedFlagSet;
+    private bool newDialogueStartedFlag;
 
     private void ResetAllFlags()
     {
         finishedInteractionFlag = false;
         PlayerInteractFlagSet = false;
         ButtonClickedFlagSet = false;
+        newDialogueStartedFlag = false;
     }
 
     public void OnDialogueButtonSelected()
@@ -61,10 +62,8 @@ public class DialogueTextBox : MenuWithButtons
 
     public void BeginDialogue(DialogueSlide firstSlide, Unit_NPC speaker)
     {
-        this.TMPTextBox.text = "";
-        this.startInteactionFlag = true;
+        this.newDialogueStartedFlag = true;
         currentSpeaker = speaker;
-        DeactivateAllButtons();
         this.UpdateCurrentSlide(firstSlide);
     }
 
@@ -100,14 +99,12 @@ public class DialogueTextBox : MenuWithButtons
         switch (State)
         {
             case BoxState.WAITINGFORINTERACTION:
-                if (this.PlayerInteractFlagSet && this.startInteactionFlag)
+                if (this.newDialogueStartedFlag)
                 {
-                    State = BoxState.WRITINGSLIDE;
-                    this.startInteactionFlag = false;
-                    this.PlayerInteractFlagSet = false;
+                    DeactivateAllButtons();
                     this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
                     this.FinishedWritingSlideOverTime = false;
-                    //Log.Print("writing Slide");
+                    this.State = BoxState.WRITINGSLIDE;
                 }
                 break;
             case BoxState.WRITINGSLIDE:
@@ -140,7 +137,6 @@ public class DialogueTextBox : MenuWithButtons
                 {
                     MyGuard.IsNotNull(this.CurrentSlide);                  
                     var buttonOption = lastHighlightedItem.GetComponentInParent<DialogueOptionButton>();
-                    lastHighlightedItem = null;
                     MyGuard.IsNotNull(buttonOption, "Button clicked flag set cannot have no button clicked");
                     FinishedWithSlide(buttonOption.NextDialogueSlide);
                 }

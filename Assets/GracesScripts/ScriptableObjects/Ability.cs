@@ -6,7 +6,15 @@ using UnityEngine;
 public class Ability : ScriptableObject
 {
     public string Name;
-    public string description;
+    [HideInInspector] public string Description => FormatDescription();
+    [SerializeField] string _desc;
+
+    private string FormatDescription()
+    {
+        var player = FindObjectOfType<PlayerDungeon>();
+        MyGuard.IsNotNull("Player not found.");
+        return string.Format(this._desc, this.Value * player.equippedWeapon.PowerStat);
+    }
     
     /// <summary>
     /// Ability damage. multiplied by the weapons power.
