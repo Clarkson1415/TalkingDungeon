@@ -20622,6 +20622,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 8686827771429873325}
     m_Modifications:
     - target: {fileID: 8079446902128305, guid: 07ed55472bb754241abe5c7cf98946c6, type: 3}
+      propertyPath: m_text
+      value: Throw your weight against him deal {0} Damage and something else...
+      objectReference: {fileID: 0}
+    - target: {fileID: 8079446902128305, guid: 07ed55472bb754241abe5c7cf98946c6, type: 3}
+      propertyPath: m_fontSize
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8079446902128305, guid: 07ed55472bb754241abe5c7cf98946c6, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8079446902128305, guid: 07ed55472bb754241abe5c7cf98946c6, type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: -3601968153242030477, guid: f80c756ca2c66df49b520a99ebbcff61,
@@ -20638,7 +20650,7 @@ PrefabInstance:
     - target: {fileID: 2314793463014268142, guid: 07ed55472bb754241abe5c7cf98946c6,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4421446548930551112, guid: 07ed55472bb754241abe5c7cf98946c6,
         type: 3}
@@ -20773,17 +20785,27 @@ PrefabInstance:
     - target: {fileID: 7034630258331676588, guid: 07ed55472bb754241abe5c7cf98946c6,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.7
+      value: 1.98543
       objectReference: {fileID: 0}
     - target: {fileID: 7034630258331676588, guid: 07ed55472bb754241abe5c7cf98946c6,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.7
+      value: 1.98543
+      objectReference: {fileID: 0}
+    - target: {fileID: 7034630258331676588, guid: 07ed55472bb754241abe5c7cf98946c6,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.1679
+      objectReference: {fileID: 0}
+    - target: {fileID: 7034630258331676588, guid: 07ed55472bb754241abe5c7cf98946c6,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -240
       objectReference: {fileID: 0}
     - target: {fileID: 7034630258331676588, guid: 07ed55472bb754241abe5c7cf98946c6,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 81
+      value: 79
       objectReference: {fileID: 0}
     - target: {fileID: 7960314299375289152, guid: 07ed55472bb754241abe5c7cf98946c6,
         type: 3}
