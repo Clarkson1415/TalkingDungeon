@@ -1,0 +1,1368 @@
+fileFormatVersion: 2
+guid: a9e77440a8ad0ab4db01b8c666963c84
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
+  textureImporterSettings:
+    alphaSource: 1
+    mipMapMode: 0
+    enableMipMap: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+    convertToNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+    swizzle: 50462976
+    isReadable: 0
+    streamingMipmaps: 0
+    streamingMipmapsPriority: 0
+    vTOnly: 0
+    ignoreMipmapLimit: 0
+    nPOTScale: 1
+    sRGBTexture: 1
+    spriteMode: 2
+    spriteExtrude: 1
+    spriteMeshType: 1
+    alignment: 0
+    spritePivot: {x: 0.5, y: 0.5}
+    spritePixelsToUnits: 100
+    spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+    spriteGenerateFallbackPhysicsShape: 0
+    generateCubemap: 6
+    cubemapConvolution: 0
+    seamlessCubemap: 0
+    alphaIsTransparency: 1
+    spriteTessellationDetail: -1
+    textureType: 8
+    textureShape: 1
+    singleChannelComponent: 0
+    flipbookRows: 0
+    flipbookColumns: 0
+    ignorePngGamma: 0
+    cookieMode: 0
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+    normalMap: 0
+    textureFormat: 0
+    maxTextureSize: 0
+    lightmap: 0
+    compressionQuality: 0
+    linearTexture: 0
+    grayScaleToAlpha: 0
+    rGBM: 0
+    cubemapConvolutionSteps: 0
+    cubemapConvolutionExponent: 0
+    maxTextureSizeSet: 0
+    compressionQualitySet: 0
+    textureFormatSet: 0
+    applyGammaDecoding: 0
+  previousAsepriteImporterSettings:
+    fileImportMode: 1
+    importHiddenLayers: 0
+    layerImportMode: 1
+    defaultPivotSpace: 0
+    defaultPivotAlignment: 7
+    customPivotPosition: {x: 0.5, y: 0.5}
+    spritePadding: 0
+    generateModelPrefab: 1
+    generateAnimationClips: 1
+    addSortingGroup: 1
+    addShadowCasters: 0
+  asepriteImporterSettings:
+    fileImportMode: 1
+    importHiddenLayers: 0
+    layerImportMode: 1
+    defaultPivotSpace: 0
+    defaultPivotAlignment: 7
+    customPivotPosition: {x: 0.5, y: 0.5}
+    spritePadding: 0
+    generateModelPrefab: 1
+    generateAnimationClips: 1
+    addSortingGroup: 1
+    addShadowCasters: 0
+  importFileNodeState: 1
+  platformSettingsDirtyTick: 0
+  textureAssetName: 
+  singleSpriteImportData:
+  - name: 
+    originalName: 
+    pivot: {x: 0, y: 0}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    spriteID: 
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  animatedSpriteImportData:
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_0
+    originalName: 
+    pivot: {x: 0.5, y: -0.08658008}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 599
+      y: 697
+      width: 28
+      height: 231
+    spriteID: c14762774c841fd44bc8d294c9f2ad09
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 599, y: 697}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_1
+    originalName: 
+    pivot: {x: 0.5, y: -0.084745765}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 211
+      y: 244
+      width: 48
+      height: 236
+    spriteID: ad9ced96f17c022409b0d853621949d4
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 211, y: 244}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_2
+    originalName: 
+    pivot: {x: 0.5, y: -0.08510638}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 147
+      y: 481
+      width: 50
+      height: 235
+    spriteID: ddd304da8c1d4bc49926c394b5c5f755
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 147, y: 481}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_3
+    originalName: 
+    pivot: {x: 0.5, y: -0.084745765}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 211
+      y: 488
+      width: 48
+      height: 236
+    spriteID: 998d6c37522b6cd49abeee5de265e8d9
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 211, y: 488}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_4
+    originalName: 
+    pivot: {x: 0.5, y: -0.08510638}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 147
+      y: 724
+      width: 50
+      height: 235
+    spriteID: 6e56275c33f8d344695f7046c921077c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 147, y: 724}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_6
+    originalName: 
+    pivot: {x: 0.5, y: -0.0862069}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 211
+      y: 4
+      width: 50
+      height: 232
+    spriteID: 694dad0a16adff4498c05772d8da9513
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 211, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_7
+    originalName: 
+    pivot: {x: 0.5, y: -0.08547009}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 269
+      y: 4
+      width: 48
+      height: 234
+    spriteID: b0f12fbb48edc954682c8be32c249908
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 269, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_8
+    originalName: 
+    pivot: {x: 0.5, y: -0.0925926}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 486
+      width: 60
+      height: 216
+    spriteID: 7442c0c3d4ecc8848bf04b87013126b6
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 486}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_10
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 269
+      y: 246
+      width: 48
+      height: 220
+    spriteID: d50c74ab47431724a9a06d6fc105bae5
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 269, y: 246}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_11
+    originalName: 
+    pivot: {x: 0.5405406, y: -0.0877193}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 599
+      y: 461
+      width: 37
+      height: 228
+    spriteID: c46baec412fbfaf44b2f13de9c498e3c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 599, y: 461}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_12
+    originalName: 
+    pivot: {x: 0.45454547, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 439
+      y: 690
+      width: 44
+      height: 219
+    spriteID: af2c87530bda67443aa248bfe63557bc
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 439, y: 690}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_14
+    originalName: 
+    pivot: {x: 0.5, y: -0.065789476}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 439
+      y: 4
+      width: 46
+      height: 228
+    spriteID: cecc9dd817eb5b24c8585ebc9672d257
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 439, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_15
+    originalName: 
+    pivot: {x: 0.5, y: -0.088495575}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 325
+      y: 457
+      width: 48
+      height: 226
+    spriteID: 4a9139cb700e87245a3eee489ef2405b
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 325, y: 457}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_16
+    originalName: 
+    pivot: {x: 0.5, y: -0.06481481}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 325
+      y: 691
+      width: 50
+      height: 216
+    spriteID: 29b70f81bc043f444960be921d201ef5
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 325, y: 691}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_26
+    originalName: 
+    pivot: {x: 0.5, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 325
+      y: 4
+      width: 50
+      height: 219
+    spriteID: d1825c27f9b856141bb645dbe8b7b9b0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 325, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_27
+    originalName: 
+    pivot: {x: 0.5, y: -0.09174311}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 325
+      y: 231
+      width: 50
+      height: 218
+    spriteID: 45c4cd022452d0348a3f4f5a6e978bf0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 325, y: 231}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_28
+    originalName: 
+    pivot: {x: 0.5, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 383
+      y: 688
+      width: 48
+      height: 219
+    spriteID: 0a0295851fd511f42a4f2891ba3f1e6e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 383, y: 688}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_29
+    originalName: 
+    pivot: {x: 0.51111114, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 493
+      y: 680
+      width: 45
+      height: 219
+    spriteID: 70b85672bcb410149ad47f8218fedd51
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 493, y: 680}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_30
+    originalName: 
+    pivot: {x: 0.5217391, y: -0.09174311}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 493
+      y: 454
+      width: 46
+      height: 218
+    spriteID: 9d186e71b2ec84b499e51d00b8b4e6c2
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 493, y: 454}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_31
+    originalName: 
+    pivot: {x: 0.5106383, y: -0.0921659}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 493
+      y: 229
+      width: 47
+      height: 217
+    spriteID: cc34ad4eae6fb8740a3da22f924902ca
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 493, y: 229}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_32
+    originalName: 
+    pivot: {x: 0.5, y: -0.0921659}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 493
+      y: 4
+      width: 48
+      height: 217
+    spriteID: 11d0aeda82447334c9578c3b92a83bb0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 493, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_34
+    originalName: 
+    pivot: {x: 0.5, y: -0.0925926}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 549
+      y: 230
+      width: 42
+      height: 216
+    spriteID: 1af10eb339c86314792aa93ceae92f33
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 549, y: 230}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_35
+    originalName: 
+    pivot: {x: 0.5, y: -0.08888889}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 599
+      y: 228
+      width: 40
+      height: 225
+    spriteID: fd23ed3a8a079f94e81a8b31d74a40ae
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 599, y: 228}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_39
+    originalName: 
+    pivot: {x: 0.5, y: -0.09345794}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 439
+      y: 240
+      width: 46
+      height: 214
+    spriteID: 635d3398d738da4439da7f5e0cc1b32d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 439, y: 240}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_47
+    originalName: 
+    pivot: {x: 0.5, y: -0.086956516}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 147
+      y: 4
+      width: 56
+      height: 230
+    spriteID: d4328ed74c3dc48478d890cde9eaf4af
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 147, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_48
+    originalName: 
+    pivot: {x: 0.50793654, y: -0.08510638}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 63
+      height: 235
+    spriteID: 5e6e96c3041ff744eb9f45c69b0f4ccd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_49
+    originalName: 
+    pivot: {x: 0.50793654, y: -0.030303031}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 247
+      width: 63
+      height: 231
+    spriteID: c9963e402be7a854d80644b8c0150d89
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 247}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_55
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 439
+      y: 462
+      width: 44
+      height: 220
+    spriteID: 4e5292894f7d7504ba750d561c786761
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 439, y: 462}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_56
+    originalName: 
+    pivot: {x: 0.5, y: -0.094339624}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 75
+      y: 4
+      width: 64
+      height: 212
+    spriteID: 77a578ea9c2a38449bea923cf826dfb6
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 75, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_58
+    originalName: 
+    pivot: {x: 0.5, y: -0.09174311}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 549
+      y: 4
+      width: 42
+      height: 218
+    spriteID: 122993b2c6323a14580359c866b9c8da
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 549, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_59
+    originalName: 
+    pivot: {x: 0.5, y: -0.094339624}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 75
+      y: 224
+      width: 64
+      height: 212
+    spriteID: 42ef59fbff0b05248b75378fe47c201c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 75, y: 224}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_5
+    originalName: 
+    pivot: {x: 0.5, y: -0.084745765}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 211
+      y: 732
+      width: 48
+      height: 236
+    spriteID: 26d767a12a4aa8e4388e34be4a81ebaa
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 211, y: 732}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_9
+    originalName: 
+    pivot: {x: 0.5, y: -0.0925926}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 710
+      width: 60
+      height: 216
+    spriteID: 0da64b84b33a6574cb02ac72d5880489
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 710}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_13
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 269
+      y: 474
+      width: 48
+      height: 220
+    spriteID: 9672d94ef43d2eb4987384715d074eb9
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 269, y: 474}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_25
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 269
+      y: 702
+      width: 48
+      height: 220
+    spriteID: d7c9d51ab25ead740acf88c92918536d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 269, y: 702}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_33
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 383
+      y: 4
+      width: 48
+      height: 220
+    spriteID: 56e52254e6e230b4a806c40186a80b8f
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 383, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_36
+    originalName: 
+    pivot: {x: 0.5, y: -0.0925926}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 549
+      y: 454
+      width: 42
+      height: 216
+    spriteID: 272a9f340319abe4fb68ff3e2bf98ee2
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 549, y: 454}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_37
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 383
+      y: 232
+      width: 48
+      height: 220
+    spriteID: c2a01bdbe032f984a974927ccfce00dc
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 383, y: 232}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_38
+    originalName: 
+    pivot: {x: 0.5, y: -0.0925926}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 549
+      y: 678
+      width: 42
+      height: 216
+    spriteID: f59f6ef231ea6704a856ed4723312dff
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 549, y: 678}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_40
+    originalName: 
+    pivot: {x: 0.5, y: -0.0925926}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 599
+      y: 4
+      width: 42
+      height: 216
+    spriteID: c83dc483cffb6f94b8f431a800f3e357
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 599, y: 4}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_46
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 383
+      y: 460
+      width: 48
+      height: 220
+    spriteID: 071055960ab4c8146b3df5aec509db42
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 383, y: 460}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_50
+    originalName: 
+    pivot: {x: 0.627451, y: -0.030303031}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 147
+      y: 242
+      width: 51
+      height: 231
+    spriteID: 4953cc7b35053f84380d137e8e5b207d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 147, y: 242}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_57
+    originalName: 
+    pivot: {x: 0.5, y: -0.094339624}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 75
+      y: 664
+      width: 62
+      height: 212
+    spriteID: 26b9fb6f1c64ecf499453d4f60d77cd6
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 75, y: 664}
+  - name: Mana Seed Spear Combat Outfit Canvas_Frame_60
+    originalName: 
+    pivot: {x: 0.5, y: -0.094339624}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 75
+      y: 444
+      width: 64
+      height: 212
+    spriteID: 6cfb4eed1860fc8449d262d1a2f16460
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 75, y: 444}
+  spriteSheetImportData: []
+  asepriteLayers:
+  - layerIndex: 0
+    guid: 2089463016
+    name: Mana Seed Spear Combat Outfit Canvas
+    layerFlags: 0
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_0
+      frameIndex: 0
+      cellRect:
+        x: 18
+        y: 20
+        width: 28
+        height: 231
+      spriteId: c14762774c841fd44bc8d294c9f2ad09
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_1
+      frameIndex: 1
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 236
+      spriteId: ad9ced96f17c022409b0d853621949d4
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_2
+      frameIndex: 2
+      cellRect:
+        x: 7
+        y: 20
+        width: 50
+        height: 235
+      spriteId: ddd304da8c1d4bc49926c394b5c5f755
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_3
+      frameIndex: 3
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 236
+      spriteId: 998d6c37522b6cd49abeee5de265e8d9
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_4
+      frameIndex: 4
+      cellRect:
+        x: 7
+        y: 20
+        width: 50
+        height: 235
+      spriteId: 6e56275c33f8d344695f7046c921077c
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_6
+      frameIndex: 6
+      cellRect:
+        x: 7
+        y: 20
+        width: 50
+        height: 232
+      spriteId: 694dad0a16adff4498c05772d8da9513
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_7
+      frameIndex: 7
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 234
+      spriteId: b0f12fbb48edc954682c8be32c249908
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_8
+      frameIndex: 8
+      cellRect:
+        x: 2
+        y: 20
+        width: 60
+        height: 216
+      spriteId: 7442c0c3d4ecc8848bf04b87013126b6
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_10
+      frameIndex: 10
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 220
+      spriteId: d50c74ab47431724a9a06d6fc105bae5
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_11
+      frameIndex: 11
+      cellRect:
+        x: 12
+        y: 20
+        width: 37
+        height: 228
+      spriteId: c46baec412fbfaf44b2f13de9c498e3c
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_12
+      frameIndex: 12
+      cellRect:
+        x: 12
+        y: 20
+        width: 44
+        height: 219
+      spriteId: af2c87530bda67443aa248bfe63557bc
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_14
+      frameIndex: 14
+      cellRect:
+        x: 9
+        y: 15
+        width: 46
+        height: 228
+      spriteId: cecc9dd817eb5b24c8585ebc9672d257
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_15
+      frameIndex: 15
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 226
+      spriteId: 4a9139cb700e87245a3eee489ef2405b
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_16
+      frameIndex: 16
+      cellRect:
+        x: 7
+        y: 14
+        width: 50
+        height: 216
+      spriteId: 29b70f81bc043f444960be921d201ef5
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_26
+      frameIndex: 26
+      cellRect:
+        x: 7
+        y: 20
+        width: 50
+        height: 219
+      spriteId: d1825c27f9b856141bb645dbe8b7b9b0
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_27
+      frameIndex: 27
+      cellRect:
+        x: 7
+        y: 20
+        width: 50
+        height: 218
+      spriteId: 45c4cd022452d0348a3f4f5a6e978bf0
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_28
+      frameIndex: 28
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 219
+      spriteId: 0a0295851fd511f42a4f2891ba3f1e6e
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_29
+      frameIndex: 29
+      cellRect:
+        x: 9
+        y: 20
+        width: 45
+        height: 219
+      spriteId: 70b85672bcb410149ad47f8218fedd51
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_30
+      frameIndex: 30
+      cellRect:
+        x: 8
+        y: 20
+        width: 46
+        height: 218
+      spriteId: 9d186e71b2ec84b499e51d00b8b4e6c2
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_31
+      frameIndex: 31
+      cellRect:
+        x: 8
+        y: 20
+        width: 47
+        height: 217
+      spriteId: cc34ad4eae6fb8740a3da22f924902ca
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_32
+      frameIndex: 32
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 217
+      spriteId: 11d0aeda82447334c9578c3b92a83bb0
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_34
+      frameIndex: 34
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 216
+      spriteId: 1af10eb339c86314792aa93ceae92f33
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_35
+      frameIndex: 35
+      cellRect:
+        x: 12
+        y: 20
+        width: 40
+        height: 225
+      spriteId: fd23ed3a8a079f94e81a8b31d74a40ae
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_39
+      frameIndex: 39
+      cellRect:
+        x: 9
+        y: 20
+        width: 46
+        height: 214
+      spriteId: 635d3398d738da4439da7f5e0cc1b32d
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_47
+      frameIndex: 47
+      cellRect:
+        x: 4
+        y: 20
+        width: 56
+        height: 230
+      spriteId: d4328ed74c3dc48478d890cde9eaf4af
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_48
+      frameIndex: 48
+      cellRect:
+        x: 0
+        y: 20
+        width: 63
+        height: 235
+      spriteId: 5e6e96c3041ff744eb9f45c69b0f4ccd
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_49
+      frameIndex: 49
+      cellRect:
+        x: 0
+        y: 7
+        width: 63
+        height: 231
+      spriteId: c9963e402be7a854d80644b8c0150d89
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_55
+      frameIndex: 55
+      cellRect:
+        x: 10
+        y: 20
+        width: 44
+        height: 220
+      spriteId: 4e5292894f7d7504ba750d561c786761
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_56
+      frameIndex: 56
+      cellRect:
+        x: 0
+        y: 20
+        width: 64
+        height: 212
+      spriteId: 77a578ea9c2a38449bea923cf826dfb6
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_58
+      frameIndex: 58
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 218
+      spriteId: 122993b2c6323a14580359c866b9c8da
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_59
+      frameIndex: 59
+      cellRect:
+        x: 0
+        y: 20
+        width: 64
+        height: 212
+      spriteId: 42ef59fbff0b05248b75378fe47c201c
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_5
+      frameIndex: 5
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 236
+      spriteId: 26d767a12a4aa8e4388e34be4a81ebaa
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_9
+      frameIndex: 9
+      cellRect:
+        x: 2
+        y: 20
+        width: 60
+        height: 216
+      spriteId: 0da64b84b33a6574cb02ac72d5880489
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_13
+      frameIndex: 13
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 220
+      spriteId: 9672d94ef43d2eb4987384715d074eb9
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_25
+      frameIndex: 25
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 220
+      spriteId: d7c9d51ab25ead740acf88c92918536d
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_33
+      frameIndex: 33
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 220
+      spriteId: 56e52254e6e230b4a806c40186a80b8f
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_36
+      frameIndex: 36
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 216
+      spriteId: 272a9f340319abe4fb68ff3e2bf98ee2
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_37
+      frameIndex: 37
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 220
+      spriteId: c2a01bdbe032f984a974927ccfce00dc
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_38
+      frameIndex: 38
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 216
+      spriteId: f59f6ef231ea6704a856ed4723312dff
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_40
+      frameIndex: 40
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 216
+      spriteId: c83dc483cffb6f94b8f431a800f3e357
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_46
+      frameIndex: 46
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 220
+      spriteId: 071055960ab4c8146b3df5aec509db42
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_50
+      frameIndex: 50
+      cellRect:
+        x: 0
+        y: 7
+        width: 51
+        height: 231
+      spriteId: 4953cc7b35053f84380d137e8e5b207d
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_57
+      frameIndex: 57
+      cellRect:
+        x: 1
+        y: 20
+        width: 62
+        height: 212
+      spriteId: 26b9fb6f1c64ecf499453d4f60d77cd6
+    - name: Mana Seed Spear Combat Outfit Canvas_Frame_60
+      frameIndex: 60
+      cellRect:
+        x: 0
+        y: 20
+        width: 64
+        height: 212
+      spriteId: 6cfb4eed1860fc8449d262d1a2f16460
+    linkedCells: []
+    parentIndex: -1
+  platformSettings: []
+  secondarySpriteTextures: []
+  spritePackingTag: 
+  canvasSize: {x: 64, y: 256}

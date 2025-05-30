@@ -1,0 +1,1396 @@
+fileFormatVersion: 2
+guid: 08d0c15eae0c04f4192f1d318b87a17f
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
+  textureImporterSettings:
+    alphaSource: 1
+    mipMapMode: 0
+    enableMipMap: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+    convertToNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+    swizzle: 50462976
+    isReadable: 0
+    streamingMipmaps: 0
+    streamingMipmapsPriority: 0
+    vTOnly: 0
+    ignoreMipmapLimit: 0
+    nPOTScale: 1
+    sRGBTexture: 1
+    spriteMode: 2
+    spriteExtrude: 1
+    spriteMeshType: 1
+    alignment: 0
+    spritePivot: {x: 0.5, y: 0.5}
+    spritePixelsToUnits: 100
+    spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+    spriteGenerateFallbackPhysicsShape: 0
+    generateCubemap: 6
+    cubemapConvolution: 0
+    seamlessCubemap: 0
+    alphaIsTransparency: 1
+    spriteTessellationDetail: -1
+    textureType: 8
+    textureShape: 1
+    singleChannelComponent: 0
+    flipbookRows: 0
+    flipbookColumns: 0
+    ignorePngGamma: 0
+    cookieMode: 0
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+    normalMap: 0
+    textureFormat: 0
+    maxTextureSize: 0
+    lightmap: 0
+    compressionQuality: 0
+    linearTexture: 0
+    grayScaleToAlpha: 0
+    rGBM: 0
+    cubemapConvolutionSteps: 0
+    cubemapConvolutionExponent: 0
+    maxTextureSizeSet: 0
+    compressionQualitySet: 0
+    textureFormatSet: 0
+    applyGammaDecoding: 0
+  previousAsepriteImporterSettings:
+    fileImportMode: 1
+    importHiddenLayers: 0
+    layerImportMode: 1
+    defaultPivotSpace: 0
+    defaultPivotAlignment: 7
+    customPivotPosition: {x: 0.5, y: 0.5}
+    spritePadding: 0
+    generateModelPrefab: 1
+    generateAnimationClips: 1
+    addSortingGroup: 1
+    addShadowCasters: 0
+  asepriteImporterSettings:
+    fileImportMode: 1
+    importHiddenLayers: 0
+    layerImportMode: 1
+    defaultPivotSpace: 0
+    defaultPivotAlignment: 7
+    customPivotPosition: {x: 0.5, y: 0.5}
+    spritePadding: 0
+    generateModelPrefab: 1
+    generateAnimationClips: 1
+    addSortingGroup: 1
+    addShadowCasters: 0
+  importFileNodeState: 1
+  platformSettingsDirtyTick: 0
+  textureAssetName: 
+  singleSpriteImportData:
+  - name: 
+    originalName: 
+    pivot: {x: 0, y: 0}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    spriteID: 
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  animatedSpriteImportData:
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_0
+    originalName: 
+    pivot: {x: 0.5, y: -0.088495575}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 482
+      y: 707
+      width: 26
+      height: 226
+    spriteID: 5b84ce6694043ad49943209c92557fa3
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 482, y: 707}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_1
+    originalName: 
+    pivot: {x: 0.5, y: -0.088495575}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 482
+      y: 4
+      width: 32
+      height: 226
+    spriteID: 2c61b764e5ce2774a8f70fab69389f87
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 482, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_2
+    originalName: 
+    pivot: {x: 0.51724136, y: -0.086956516}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 482
+      y: 238
+      width: 29
+      height: 230
+    spriteID: 41361511c89b91f439922412aa951449
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 482, y: 238}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_3
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 522
+      y: 694
+      width: 24
+      height: 220
+    spriteID: 22559c7eee302694fbd88d0d2a55869c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 522, y: 694}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_4
+    originalName: 
+    pivot: {x: 0.5, y: -0.090090096}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 522
+      y: 4
+      width: 26
+      height: 222
+    spriteID: 80bf5f66de4e3f24aae9cfcd31037d99
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 522, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_6
+    originalName: 
+    pivot: {x: 0.5, y: -0.08928572}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 340
+      y: 691
+      width: 38
+      height: 224
+    spriteID: 42dcfbb300d52834484cd05d0a0fa657
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 340, y: 691}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_7
+    originalName: 
+    pivot: {x: 0.43243244, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 436
+      y: 686
+      width: 37
+      height: 219
+    spriteID: 18473280560e3d444a3b01aa7d079a06
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 436, y: 686}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_8
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 186
+      y: 687
+      width: 42
+      height: 220
+    spriteID: 0b2835028a68bc543b35d0d50e486f69
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 186, y: 687}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_9
+    originalName: 
+    pivot: {x: 0.54761904, y: -0.0896861}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 186
+      y: 456
+      width: 42
+      height: 223
+    spriteID: a3bd074591602594c9f450c0cafd11a7
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 186, y: 456}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_10
+    originalName: 
+    pivot: {x: 0.5, y: -0.088495575}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 76
+      y: 682
+      width: 46
+      height: 226
+    spriteID: d40f3c98507850e4aafbc2f3530fadc5
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 76, y: 682}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_11
+    originalName: 
+    pivot: {x: 0.5, y: -0.06944445}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 340
+      y: 4
+      width: 42
+      height: 216
+    spriteID: ba7101d33d9caea47ac1c6971cf3655d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 340, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_21
+    originalName: 
+    pivot: {x: 0.5, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 132
+      y: 464
+      width: 46
+      height: 219
+    spriteID: 6dd17da2c653f2540932b86a20814408
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 132, y: 464}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_22
+    originalName: 
+    pivot: {x: 0.5, y: -0.09174311}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 132
+      y: 691
+      width: 46
+      height: 218
+    spriteID: 6e5bde2f1da1896468ff7a8f29ca63f0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 132, y: 691}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_23
+    originalName: 
+    pivot: {x: 0.5, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 186
+      y: 229
+      width: 44
+      height: 219
+    spriteID: 8be5a8b8a457e664ba62fca537f818c5
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 186, y: 229}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_24
+    originalName: 
+    pivot: {x: 0.5, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 76
+      y: 4
+      width: 48
+      height: 219
+    spriteID: f062fa9c33a301a41a9a1079df3c5b0d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 76, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_25
+    originalName: 
+    pivot: {x: 0.5, y: -0.09174311}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 76
+      y: 231
+      width: 48
+      height: 218
+    spriteID: a368f5972108ef74d87844bb905c2a5f
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 76, y: 231}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_26
+    originalName: 
+    pivot: {x: 0.5, y: -0.0921659}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 76
+      y: 457
+      width: 48
+      height: 217
+    spriteID: 7864733bcab996742abf526424ba15fd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 76, y: 457}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_27
+    originalName: 
+    pivot: {x: 0.5, y: -0.0921659}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 714
+      width: 50
+      height: 217
+    spriteID: f46b9ea4328218545b3d9400bc6ba6bf
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 714}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_29
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 240
+      y: 4
+      width: 42
+      height: 220
+    spriteID: 87d9eef5ae998a04b9109743ce005fb5
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 240, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_30
+    originalName: 
+    pivot: {x: 0.5, y: -0.08888889}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 340
+      y: 228
+      width: 40
+      height: 225
+    spriteID: 3138e59cc914729459b299b9b473ecfd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 340, y: 228}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_34
+    originalName: 
+    pivot: {x: 0.5, y: -0.0921659}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 186
+      y: 4
+      width: 46
+      height: 217
+    spriteID: fe107475f9f968b43ae668b8f9d84046
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 186, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_42
+    originalName: 
+    pivot: {x: 0.5, y: -0.090090096}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 132
+      y: 4
+      width: 46
+      height: 222
+    spriteID: dfafa2da9a30e7143a665245ece40fed
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 132, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_43
+    originalName: 
+    pivot: {x: 0.5, y: -0.090090096}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 390
+      y: 4
+      width: 38
+      height: 222
+    spriteID: 61daa7575d6b4844c908d358cb403652
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 390, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_45
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 390
+      y: 706
+      width: 38
+      height: 220
+    spriteID: b87719cda8ef1234ea10ef6b7ad28c9d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 390, y: 706}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_46
+    originalName: 
+    pivot: {x: 0.5, y: -0.0896861}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 482
+      y: 476
+      width: 28
+      height: 223
+    spriteID: 6f25a52c7d483724a9f3ca4c299cf7f4
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 482, y: 476}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_47
+    originalName: 
+    pivot: {x: 0.5, y: -0.08547009}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 390
+      y: 464
+      width: 36
+      height: 234
+    spriteID: 4cd47959faa95b244b4ac7c9f70a78ea
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 390, y: 464}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_55
+    originalName: 
+    pivot: {x: 0.5, y: -0.090090096}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 340
+      y: 461
+      width: 40
+      height: 222
+    spriteID: 42953530e7705034c8fe7ed2abe16037
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 340, y: 461}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_5
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 556
+      y: 4
+      width: 24
+      height: 220
+    spriteID: e3bc9926e648b6b458254b56e0ccc71b
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 556, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_20
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 240
+      y: 232
+      width: 42
+      height: 220
+    spriteID: 5052f8ff2c33e2a4eb071eb6d1e50bbe
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 240, y: 232}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_28
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 240
+      y: 460
+      width: 42
+      height: 220
+    spriteID: 243e2d5908f2e28478a8ba928a6453f8
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 240, y: 460}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_31
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 240
+      y: 688
+      width: 42
+      height: 220
+    spriteID: 0c7345a390e7a404fbbefa6ea236ec5a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 240, y: 688}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_32
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 290
+      y: 4
+      width: 42
+      height: 220
+    spriteID: e6611103f92b866409b36b1ba492bc95
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 290, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_33
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 290
+      y: 232
+      width: 42
+      height: 220
+    spriteID: bd91bdab6cac9804486b7cc1bbda4a8c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 290, y: 232}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_35
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 290
+      y: 460
+      width: 42
+      height: 220
+    spriteID: 9112753d1fb708a4886fbf41077b1ce4
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 290, y: 460}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_41
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 290
+      y: 688
+      width: 42
+      height: 220
+    spriteID: 5d564141e3a0fae4c9341a000309e634
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 290, y: 688}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_44
+    originalName: 
+    pivot: {x: 0.5, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 436
+      y: 232
+      width: 38
+      height: 219
+    spriteID: b9d1ebc4dcf84b94cb5c0431b6f683d0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 436, y: 232}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_48
+    originalName: 
+    pivot: {x: 0.5, y: -0.084745765}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 470
+      width: 46
+      height: 236
+    spriteID: 6d3ff62af35f0b94986efcb5e8cd6409
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 470}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_49
+    originalName: 
+    pivot: {x: 0.5, y: -0.0877193}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 64
+      height: 228
+    spriteID: b2f02b142d747054681972a950398b7a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_50
+    originalName: 
+    pivot: {x: 0.5, y: -0.090090096}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 132
+      y: 234
+      width: 46
+      height: 222
+    spriteID: 35b19fabe02f0eb4fb0164c11fec943d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 132, y: 234}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_51
+    originalName: 
+    pivot: {x: 0.5, y: -0.090090096}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 390
+      y: 234
+      width: 38
+      height: 222
+    spriteID: 4c15a05d377eda7479e6b2bbf5124ac0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 390, y: 234}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_52
+    originalName: 
+    pivot: {x: 0.5, y: -0.091324195}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 436
+      y: 459
+      width: 38
+      height: 219
+    spriteID: 7b8383477b3dfd04da5441ac0173f967
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 436, y: 459}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_53
+    originalName: 
+    pivot: {x: 0.5, y: -0.090909086}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 436
+      y: 4
+      width: 38
+      height: 220
+    spriteID: 062c8eb3299005a4b8ebbe8b23fb299a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 436, y: 4}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_54
+    originalName: 
+    pivot: {x: 0.5, y: -0.090090096}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 522
+      y: 234
+      width: 26
+      height: 222
+    spriteID: a6cc1652171d373438bddcbd1f51f7ae
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 522, y: 234}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_56
+    originalName: 
+    pivot: {x: 0.5, y: -0.090090096}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 240
+      width: 64
+      height: 222
+    spriteID: b70b85259396c0743a868dd2cf418c70
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 240}
+  - name: Mana Seed Bow Combat Outfit Canvas_Frame_57
+    originalName: 
+    pivot: {x: 0.5, y: -0.090090096}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 522
+      y: 464
+      width: 24
+      height: 222
+    spriteID: 025029f956d58f64ab9568d0db88d155
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 522, y: 464}
+  spriteSheetImportData: []
+  asepriteLayers:
+  - layerIndex: 0
+    guid: -143869295
+    name: Mana Seed Bow Combat Outfit Canvas
+    layerFlags: 0
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_0
+      frameIndex: 0
+      cellRect:
+        x: 19
+        y: 20
+        width: 26
+        height: 226
+      spriteId: 5b84ce6694043ad49943209c92557fa3
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_1
+      frameIndex: 1
+      cellRect:
+        x: 16
+        y: 20
+        width: 32
+        height: 226
+      spriteId: 2c61b764e5ce2774a8f70fab69389f87
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_2
+      frameIndex: 2
+      cellRect:
+        x: 17
+        y: 20
+        width: 29
+        height: 230
+      spriteId: 41361511c89b91f439922412aa951449
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_3
+      frameIndex: 3
+      cellRect:
+        x: 20
+        y: 20
+        width: 24
+        height: 220
+      spriteId: 22559c7eee302694fbd88d0d2a55869c
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_4
+      frameIndex: 4
+      cellRect:
+        x: 19
+        y: 20
+        width: 26
+        height: 222
+      spriteId: 80bf5f66de4e3f24aae9cfcd31037d99
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_6
+      frameIndex: 6
+      cellRect:
+        x: 13
+        y: 20
+        width: 38
+        height: 224
+      spriteId: 42dcfbb300d52834484cd05d0a0fa657
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_7
+      frameIndex: 7
+      cellRect:
+        x: 16
+        y: 20
+        width: 37
+        height: 219
+      spriteId: 18473280560e3d444a3b01aa7d079a06
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_8
+      frameIndex: 8
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 220
+      spriteId: 0b2835028a68bc543b35d0d50e486f69
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_9
+      frameIndex: 9
+      cellRect:
+        x: 9
+        y: 20
+        width: 42
+        height: 223
+      spriteId: a3bd074591602594c9f450c0cafd11a7
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_10
+      frameIndex: 10
+      cellRect:
+        x: 9
+        y: 20
+        width: 46
+        height: 226
+      spriteId: d40f3c98507850e4aafbc2f3530fadc5
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_11
+      frameIndex: 11
+      cellRect:
+        x: 11
+        y: 15
+        width: 42
+        height: 216
+      spriteId: ba7101d33d9caea47ac1c6971cf3655d
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_21
+      frameIndex: 21
+      cellRect:
+        x: 9
+        y: 20
+        width: 46
+        height: 219
+      spriteId: 6dd17da2c653f2540932b86a20814408
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_22
+      frameIndex: 22
+      cellRect:
+        x: 9
+        y: 20
+        width: 46
+        height: 218
+      spriteId: 6e5bde2f1da1896468ff7a8f29ca63f0
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_23
+      frameIndex: 23
+      cellRect:
+        x: 10
+        y: 20
+        width: 44
+        height: 219
+      spriteId: 8be5a8b8a457e664ba62fca537f818c5
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_24
+      frameIndex: 24
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 219
+      spriteId: f062fa9c33a301a41a9a1079df3c5b0d
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_25
+      frameIndex: 25
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 218
+      spriteId: a368f5972108ef74d87844bb905c2a5f
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_26
+      frameIndex: 26
+      cellRect:
+        x: 8
+        y: 20
+        width: 48
+        height: 217
+      spriteId: 7864733bcab996742abf526424ba15fd
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_27
+      frameIndex: 27
+      cellRect:
+        x: 7
+        y: 20
+        width: 50
+        height: 217
+      spriteId: f46b9ea4328218545b3d9400bc6ba6bf
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_29
+      frameIndex: 29
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 220
+      spriteId: 87d9eef5ae998a04b9109743ce005fb5
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_30
+      frameIndex: 30
+      cellRect:
+        x: 12
+        y: 20
+        width: 40
+        height: 225
+      spriteId: 3138e59cc914729459b299b9b473ecfd
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_34
+      frameIndex: 34
+      cellRect:
+        x: 9
+        y: 20
+        width: 46
+        height: 217
+      spriteId: fe107475f9f968b43ae668b8f9d84046
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_42
+      frameIndex: 42
+      cellRect:
+        x: 9
+        y: 20
+        width: 46
+        height: 222
+      spriteId: dfafa2da9a30e7143a665245ece40fed
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_43
+      frameIndex: 43
+      cellRect:
+        x: 13
+        y: 20
+        width: 38
+        height: 222
+      spriteId: 61daa7575d6b4844c908d358cb403652
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_45
+      frameIndex: 45
+      cellRect:
+        x: 13
+        y: 20
+        width: 38
+        height: 220
+      spriteId: b87719cda8ef1234ea10ef6b7ad28c9d
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_46
+      frameIndex: 46
+      cellRect:
+        x: 18
+        y: 20
+        width: 28
+        height: 223
+      spriteId: 6f25a52c7d483724a9f3ca4c299cf7f4
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_47
+      frameIndex: 47
+      cellRect:
+        x: 14
+        y: 20
+        width: 36
+        height: 234
+      spriteId: 4cd47959faa95b244b4ac7c9f70a78ea
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_55
+      frameIndex: 55
+      cellRect:
+        x: 12
+        y: 20
+        width: 40
+        height: 222
+      spriteId: 42953530e7705034c8fe7ed2abe16037
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_5
+      frameIndex: 5
+      cellRect:
+        x: 20
+        y: 20
+        width: 24
+        height: 220
+      spriteId: e3bc9926e648b6b458254b56e0ccc71b
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_20
+      frameIndex: 20
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 220
+      spriteId: 5052f8ff2c33e2a4eb071eb6d1e50bbe
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_28
+      frameIndex: 28
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 220
+      spriteId: 243e2d5908f2e28478a8ba928a6453f8
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_31
+      frameIndex: 31
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 220
+      spriteId: 0c7345a390e7a404fbbefa6ea236ec5a
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_32
+      frameIndex: 32
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 220
+      spriteId: e6611103f92b866409b36b1ba492bc95
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_33
+      frameIndex: 33
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 220
+      spriteId: bd91bdab6cac9804486b7cc1bbda4a8c
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_35
+      frameIndex: 35
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 220
+      spriteId: 9112753d1fb708a4886fbf41077b1ce4
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_41
+      frameIndex: 41
+      cellRect:
+        x: 11
+        y: 20
+        width: 42
+        height: 220
+      spriteId: 5d564141e3a0fae4c9341a000309e634
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_44
+      frameIndex: 44
+      cellRect:
+        x: 13
+        y: 20
+        width: 38
+        height: 219
+      spriteId: b9d1ebc4dcf84b94cb5c0431b6f683d0
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_48
+      frameIndex: 48
+      cellRect:
+        x: 9
+        y: 20
+        width: 46
+        height: 236
+      spriteId: 6d3ff62af35f0b94986efcb5e8cd6409
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_49
+      frameIndex: 49
+      cellRect:
+        x: 0
+        y: 20
+        width: 64
+        height: 228
+      spriteId: b2f02b142d747054681972a950398b7a
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_50
+      frameIndex: 50
+      cellRect:
+        x: 9
+        y: 20
+        width: 46
+        height: 222
+      spriteId: 35b19fabe02f0eb4fb0164c11fec943d
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_51
+      frameIndex: 51
+      cellRect:
+        x: 13
+        y: 20
+        width: 38
+        height: 222
+      spriteId: 4c15a05d377eda7479e6b2bbf5124ac0
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_52
+      frameIndex: 52
+      cellRect:
+        x: 13
+        y: 20
+        width: 38
+        height: 219
+      spriteId: 7b8383477b3dfd04da5441ac0173f967
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_53
+      frameIndex: 53
+      cellRect:
+        x: 13
+        y: 20
+        width: 38
+        height: 220
+      spriteId: 062c8eb3299005a4b8ebbe8b23fb299a
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_54
+      frameIndex: 54
+      cellRect:
+        x: 19
+        y: 20
+        width: 26
+        height: 222
+      spriteId: a6cc1652171d373438bddcbd1f51f7ae
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_56
+      frameIndex: 56
+      cellRect:
+        x: 0
+        y: 20
+        width: 64
+        height: 222
+      spriteId: b70b85259396c0743a868dd2cf418c70
+    - name: Mana Seed Bow Combat Outfit Canvas_Frame_57
+      frameIndex: 57
+      cellRect:
+        x: 20
+        y: 20
+        width: 24
+        height: 222
+      spriteId: 025029f956d58f64ab9568d0db88d155
+    linkedCells: []
+    parentIndex: -1
+  platformSettings: []
+  secondarySpriteTextures: []
+  spritePackingTag: 
+  canvasSize: {x: 64, y: 256}

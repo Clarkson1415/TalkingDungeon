@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36343564eacaf1242b12a77bfc501b4b, type: 3}
+  m_Name: Boomerang
+  m_EditorClassIdentifier: 
+  Name: Boomerang
+  description: Better hope it comes back
+  image: {fileID: 1158533579, guid: 1c8677698b0949846a452018d0899c19, type: 3}
+  Abilities:
+  - {fileID: 11400000, guid: b6e76820bcfa5164e920dae257ea32db, type: 2}
+  PowerStat: 5
+  DefenceStat: 0

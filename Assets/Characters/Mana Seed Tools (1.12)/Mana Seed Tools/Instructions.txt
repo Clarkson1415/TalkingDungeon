@@ -1,0 +1,40 @@
+=============================
+= Mana Seed Tools for Unity =
+=============================
+by DirePixel
+Current Version: 1.0
+
+================
+= What It Does =
+================
+This asset will process all of your raw Mana Seed Character Base graphics files and turn them into master sheets, thus vastly reducing your overall file count.
+
+==============
+= How to Use =
+==============
+
+1) Take all of your unzipped Mana Seed folders such as 0bot, 1out, 2clo, etc. as well as the base skin files such as char_a_0bas_humn_v01 and place them in the input folder of Mana Seed Tools.
+
+2) The next step depends on if you're using an asset like my Mana Seed Shaders for Unity. So we'll break it up into 2 parts.
+-2a) FOR MANA SEED SHADERS FOR UNITY USERS
+Run process_textures in the Mana Seed Tools folder. DO NOT RUN PROCESS_ALL_TEXTURES! We do this because process_all_textures will process all the v02, v03, etc. files that Mana Seed Shaders for Unity doesn't need and ultimately you likely won't use.
+-2b) FOR OTHER MANA SEED USERS
+Run process_all_textures in the Mana Seed Tools folder. DO NOT RUN PROCESS_TEXTURES!
+
+3) Wait for the process to complete. Any errors will be displayed in RED, and files that weren't found will be ignored and shown in YELLOW.
+4) Profit, that's it really. All of your newly packed spritesheets can be found in the output folder. Enoy and best of luck!
+
+=======
+= FAQ =
+=======
+Q: Do you have other useful assets like this?
+A: Absolutely, I have several other assets. I highly recommend you check out my Mana Seed Shaders for Unity project on Itch.io!  It's absolutely incredible and a life saver for any Mana Seed user! It can be found here: https://direpixel.itch.io/mana-seed-shaders-for-unity
+
+Q: Does the packer work for the Mana Seed NPCs?
+A: No, it doesn't work with anything but the base.
+
+Q: Can I use the packer to pack other graphics files?
+A: No, it is specifically configured for the Mana Seed Character Base.
+
+Q: I have used my own naming system and renamed some of the graphics files for the Character Base, will this still work?
+A: No. It relies on the raw, unadultered, unzipped graphics files from the Character Base. I recommend you let it do it's thing, and then you can rename your files however you like.
