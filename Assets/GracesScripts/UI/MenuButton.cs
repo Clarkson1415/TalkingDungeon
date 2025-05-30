@@ -18,6 +18,7 @@ public class MenuButton : DungeonButton
     /// </summary>
     public void StartNewGame()
     {
+        PlayerPrefs.DeleteAll();
         TransitionManager.Instance().Transition(TalkingDungeonScenes.Intro, transition, 0f);
         Debug.Log($"loading scene: {TalkingDungeonScenes.Intro} from menuButton.cs");
     }

@@ -38,7 +38,7 @@ namespace Assets.GracesScripts
 
         public DialogueSlide GetFirstDialogueSlide()
         {
-            MyGuard.IsNotNull(this.firstDialogueSlide);
+            MyGuard.IsNotNull(this.firstDialogueSlide, $"Must assign dialogue slide to {this.unitName}");
             return this.firstDialogueSlide;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Assets.GracesScripts.ScriptableObjects;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,16 @@ public class Ability : ScriptableObject
     {
         var player = FindObjectOfType<PlayerDungeon>();
         MyGuard.IsNotNull("Player not found.");
+        if (!this._desc.Contains("{0}"))
+        {
+            throw new ArgumentException($"Does not have {{0}} in descriptino string on Ability: {Name} in inspector please add so correct damage is displayed.");
+        }
+
+        if (string.IsNullOrEmpty(_desc))
+        {
+            throw new ArgumentException($"Ability Description string on {Name} is empty");
+        }
+
         return string.Format(this._desc, this.Value * player.equippedWeapon.PowerStat);
     }
     

@@ -3,9 +3,8 @@ using UnityEngine;
 
 public class TitleScreen : MenuWithButtons
 {
-    [SerializeField] GameObject LoadLastSaveButton;
-    [SerializeField] GameObject StartNewGameButton;
-    [SerializeField] GameObject startLoadButtonLocation;
+    [SerializeField] GameObject LoadSaveButton;
+    [SerializeField] GameObject ContinueButtonLocation;
     public bool PretendFirstTimeBootDeleteSave = false;
     public string sceneToLoad = TalkingDungeonScenes.Intro;
 
@@ -18,17 +17,11 @@ public class TitleScreen : MenuWithButtons
             PlayerPrefs.DeleteAll();
         }
 
-        GameObject topButton;
-
         var savedScene = PlayerPrefs.GetString(SaveGameUtility.SaveKeys.LastScene);
-        if (string.IsNullOrEmpty(savedScene))
+        if (!string.IsNullOrEmpty(savedScene))
         {
-            topButton = Instantiate(StartNewGameButton, startLoadButtonLocation.transform);
-            topButton.GetComponent<MenuButton>().sceneToLoad = TalkingDungeonScenes.Intro;
-        }
-        else
-        {
-            topButton = Instantiate(LoadLastSaveButton, startLoadButtonLocation.transform);
+            var topButton = Instantiate(LoadSaveButton, ContinueButtonLocation.transform);
+            topButton.gameObject.transform.SetAsFirstSibling();
         }
     }
 

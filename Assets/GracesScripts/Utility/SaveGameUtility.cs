@@ -59,7 +59,7 @@ public class SaveGameUtility : MonoBehaviour
         public const string EquippedWeaponPath = "EquippedWeaponPath";
         public const string EquippedItemPath = "EquippedItemPath";
 
-        // TODO Dialogue log should be saved
+        // TODO Dialogue log should be saved and chests current content.
         // public const string DialogueLog = "Dialogue";
     }
 
