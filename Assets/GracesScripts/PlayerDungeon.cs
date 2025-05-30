@@ -23,7 +23,6 @@ public class PlayerDungeon : Unit
     [SerializeField] private KnightState startingState = KnightState.PLAYERCANMOVE;
     [HideInInspector] private KnightState state;
     private AudioSource? footstepsSound;
-    private UseAnimatedLayers? animatedLayers;
 
     [Header("Menus")]
     [SerializeField] GameObject deathScreenPrefab;
@@ -128,7 +127,6 @@ public class PlayerDungeon : Unit
     // Start is called before the first frame update
     private void LoadPlayerComponents()
     {
-        animatedLayers = GetComponent<UseAnimatedLayers>();
         this.rb = GetComponent<Rigidbody2D>();
         footstepsSound = GetComponentInChildren<AudioSource>();
         var menuReferences = FindObjectOfType<MenuReferences>();

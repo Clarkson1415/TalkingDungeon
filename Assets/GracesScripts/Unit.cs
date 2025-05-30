@@ -34,6 +34,12 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public float defenceModifier = 0;
     public float Defence => defenceModifier * (this.equippedWeapon.DefenceStat + baseDefence);
+    protected UseAnimatedLayers? animatedLayers;
+
+    private void Awake()
+    {
+        animatedLayers = GetComponent<UseAnimatedLayers>();
+    }
 
     private Weapon GetDefaultHands()
     {
