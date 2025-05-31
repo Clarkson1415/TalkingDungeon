@@ -35,15 +35,16 @@ public class PlayerDungeon : Unit
     [SerializeField] AudioSource LevelMusic;
     [SerializeField] AudioSource DeathSFX;
 
-# if UNITY_EDITOR
-    [Header("For While Testing In Unity Editor its made public but do not remove just make hide in inspector.")]
     public List<string> scenesTraversed = new();
 
+    [Header("For While Testing In Unity Editor its made public but do not remove just make hide in inspector.")]
+# if UNITY_EDITOR
     /// <summary>
     /// For testing purposes only so that the savegame is not loaded for for me when I want to test specific items and stuff.
     /// </summary>
     public bool RestartGameFromThisScene;
 # endif
+
     [HideInInspector] public IInteracble? InteractableInRange { get; private set; } = null;
 
     [Header("EnemyBattleLoader")]
@@ -95,9 +96,20 @@ public class PlayerDungeon : Unit
         }
 # endif
 
-        if (!string.IsNullOrEmpty(PlayerPrefs.GetString(SaveKeys.LastScene))) // if loading from save load otherwise its not got player prefs for a new game
+        if (PlayerPrefs.GetString(SaveKeys.GameState) == )
+        {
+
+        }
+
+        if (!string.IsNullOrEmpty(PlayerPrefs.GetString(SaveKeys.LastScene)))
         {
             SaveGameUtility.LoadSaveDataFromLastScene(this);
+
+            if (PlayerPrefs.GetString(SaveKeys.LastScene) == TalkingDungeonScenes.Intro)
+            {
+                 also add to scenesTraversed from intro im not doing that
+                SaveGameUtility.LoadPlayerPosition(this);
+            }
         }
 
         // Save upon entering new scene do not save if in battle scene though

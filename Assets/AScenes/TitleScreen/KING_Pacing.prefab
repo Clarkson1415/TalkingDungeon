@@ -119,6 +119,7 @@ GameObject:
   - component: {fileID: 252720633128500292}
   - component: {fileID: 6854907833708877812}
   - component: {fileID: 7531181271754290941}
+  - component: {fileID: 6840324072658156145}
   m_Layer: 0
   m_Name: KING_Pacing
   m_TagString: Untagged
@@ -262,8 +263,8 @@ MonoBehaviour:
   powerModifier: 0
   baseDefence: 0
   defenceModifier: 0
+  whiteFlashMaterial: {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   unitName: King
-  prefabToUseInBattle: {fileID: 0}
   firstDialogueSlide: {fileID: 11400000, guid: f9291584e47b82a4484e32d5fe078d5a, type: 2}
   battleSceneDialogueSlide: {fileID: 0}
 --- !u!114 &6854907833708877812
@@ -301,12 +302,39 @@ MonoBehaviour:
   powerModifier: 0
   baseDefence: 0
   defenceModifier: 0
+  whiteFlashMaterial: {fileID: 0}
   unitName: 
-  prefabToUseInBattle: {fileID: 0}
   firstDialogueSlide: {fileID: 0}
   battleSceneDialogueSlide: {fileID: 0}
-  runSpeed: 6
+  runSpeed: 2
   runTime: 3
   idleWaitTime: 2
-  leftBound: -36
-  rightBound: -22
+  leftBound: -9
+  rightBound: -6
+--- !u!50 &6840324072658156145
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046381573867226185}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerRandomRepeatingAudio : MonoBehaviour
+public class ChangeAudioClipsBetweenRandomOnes : MonoBehaviour
 {
     private AudioSource audioSource;
     [SerializeField] List<AudioClip> audioClips = new();
@@ -24,7 +24,7 @@ public class PlayerRandomRepeatingAudio : MonoBehaviour
         {
             int randomIndex = Random.Range(0, audioClips.Count);
             audioSource.clip = audioClips[randomIndex];
-            audioSource.Play();
+            //audioSource.Play(); No dont play audio in this script. See Blacksmith the animation plays it for now to stay in sync.
             yield return new WaitForSeconds(timeBetween);
         }
     }

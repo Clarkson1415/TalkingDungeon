@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1556186791744587721}
   - component: {fileID: 3334640015808996115}
   - component: {fileID: 5197784359194099944}
+  - component: {fileID: 4206614772913006341}
   m_Layer: 0
   m_Name: KING
   m_TagString: Untagged
@@ -155,10 +156,22 @@ MonoBehaviour:
   powerModifier: 0
   baseDefence: 0
   defenceModifier: 0
+  whiteFlashMaterial: {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   unitName: King
-  prefabToUseInBattle: {fileID: 0}
   firstDialogueSlide: {fileID: 11400000, guid: f9291584e47b82a4484e32d5fe078d5a, type: 2}
   battleSceneDialogueSlide: {fileID: 0}
+--- !u!114 &4206614772913006341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309710549847298083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 482b993c101a12e4f8df333c28753ca6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3091229150100281279
 GameObject:
   m_ObjectHideFlags: 0

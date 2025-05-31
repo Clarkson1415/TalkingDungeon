@@ -11981,7 +11981,7 @@ SortingGroup:
   m_GameObject: {fileID: 9029091428882979426}
   m_Enabled: 1
   m_SortingLayerID: 1238706651
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_SortAtRoot: 0
 --- !u!114 &4808543307335279126
@@ -20623,11 +20623,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8079446902128305, guid: 07ed55472bb754241abe5c7cf98946c6, type: 3}
       propertyPath: m_text
-      value: Throw your weight against him deal {0} Damage and something else...
+      value: Throw your weight against him deal {0} Damage
       objectReference: {fileID: 0}
     - target: {fileID: 8079446902128305, guid: 07ed55472bb754241abe5c7cf98946c6, type: 3}
       propertyPath: m_fontSize
-      value: 15
+      value: 17.85
       objectReference: {fileID: 0}
     - target: {fileID: 8079446902128305, guid: 07ed55472bb754241abe5c7cf98946c6, type: 3}
       propertyPath: m_fontSizeMin
@@ -20646,6 +20646,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1864696326304611058, guid: 07ed55472bb754241abe5c7cf98946c6,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 189.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1864696326304611058, guid: 07ed55472bb754241abe5c7cf98946c6,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 55.199974
+      objectReference: {fileID: 0}
+    - target: {fileID: 1864696326304611058, guid: 07ed55472bb754241abe5c7cf98946c6,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 27.949991
       objectReference: {fileID: 0}
     - target: {fileID: 2314793463014268142, guid: 07ed55472bb754241abe5c7cf98946c6,
         type: 3}

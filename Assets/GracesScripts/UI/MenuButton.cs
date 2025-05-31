@@ -36,22 +36,8 @@ public class MenuButton : DungeonButton
 
     public void LoadGameFromSave()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
         var scenePlayerSavedIn = PlayerPrefs.GetString(SaveKeys.LastScene);
         TransitionManager.Instance().Transition(scenePlayerSavedIn, transition, 0f);
-    }
-
-    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-
-        var player = FindObjectOfType<PlayerDungeon>();
-        if (player == null)
-        {
-            throw new ArgumentNullException("player not found cannot save");
-        }
-
-        SaveGameUtility.LoadPositionFromSave(player);
     }
 
     public void SaveAndQuitToTitle()

@@ -20,8 +20,9 @@ public class WalkingBackAndForthUnit : Unit_NPC
     private Rigidbody2D rb;
     private float runStartTime;
     private float idleStartTime;
-    [SerializeField] int leftBound = -36;
-    [SerializeField] int rightBound = -22;
+    [SerializeField] float leftBound = -36;
+    [SerializeField] float rightBound = -22;
+    [SerializeField] private bool ShouldSpriteFlipOnDirectionChange;
 
     private enum MovingDialogueNPCState
     {
@@ -42,7 +43,6 @@ public class WalkingBackAndForthUnit : Unit_NPC
         this.rb = GetComponent<Rigidbody2D>();
         state = MovingDialogueNPCState.MOVING;
         this.animatedLayers.SetBools("Running", true);
-        Log.Print("dog moving initial");
         runStartTime = Time.time;
     }
 
@@ -50,9 +50,12 @@ public class WalkingBackAndForthUnit : Unit_NPC
     // Update is called once per frame
     void Update()
     {
-        FlipSprite(this.velocity.x);
+        if (ShouldSpriteFlipOnDirectionChange)
+        {
+            FlipSprite(this.velocity.x);
+        }
 
-        if (!IsInBounds())
+        if (!IsInBounds() && canFlipAgain)
         {
             SwapDirectionGoing();
         }
@@ -106,11 +109,6 @@ public class WalkingBackAndForthUnit : Unit_NPC
         }
     }
 
-    private void GoToIdle()
-    {
-
-    }
-
     private void FlipSprite(float xDirection)
     {
         // if going left and facing right flip
@@ -126,6 +124,13 @@ public class WalkingBackAndForthUnit : Unit_NPC
 
     private bool IsInBounds()
     {
+        // if less than left bound and going left, then needs to change direction
+        if (this.gameObject.transform.position.x < leftBound && this.velocity.x < 0)
+        {
+            return false;
+        }
+
+        // if greater than right bound and going right, then needs to change direction
         if (this.gameObject.transform.position.x < leftBound || this.gameObject.transform.position.x > rightBound)
         {
             return false;
@@ -134,25 +139,16 @@ public class WalkingBackAndForthUnit : Unit_NPC
         return true;
     }
 
-    bool velocityFlipDelayUp = true;
-
     private void SwapDirectionGoing()
     {
-        if (velocityFlipDelayUp)
-        {
-            this.velocity.x *= -1;
-            StartCoroutine(FlipVelocityDelay());
-        }
+        this.velocity.x *= -1;
     }
 
-    /// <summary>
-    /// If no delay after flipping velocity direction he gets stuck on the bounds edges.
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator FlipVelocityDelay()
+    private bool canFlipAgain = true;
+    IEnumerator FlipDelay()
     {
-        velocityFlipDelayUp = false;
+        canFlipAgain = false;
         yield return new WaitForSeconds(0.5f);
-        velocityFlipDelayUp = true;
+        canFlipAgain = true;
     }
 }

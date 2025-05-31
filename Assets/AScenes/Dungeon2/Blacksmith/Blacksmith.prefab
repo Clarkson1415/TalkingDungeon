@@ -255,6 +255,7 @@ GameObject:
   - component: {fileID: 1606385143615062151}
   - component: {fileID: 987628327954405700}
   - component: {fileID: 533284641521996765}
+  - component: {fileID: 9173358952148334837}
   m_Layer: 0
   m_Name: Sound
   m_TagString: Untagged
@@ -391,8 +392,29 @@ MonoBehaviour:
   - {fileID: 8300000, guid: db60ca4dbdfa9cc4d85b5afba2f63430, type: 3}
   - {fileID: 8300000, guid: 0dfdac7c2cade65479f9f2b9a24e44f6, type: 3}
   - {fileID: 8300000, guid: 4e106a0b3e6152a46831d53060ee145f, type: 3}
-  startDelay: 0.3
-  timeBetween: 0.8
+  startDelay: 0
+  timeBetween: 0.1
+--- !u!95 &9173358952148334837
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400039185449914230}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 426c208f28462e94b8864b46ee4b0049, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1647389194669411540
 GameObject:
   m_ObjectHideFlags: 0

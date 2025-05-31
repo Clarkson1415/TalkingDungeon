@@ -6,6 +6,31 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class SaveGameUtility : MonoBehaviour
 {
+    /// <summary>
+    /// To be used after run away success from battle. Will only save health, items in inventory equipped things. And add anything else that could be change within a battle.
+    /// </summary>
+    public static void SaveStuffFromBattle(PlayerDungeon player)
+    {
+        PlayerPrefs.SetFloat(SaveKeys.CurrentWellbeing, player.currentHealth);
+        PlayerPrefs.SetFloat(SaveKeys.MaxWellbeing, player.maxHealth);
+
+        // save path of scriptableobjects
+        string equippedWeaponPath = player.equippedWeapon?.Path ?? string.Empty;
+        PlayerPrefs.SetString(SaveKeys.EquippedWeaponPath, equippedWeaponPath);
+
+        string equippedItemPath = player.equippedSpecialItem?.Path ?? string.Empty;
+        PlayerPrefs.SetString(SaveKeys.EquippedItemPath, equippedItemPath);
+
+        List<string> InventoryItemsNames = player.Inventory.Select(item => item != null ? item.Path ?? string.Empty : string.Empty).ToList();
+        string itemJson = JsonUtility.ToJson(new StringListWrapper { savedStrings = InventoryItemsNames });
+        PlayerPrefs.SetString(SaveKeys.InventoryItemsPaths, itemJson);
+
+        // save that we were in battle scene
+        PlayerPrefs.SetString(SaveKeys.LastScene, SceneManager.GetActiveScene().name);
+
+        PlayerPrefs.Save();
+    }
+
     public static void SaveGame(PlayerDungeon player)
     {
         PlayerPrefs.SetString(SaveKeys.LastScene, SceneManager.GetActiveScene().name);
@@ -48,6 +73,12 @@ public class SaveGameUtility : MonoBehaviour
         public List<string> savedStrings;
     }
 
+    public enum GameState
+    {
+        NewGame,
+        GameOver,
+    }
+
     public static class SaveKeys
     {
         public const string LastScene = "Scene";
@@ -58,22 +89,10 @@ public class SaveGameUtility : MonoBehaviour
         public const string InventoryItemsPaths = "InventoryItemsPaths";
         public const string EquippedWeaponPath = "EquippedWeaponPath";
         public const string EquippedItemPath = "EquippedItemPath";
+        public const string GameState = "GameState";
 
         // TODO Dialogue log should be saved and chests current content.
         // public const string DialogueLog = "Dialogue";
-    }
-
-    /// <summary>
-    /// Loads save from main menu loads the position player was saved in used when loading from save button. Player.cs loads all the other stuff in regular scene to scene transitions.
-    /// </summary>
-    /// <param name="player"></param>
-    public static void LoadPositionFromSave(PlayerDungeon player)
-    {
-        // the other stuff except scene already done
-        player.gameObject.transform.position = new Vector3(
-            PlayerPrefs.GetFloat(SaveKeys.PlayerPosX),
-            PlayerPrefs.GetFloat(SaveKeys.PlayerPosY),
-            player.gameObject.transform.position.z);
     }
 
     /// <summary>
@@ -107,7 +126,15 @@ public class SaveGameUtility : MonoBehaviour
             player.equippedSpecialItem = Resources.Load<SpecialItem>(PlayerPrefs.GetString(SaveKeys.EquippedItemPath));
         }
 
-        Debug.Log("Loaded from save");
+        Debug.Log("Loaded from save and position");
+    }
+
+    public static void LoadPlayerPosition(PlayerDungeon player)
+    {
+        player.gameObject.transform.position = new Vector3(
+            PlayerPrefs.GetFloat(SaveKeys.PlayerPosX),
+            PlayerPrefs.GetFloat(SaveKeys.PlayerPosY),
+            player.gameObject.transform.position.z);
     }
 
     private static List<T> DeserializeSavedStrings<T>(string json) where T : ScriptableObject

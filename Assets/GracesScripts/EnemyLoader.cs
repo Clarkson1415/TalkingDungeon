@@ -27,16 +27,10 @@ public class EnemyLoader : MonoBehaviour
 
         var enemyStartBattleLocation = FindObjectOfType<EnemyLocationInTurnBased>();
         MyGuard.IsNotNull(enemyStartBattleLocation);
-        enemyWasTalkingTo.transform.localPosition = new Vector3(0, 0, 0);
         enemyWasTalkingTo.transform.SetParent(enemyStartBattleLocation.transform);
+        enemyWasTalkingTo.transform.localPosition = new Vector3(0, 0, 0);
 
         var battleUI = FindObjectOfType<BattleUI>();
         battleUI.SetupEnemyAfterSpawned();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

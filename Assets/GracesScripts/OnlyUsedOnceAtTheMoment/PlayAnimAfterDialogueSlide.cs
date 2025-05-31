@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 #nullable enable
 
 public class PlayAnimAfterDialogueSlide : MonoBehaviour
@@ -11,7 +10,7 @@ public class PlayAnimAfterDialogueSlide : MonoBehaviour
 
     private enum TorchState
     {
-        waiting, 
+        waiting,
         talking,
         finishedTalking,
     }
@@ -37,7 +36,7 @@ public class PlayAnimAfterDialogueSlide : MonoBehaviour
                 if (this.dialogueBox == null)
                 {
                     var diaBox = FindObjectOfType<DialogueTextBox>();
-                    if(diaBox != null)
+                    if (diaBox != null)
                     {
                         this.dialogueBox = diaBox.gameObject;
                     }

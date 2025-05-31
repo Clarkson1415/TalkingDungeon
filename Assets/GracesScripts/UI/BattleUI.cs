@@ -1,5 +1,6 @@
 using Assets.GracesScripts;
 using Assets.GracesScripts.UI;
+using Cainos.PixelArtTopDown_Basic;
 using EasyTransition;
 using System;
 using System.Collections;
@@ -8,6 +9,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static SaveGameUtility;
+#nullable enable
 
 public class BattleUI : MenuWithButtons
 {
@@ -229,9 +232,12 @@ public class BattleUI : MenuWithButtons
                 if (this.abilityClickedFlag)
                 {
                     var abilityUsed = evSys.currentSelectedGameObject.GetComponent<InventorySlot>().Ability;
+                    MyGuard.IsNotNull(abilityUsed, "AbilityUsed battle Ui in playerPickAbilityTurn was null.");
                     Log.Print($"You used {abilityUsed.name} on {enemyYouFightin.unitName} To {abilityUsed.Effects}");
                     abilityUsed.Apply(player.equippedWeapon.PowerStat, player, enemyYouFightin);
                     ShowAbilityUsedText(this.player, abilityUsed);
+                    this.abilityButtonSceen.SetActive(false);
+                    this.backButton.SetActive(false);
                     this.state = Battle.ExecutingPlayerTurn;
                 }
                 if (this.backButtonClickedFlag)
@@ -256,7 +262,8 @@ public class BattleUI : MenuWithButtons
                     {
                         Debug.Log("player won");
                         StartCoroutine(TestDialogueBox("You Won", Color.black));
-                        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Dungeon2, exitBattleTransition);
+                        var scene = // todo should be a scene for after won battle somwhere somehow.
+                        TalkingDungeonScenes.LoadScene(scene, exitBattleTransition);
                         this.state = Battle.PlayerWon;
                     }
                 }
@@ -294,17 +301,18 @@ public class BattleUI : MenuWithButtons
             case Battle.PlayerLost:
                 if (!this.IsPlayerHealthBarPlayingAnimation && !isDialoguePrinting) // when dialogue finished printing display death
                 {
-                    Debug.Log("in playerlost goto wait");
+                    Debug.Log("in playerlost goto wait on death screen");
                     state = Battle.WaitOnDeathScreen;
                 }
                 break;
             case Battle.RunAwaySuccess:
                 if (!this.isDialoguePrinting)
                 {
-                    SaveGameUtility.SaveGame(this.player);
-                    // change scenes to scene was in before battle
-                    var sceneNameBeforeBattle = this.player.scenesTraversed[this.player.scenesTraversed.Count - 1];
-                    TransitionManager.Instance().Transition(sceneNameBeforeBattle, exitBattleTransition, 0f);
+                    // TODO play sound effect for running away
+                    // also only need to save current player health and inventory items they might have used items.
+                    SaveGameUtility.SaveStuffFromBattle(player);
+                    var scenePlayerSavedInLast = PlayerPrefs.GetString(SaveKeys.LastScene);
+                    TalkingDungeonScenes.LoadScene(scenePlayerSavedInLast, exitBattleTransition);
                     this.state = Battle.TransitioningOutOfBattle;
                 }
                 break;
