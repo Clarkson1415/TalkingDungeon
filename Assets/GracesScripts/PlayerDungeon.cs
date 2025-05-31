@@ -13,7 +13,6 @@ using static SaveGameUtility;
 /// <summary>
 /// Player guy
 /// </summary>
-[RequireComponent(typeof(UseAnimatedLayers))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerDungeon : Unit
 {
@@ -75,7 +74,7 @@ public class PlayerDungeon : Unit
         InTurnBased,
     }
 
-    private void Awake()
+    private void Start()
     {
         var enemyLoaders = FindObjectsByType<EnemyLoader>(FindObjectsSortMode.None);
         if (enemyLoaders.Length == 0)
@@ -124,7 +123,6 @@ public class PlayerDungeon : Unit
         return this.rb != null;
     }
 
-    // Start is called before the first frame update
     private void LoadPlayerComponents()
     {
         this.rb = GetComponent<Rigidbody2D>();

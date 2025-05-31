@@ -1,9 +1,6 @@
 using Assets.GracesScripts;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 /// <summary>
@@ -21,7 +18,6 @@ public class WalkingBackAndForthUnit : Unit_NPC
     MovingDialogueNPCState state;
     public bool IsInDialogue { get; set; } = false;
     private Rigidbody2D rb;
-    private UseAnimatedLayers animatedLayers;
     private float runStartTime;
     private float idleStartTime;
     [SerializeField] int leftBound = -36;
@@ -40,21 +36,16 @@ public class WalkingBackAndForthUnit : Unit_NPC
         throw new NotImplementedException("walking dog dies");
     }
 
-    private void Awake()
-    {
-        animatedLayers = GetComponent<UseAnimatedLayers>();
-        this.rb = GetComponent<Rigidbody2D>();
-    }
-
     // Start is called before the first frame update
     void Start()
     {
+        this.rb = GetComponent<Rigidbody2D>();
         state = MovingDialogueNPCState.MOVING;
         this.animatedLayers.SetBools("Running", true);
         Log.Print("dog moving initial");
         runStartTime = Time.time;
     }
-    
+
 
     // Update is called once per frame
     void Update()

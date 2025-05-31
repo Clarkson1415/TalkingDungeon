@@ -6,8 +6,6 @@ namespace Assets.GracesScripts
     {
         public string unitName;
 
-        public GameObject prefabToUseInBattle;
-
         /// <summary>
         /// Used for not in battle scene.
         /// </summary>
@@ -18,7 +16,7 @@ namespace Assets.GracesScripts
         /// </summary>
         public DialogueSlide battleSceneDialogueSlide;
 
-        private void Awake()
+        private void Start()
         {
             if (this.unitName == null)
             {

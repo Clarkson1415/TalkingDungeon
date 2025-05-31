@@ -198,6 +198,7 @@ MonoBehaviour:
   powerModifier: 0
   baseDefence: 0
   defenceModifier: 0
+  whiteFlashMaterial: {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   movementSpeed: 3
   startingState: 1
   deathScreenPrefab: {fileID: 3716218083612978094, guid: 4af77ded6b806af42911a80999ee1106,
@@ -486,7 +487,7 @@ MonoBehaviour:
   - {x: -0.000056147575, y: -0.3732252, z: 0.0000000121071935}
   m_ShapePathHash: -382328611
   m_Mesh: {fileID: 0}
-  m_InstanceId: -8154
+  m_InstanceId: -193180
   m_LocalBounds:
     m_Center: {x: 0.0012224317, y: 0.1249226, z: 0}
     m_Extent: {x: 0.21986264, y: 0.5010518, z: 0}
@@ -544,7 +545,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -769,7 +770,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -887,7 +888,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

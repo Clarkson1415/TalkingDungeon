@@ -27,8 +27,8 @@ public class EnemyLoader : MonoBehaviour
 
         var enemyStartBattleLocation = FindObjectOfType<EnemyLocationInTurnBased>();
         MyGuard.IsNotNull(enemyStartBattleLocation);
-        Instantiate(enemyWasTalkingTo.GetComponent<Unit_NPC>().prefabToUseInBattle, enemyStartBattleLocation.transform);
-        Destroy(enemyWasTalkingTo);
+        enemyWasTalkingTo.transform.localPosition = new Vector3(0, 0, 0);
+        enemyWasTalkingTo.transform.SetParent(enemyStartBattleLocation.transform);
 
         var battleUI = FindObjectOfType<BattleUI>();
         battleUI.SetupEnemyAfterSpawned();

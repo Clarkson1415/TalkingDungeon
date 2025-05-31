@@ -177,7 +177,6 @@ public class DialogueTextBox : MenuWithButtons
         {
             MyGuard.IsNotNull(enemy);
             MyGuard.IsNotNull(player.enemyLoader);
-            MyGuard.IsNotNull(enemy.prefabToUseInBattle);
             player.enemyLoader.enemyWasTalkingTo = enemy.gameObject;
             DontDestroyOnLoad(enemy.gameObject);
         }

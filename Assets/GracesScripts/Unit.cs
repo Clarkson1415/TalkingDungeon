@@ -8,6 +8,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Unit class, Player and NPCs both have abilities an equipped weapon and item and health.
 /// </summary>
+[RequireComponent(typeof(UseAnimatedLayers))]
 public abstract class Unit : MonoBehaviour
 {
     public float currentHealth = 100;
@@ -22,7 +23,6 @@ public abstract class Unit : MonoBehaviour
     [HideInInspector] public GameObject HealthBarObject;
     [HideInInspector] public Image healthBarFill;
 
-
     [SerializeField] private float basePower = 0;
     public float powerModifier;
     public float Power => powerModifier * (this.basePower + this.equippedWeapon.PowerStat);
@@ -35,10 +35,52 @@ public abstract class Unit : MonoBehaviour
     public float defenceModifier = 0;
     public float Defence => defenceModifier * (this.equippedWeapon.DefenceStat + baseDefence);
     protected UseAnimatedLayers? animatedLayers;
+    [SerializeField] private Material? whiteFlashMaterial;
+    private List<SpriteRenderer> unitsSpriteLayers = new();
+    private MaterialPropertyBlock _block;
+    private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
 
     private void Awake()
     {
-        animatedLayers = GetComponent<UseAnimatedLayers>();
+        animatedLayers = this.gameObject.GetComponent<UseAnimatedLayers>();
+        MyGuard.IsNotNull(animatedLayers, $"null animated layers {this.name}");
+        MyGuard.IsNotNull(whiteFlashMaterial, $"White flash material not on {this.name}");
+        foreach (var sr in this.GetComponentsInChildren<SpriteRenderer>())
+        {
+            MyGuard.IsNotNull(sr, $"sprite renderer null on {this.name}");
+            sr.material = this.whiteFlashMaterial;
+            unitsSpriteLayers.Add(sr);
+        }
+
+        _block = new MaterialPropertyBlock();
+    }
+
+    IEnumerator FlashRoutine(float duration)
+    {
+        var timeStart = Time.time;
+
+        while (Time.time < timeStart + duration)
+        {
+            ChangeSpriteFlash(1f);
+            yield return new WaitForSeconds(0.05f);
+            ChangeSpriteFlash(0f);
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
+
+    /// <summary>
+    /// flash value of 0 for regular colour and 1 for white.
+    /// </summary>
+    /// <param name="flashValue"></param>
+    private void ChangeSpriteFlash(float flashValue)
+    {
+        foreach (var layer in this.unitsSpriteLayers)
+        {
+            _block.Clear();
+            layer.GetPropertyBlock(_block);
+            _block.SetFloat(FlashAmount, flashValue);
+            layer.SetPropertyBlock(_block);
+        }
     }
 
     private Weapon GetDefaultHands()
@@ -61,6 +103,7 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public void TakeDamage(float value)
     {
+        StartCoroutine(FlashRoutine(2f));
         Debug.Log("Check how the timing of StartShake and damage bar reducing works i dont remember but rewrite it so its clearly aligned.");
         var objectToShake = this.HealthBarObject.GetComponent<ShakeObject>();
         objectToShake.StartShake(1f, 5f);
