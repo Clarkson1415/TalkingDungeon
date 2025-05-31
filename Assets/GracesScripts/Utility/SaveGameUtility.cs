@@ -73,12 +73,6 @@ public class SaveGameUtility : MonoBehaviour
         public List<string> savedStrings;
     }
 
-    public enum GameState
-    {
-        NewGame,
-        GameOver,
-    }
-
     public static class SaveKeys
     {
         public const string LastScene = "Scene";

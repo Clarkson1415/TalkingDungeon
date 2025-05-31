@@ -1,4 +1,5 @@
-﻿using EasyTransition;
+﻿using Assets.GracesScripts;
+using EasyTransition;
 
 public class TalkingDungeonScenes
 {
@@ -8,8 +9,9 @@ public class TalkingDungeonScenes
     public const string Dungeon2 = "Dungeon2";
     public const string Battle = "TurnBased";
 
-    public static void LoadScene(string scene, TransitionSettings transition, gamesatatetoupdateto)
+    public static void LoadScene(string scene, TransitionSettings transition, GameState stateToAddToPlayerPrefs)
     {
+        // add to player prefs
         TransitionManager.Instance().Transition(scene, transition, 0f);
         // todo other stuff here like loading screen and sound fade out and in
     }
