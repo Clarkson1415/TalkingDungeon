@@ -242,6 +242,9 @@ public class DialogueTextBox : MenuWithButtons
             this.buttons[i].gameObject.SetActive(true);
             this.buttons[i].SetValues(this.CurrentSlide.dialogueOptions[i].optionText, this.CurrentSlide.dialogueOptions[i].nextSlide);
         }
+
+        // need to do this to stop the bug where if a mouse is above the spot a button will appear the button gets stuck on highlighted.
+        this.UIEventSystem.SetSelectedGameObject(null);
     }
 
     private void DeactivateAllButtons()
