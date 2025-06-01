@@ -1,7 +1,6 @@
 using Assets.GracesScripts;
 using Assets.GracesScripts.UI;
 using EasyTransition;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,7 +134,7 @@ public class DialogueTextBox : MenuWithButtons
                 }
                 else if (this.ButtonClickedFlagSet)
                 {
-                    MyGuard.IsNotNull(this.CurrentSlide);                  
+                    MyGuard.IsNotNull(this.CurrentSlide);
                     var buttonOption = lastHighlightedItem.GetComponentInParent<DialogueOptionButton>();
                     MyGuard.IsNotNull(buttonOption, "Button clicked flag set cannot have no button clicked");
                     FinishedWithSlide(buttonOption.NextDialogueSlide);
