@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.GracesScripts.ScriptableObjects;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -40,14 +41,15 @@ namespace Assets.GracesScripts.UI
             }
         }
 
-        public void UpdateAbilitySlots(List<Ability> abilities)
+        public void UpdateAbilitySlots(Weapon weapon)
         {
+            var abilities = weapon.Abilities;
             this.ClearAbilitySlots();
 
             for (int i = 0; i < abilities.Count; i++)
             {
                 this.abilitySlots[i].gameObject.SetActive(true);
-                this.abilitySlots[i].SetAbilityAndImage(abilities[i]);
+                this.abilitySlots[i].SetAbilityAndImage(abilities[i], weapon);
             }
         }
     }

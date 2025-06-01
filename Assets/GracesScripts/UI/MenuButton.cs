@@ -1,8 +1,9 @@
 ﻿using EasyTransition;
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using static SaveGameUtility;
+using Assets.GracesScripts;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,7 +12,6 @@ public class MenuButton : DungeonButton
 {
     public TransitionSettings transition;
     [SerializeField] private string FeedbackFormURL;
-    [SerializeField] public string sceneToLoad;
 
     /// <summary>
     /// Loads the 'IntroScene'
@@ -19,7 +19,7 @@ public class MenuButton : DungeonButton
     public void StartNewGame()
     {
         PlayerPrefs.DeleteAll();
-        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Intro, transition);
+        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Intro, transition, GameState.NewGame);
         Debug.Log($"loading scene: {TalkingDungeonScenes.Intro} from menuButton.cs");
     }
 
@@ -37,8 +37,7 @@ public class MenuButton : DungeonButton
     public void LoadGameFromSave()
     {
         var scenePlayerSavedIn = PlayerPrefs.GetString(SaveKeys.LastScene);
-
-        TalkingDungeonScenes.LoadScene(scenePlayerSavedIn, transition);
+        TalkingDungeonScenes.LoadScene(scenePlayerSavedIn, transition, GameState.LoadingSave);
     }
 
     public void SaveAndQuitToTitle()
@@ -49,7 +48,7 @@ public class MenuButton : DungeonButton
 
     public void QuitToTitle()
     {
-        TalkingDungeonScenes.LoadScene("TitleScreen", transition, );
+        TalkingDungeonScenes.LoadScene("TitleScreen", transition, GameState.QuittingToTitle);
     }
 
     public void OpenFeedbackForm()

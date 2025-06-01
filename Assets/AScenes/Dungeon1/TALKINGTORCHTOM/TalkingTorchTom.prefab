@@ -5105,6 +5105,7 @@ GameObject:
   - component: {fileID: 3257140619700671272}
   - component: {fileID: 1912967461522423830}
   - component: {fileID: 1974318904907394840}
+  - component: {fileID: 2875527238845843740}
   m_Layer: 0
   m_Name: TalkingTorchTom
   m_TagString: Untagged
@@ -5226,7 +5227,24 @@ MonoBehaviour:
   Inventory: []
   HealthBarObject: {fileID: 0}
   healthBarFill: {fileID: 0}
+  basePower: 0
+  powerModifier: 0
+  baseDefence: 0
+  defenceModifier: 0
+  whiteFlashMaterial: {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   unitName: Talking Torch Tom
-  prefabToUseInBattle: {fileID: 0}
+  SceneAfterWin: 
   firstDialogueSlide: {fileID: 11400000, guid: ce0874126930a344385392d1ec0e1e60, type: 2}
   battleSceneDialogueSlide: {fileID: 0}
+--- !u!114 &2875527238845843740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5846622229012021022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 482b993c101a12e4f8df333c28753ca6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

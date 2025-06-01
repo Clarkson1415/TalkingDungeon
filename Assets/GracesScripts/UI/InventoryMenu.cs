@@ -193,7 +193,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
         {
             this.gearPages.RemoveEquippedWeapon(this.playerEquippedWeapon, HandsWeapon);
             this.playerEquippedWeapon = weapon;
-            this.gearPages.EquipItem(weapon);
+            this.gearPages.EquipWeapon(weapon);
         }
         else if (selectedSlot.Item is SpecialItem special)
         {
@@ -203,7 +203,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
             }
 
             this.playerEquippedItem = special;
-            this.ItemPages.EquipItem(special);
+            this.ItemPages.EquipSpecialItem(special);
         }
     }
 

@@ -1,12 +1,12 @@
+using Assets.GracesScripts;
 using EasyTransition;
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Load a scene when Triggered 2d collider.
 /// </summary>
-public class LoadIntoNewSceneThenSave : MonoBehaviour
+public class LeadNextScene : MonoBehaviour
 {
     public TransitionSettings transition;
     [SerializeField] private string nextScene;
@@ -15,8 +15,6 @@ public class LoadIntoNewSceneThenSave : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        DontDestroyOnLoad(this.gameObject);
-
         if (IsTriggerHit)
         {
             return;
@@ -32,8 +30,6 @@ public class LoadIntoNewSceneThenSave : MonoBehaviour
         }
 
         SaveGameUtility.SaveGame(player);
-
-        // using transition package
-        TransitionManager.Instance().Transition(nextScene, transition, 0f);
+        TalkingDungeonScenes.LoadScene(nextScene, transition, GameState.RegularSceneChange);
     }
 }

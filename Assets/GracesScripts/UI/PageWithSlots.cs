@@ -68,7 +68,7 @@ namespace Assets.GracesScripts.UI
 
             this.ToggleEquipGraphicOnInventorySlot(EquipmentSlot.Item, false);
             EquipmentSlot.SetItemAndImage(DefaultHands);
-            this.playerInfoSection.UpdateAbilitySlots(DefaultHands.Abilities);
+            this.playerInfoSection.UpdateAbilitySlots(DefaultHands);
         }
 
         public void RemoveEquippedItem(SpecialItem itemToTryRemove)
@@ -84,19 +84,16 @@ namespace Assets.GracesScripts.UI
             EquipmentSlot.ReplaceSlotWithBlanks();
         }
 
-        public void EquipItem(DungeonItem item)
+        public void EquipWeapon(Weapon weapon)
         {
-            if (item is Weapon weapon)
-            {
-                this.playerInfoSection.equippedWeaponSlot.SetItemAndImage(weapon);
-                this.playerInfoSection.UpdateAbilitySlots(weapon.Abilities);
-            }
-            else if (item is SpecialItem special)
-            {
-                this.playerInfoSection.equippedSpecialItemSlot.SetItemAndImage(item);
-                this.playerInfoSection.ClearAbilitySlots();
-            }
+            this.playerInfoSection.equippedWeaponSlot.SetItemAndImage(weapon);
+            this.playerInfoSection.UpdateAbilitySlots(weapon);
+            this.ToggleEquipGraphicOnInventorySlot(weapon, true);
+        }
 
+        public void EquipSpecialItem(SpecialItem item)
+        {
+            this.playerInfoSection.equippedSpecialItemSlot.SetItemAndImage(item);
             this.ToggleEquipGraphicOnInventorySlot(item, true);
         }
 
@@ -118,7 +115,7 @@ namespace Assets.GracesScripts.UI
             ToggleEquipGraphicOnInventorySlot(Hands, true);
 
             // also update ability slots
-            this.playerInfoSection.UpdateAbilitySlots(weapon.Abilities);
+            this.playerInfoSection.UpdateAbilitySlots(weapon);
 
             // if had item equipped before replacing, remove the equipped highlight from the inventory item
             if (this.playerInfoSection.equippedSpecialItemSlot.Item != null)

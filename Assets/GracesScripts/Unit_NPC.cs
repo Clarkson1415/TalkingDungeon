@@ -6,6 +6,8 @@ namespace Assets.GracesScripts
     {
         public string unitName;
 
+        public string SceneAfterWin;
+
         /// <summary>
         /// Used for not in battle scene.
         /// </summary>

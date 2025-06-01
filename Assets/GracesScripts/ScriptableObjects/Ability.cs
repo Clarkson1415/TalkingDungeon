@@ -7,10 +7,13 @@ using UnityEngine;
 public class Ability : ScriptableObject
 {
     public string Name;
-    [HideInInspector] public string Description => FormatDescription();
+
+    /// <summary>
+    /// Description with a {0} arg to be the actual value the ability does.
+    /// </summary>
     [SerializeField] string _desc;
 
-    private string FormatDescription()
+    public string FormatDescription(Weapon weapon)
     {
         var player = FindObjectOfType<PlayerDungeon>();
         MyGuard.IsNotNull("Player not found.");
@@ -24,7 +27,7 @@ public class Ability : ScriptableObject
             throw new ArgumentException($"Ability Description string on {Name} is empty");
         }
 
-        return string.Format(this._desc, this.Value * player.equippedWeapon.PowerStat);
+        return string.Format(this._desc, this.Value * weapon.PowerStat);
     }
     
     /// <summary>

@@ -1,4 +1,5 @@
-﻿using Assets.GracesScripts.ScriptableObjects;
+﻿using Assets.GracesScripts;
+using Assets.GracesScripts.ScriptableObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,7 +94,7 @@ public class SaveGameUtility : MonoBehaviour
     /// Saved in scene 1 then loaded scene 2 then this is called before setupPlayer() to load all the player values inventory etc. but not the position.
     /// </summary>
     /// <param name="player"></param>
-    public static void LoadSaveDataFromLastScene(PlayerDungeon player)
+    public static void LoadSaveNotPosition(PlayerDungeon player)
     {
         var scenes = PlayerPrefs.GetString(SaveKeys.LastScene);
         if (!string.IsNullOrEmpty(scenes))
@@ -122,6 +123,8 @@ public class SaveGameUtility : MonoBehaviour
 
         Debug.Log("Loaded from save and position");
     }
+
+
 
     public static void LoadPlayerPosition(PlayerDungeon player)
     {

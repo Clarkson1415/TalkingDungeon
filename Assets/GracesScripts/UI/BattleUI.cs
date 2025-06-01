@@ -1,6 +1,5 @@
 using Assets.GracesScripts;
 using Assets.GracesScripts.UI;
-using Cainos.PixelArtTopDown_Basic;
 using EasyTransition;
 using System;
 using System.Collections;
@@ -45,6 +44,13 @@ public class BattleUI : MenuWithButtons
 
     private static Color positiveGreen = new Color(0, 0.7f, 0);
 
+    [Header("Dialogue Printing Stuff")]
+    private const char pauseCharacterToNotPrint = '_';
+    [SerializeField] private float underscorePauseTime = 0.01f;
+    private AudioSource dialoguePrintAudio;
+    [SerializeField] private TMP_Text TopSlideText;
+    [SerializeField] private float timeBetweenLetters;
+
     private bool actionClickedFlag;
     private bool abilityClickedFlag;
     private bool backButtonClickedFlag;
@@ -61,13 +67,48 @@ public class BattleUI : MenuWithButtons
     {
         battleDialogueBox.SetActive(true);
         battleDialogBoxAboveText = this.battleDialogueBox.GetComponentInChildren<TMP_Text>();
+        dialoguePrintAudio = this.gameObject.GetComponent<AudioSource>();
     }
-
+    
+    
     private IEnumerator TestDialogueBox(string text, Color color)
     {
         this.isDialoguePrinting = true;
+
+
         battleDialogBoxAboveText.text = text;
         battleDialogBoxAboveText.color = color;
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            // don't play sound for either the special pause text printing character, or spaces. 
+            if (text[i] == pauseCharacterToNotPrint)
+            {
+                yield return new WaitForSeconds(underscorePauseTime);
+                this.dialoguePrintAudio.Pause();
+                continue;
+            }
+
+            // dont play a sound but do print a space empty char
+            if (text[i] == ' ')
+            {
+                this.TopSlideText.text += text[i];
+                this.dialoguePrintAudio.Pause();
+                yield return new WaitForSeconds(timeBetweenLetters);
+                continue;
+            }
+
+            this.dialoguePrintAudio.Play();
+            if (i == 0) // set first letter if this is the first letter.
+            {
+                this.TopSlideText.SetText(text[0].ToString());
+                continue;
+            }
+
+            // do the rest of the letters
+            this.TopSlideText.text += text[i];
+            yield return new WaitForSeconds(timeBetweenLetters);
+        }
         yield return new WaitForSeconds(2f);
         this.isDialoguePrinting = false;
     }
@@ -134,7 +175,7 @@ public class BattleUI : MenuWithButtons
         for (int i = 0; i < player.Abilities.Count; i++)
         {
             this.AbilityButtons[i].gameObject.SetActive(true);
-            this.AbilityButtons[i].SetAbilityAndImage(player.Abilities[i]);
+            this.AbilityButtons[i].SetAbilityAndImage(player.Abilities[i], player.equippedWeapon);
         }
 
         for (int j = player.Abilities.Count; j < this.AbilityButtons.Count; j++)
@@ -195,6 +236,7 @@ public class BattleUI : MenuWithButtons
                             break;
                         case TurnBasedActions.Item:
                             talkScreen.SetActive(true);
+                            backButton.SetActive(true);
                             state = Battle.inItemMenu;
                             Debug.Log("TODO will be able to use Item equipped or use a turn to equip an item.");
                             // throw new NotImplementedException("not setup yet");
@@ -207,12 +249,12 @@ public class BattleUI : MenuWithButtons
                         case TurnBasedActions.Talk:
                             // TODO 
                             talkScreen.SetActive(true);
+                            backButton.SetActive(true);
                             state = Battle.InTalkMenu;
                             // StartDialogue(this.enemyYouFightin.battleSceneDialogueSlide);
                             break;
                         default:
-                            throw new ArgumentNullException("No matching action.");
-                            break;
+                            throw new ArgumentOutOfRangeException("No matching action.");
                     }
                 }
                 break;
@@ -262,8 +304,8 @@ public class BattleUI : MenuWithButtons
                     {
                         Debug.Log("player won");
                         StartCoroutine(TestDialogueBox("You Won", Color.black));
-                        var scene = // todo should be a scene for after won battle somwhere somehow.
-                        TalkingDungeonScenes.LoadScene(scene, exitBattleTransition);
+                        var scene = enemyYouFightin.SceneAfterWin;
+                        TalkingDungeonScenes.LoadScene(scene, exitBattleTransition, GameState.BattleWon);
                         this.state = Battle.PlayerWon;
                     }
                 }
@@ -312,7 +354,7 @@ public class BattleUI : MenuWithButtons
                     // also only need to save current player health and inventory items they might have used items.
                     SaveGameUtility.SaveStuffFromBattle(player);
                     var scenePlayerSavedInLast = PlayerPrefs.GetString(SaveKeys.LastScene);
-                    TalkingDungeonScenes.LoadScene(scenePlayerSavedInLast, exitBattleTransition);
+                    TalkingDungeonScenes.LoadScene(scenePlayerSavedInLast, exitBattleTransition, GameState.BattleRunAwaySuccess);
                     this.state = Battle.TransitioningOutOfBattle;
                 }
                 break;
@@ -345,7 +387,7 @@ public class BattleUI : MenuWithButtons
             person = enemyYouFightin.unitName;
         }
 
-        var turnInfoString = $"{person} used {player.equippedWeapon.Name} to {abilityUsed.Name} to {abilityUsed.Description}";
+        var turnInfoString = $"{person} used {user.equippedWeapon.Name} to {abilityUsed.Name} to {abilityUsed.FormatDescription(user.equippedWeapon)}";
         StartCoroutine(TestDialogueBox(turnInfoString, color));
     }
 

@@ -181,7 +181,7 @@ public class DialogueTextBox : MenuWithButtons
             DontDestroyOnLoad(enemy.gameObject);
         }
 
-        TransitionManager.Instance().Transition(TalkingDungeonScenes.Battle, this.transitionForGoingToBattleScene, 0f);
+        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Battle, this.transitionForGoingToBattleScene, GameState.StartedBattle);
         return;
     }
 
@@ -277,15 +277,7 @@ public class DialogueTextBox : MenuWithButtons
                 continue;
             }
 
-            // play dialogue text sound effect
-
-            // this was in here for the writing loop but idk if ill use it
-            //if (!this.audioSource.isPlaying)
-            //{
-            //    this.PlayDialoguePrintAudio();
-            //}
             this.PlayDialoguePrintAudio();
-
             if (i == 0) // set first letter if this is the first letter.
             {
                 this.TMPTextBox.SetText(this.CurrentSlide.dialogue[0].ToString());

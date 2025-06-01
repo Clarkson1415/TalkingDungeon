@@ -52,20 +52,20 @@ namespace Assets.GracesScripts.UI
                 this.itemdescriptionContainer.SetDescription($"{weapon.description}");
                 this.defenceValueText.text = weapon.DefenceStat.ToString();
                 this.powerValueText.text = weapon.PowerStat.ToString();
-                UpdateAbilitySlots(weapon.Abilities);
+                UpdateAbilitySlots(weapon);
             }
         }
 
         [SerializeField] private GameObject GrantsAbilitySection;
 
-        private void UpdateAbilitySlots(List<Ability> abilities)
+        private void UpdateAbilitySlots(Weapon weapon)
         {
             GrantsAbilitySection.SetActive(true);
-
+            var abilities = weapon.Abilities;
             for (int i = 0; i < abilities.Count; i++)
             {
                 this.AbilitySlots[i].gameObject.SetActive(true);
-                this.AbilitySlots[i].SetAbilityAndImage(abilities[i]);
+                this.AbilitySlots[i].SetAbilityAndImage(abilities[i], weapon);
             }
 
             for (int j = abilities.Count; j < this.AbilitySlots.Count; j++)

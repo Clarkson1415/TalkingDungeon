@@ -37,14 +37,6 @@ public class PlayerDungeon : Unit
 
     public List<string> scenesTraversed = new();
 
-    [Header("For While Testing In Unity Editor its made public but do not remove just make hide in inspector.")]
-# if UNITY_EDITOR
-    /// <summary>
-    /// For testing purposes only so that the savegame is not loaded for for me when I want to test specific items and stuff.
-    /// </summary>
-    public bool RestartGameFromThisScene;
-# endif
-
     [HideInInspector] public IInteracble? InteractableInRange { get; private set; } = null;
 
     [Header("EnemyBattleLoader")]
@@ -89,27 +81,33 @@ public class PlayerDungeon : Unit
 
         this.state = startingState;
 
-#if UNITY_EDITOR // save whats set in the inspector then load it 
-        if (this.RestartGameFromThisScene)
+        switch (PlayerPrefs.GetString(SaveKeys.GameState))
         {
-            SaveGameUtility.SaveGame(this);
-        }
-# endif
-
-        if (PlayerPrefs.GetString(SaveKeys.GameState) == )
-        {
-
-        }
-
-        if (!string.IsNullOrEmpty(PlayerPrefs.GetString(SaveKeys.LastScene)))
-        {
-            SaveGameUtility.LoadSaveDataFromLastScene(this);
-
-            if (PlayerPrefs.GetString(SaveKeys.LastScene) == TalkingDungeonScenes.Intro)
-            {
-                 also add to scenesTraversed from intro im not doing that
+            case GameState.RegularSceneChange:
+                SaveGameUtility.LoadSaveNotPosition(this);
+                break;
+            case GameState.LoadingSave:
+                SaveGameUtility.LoadSaveNotPosition(this);
                 SaveGameUtility.LoadPlayerPosition(this);
-            }
+                break;
+            case GameState.BattleLost:
+                SaveGameUtility.LoadSaveNotPosition(this);
+                SaveGameUtility.LoadPlayerPosition(this);
+                break;
+            case GameState.QuittingToTitle:
+                break;
+            case GameState.BattleWon:
+                SaveGameUtility.LoadSaveNotPosition(this);
+                break;
+            case GameState.NewGame:
+                break;
+            case GameState.BattleRunAwaySuccess:
+                SaveGameUtility.LoadSaveNotPosition(this);
+                SaveGameUtility.LoadPlayerPosition(this);
+                break;
+            default:
+                Debug.LogWarning("Game state not valid. If starting from a scene not Title screen than ignore this.");
+                break;
         }
 
         // Save upon entering new scene do not save if in battle scene though
@@ -336,11 +334,18 @@ public class PlayerDungeon : Unit
                     }
                     else if (this.EquippedItems.Contains(selectedItemOp.Item))
                     {
+                        // if want to unequip hands it does not. so we do not play select sound.
+                        if (selectedItemOp.Item != DefaultWeaponHands)
+                        {
+                            selectedItemOp.PlaySelectSound();
+                        }
+
                         RemoveFromPlayerEquipped(selectedItemOp);
                         this.inventoryMenu.RemoveFromPlayerEquipped(selectedItemOp);
                     }
                     else if (IsValidEquip(selectedItemOp.Item))
                     {
+                        selectedItemOp.PlaySelectSound();
                         this.inventoryMenu.AddToPlayerEquipped(selectedItemOp);
                         AddToPlayerEquipped(selectedItemOp.Item);
                     }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 #nullable enable
@@ -23,6 +24,7 @@ namespace Assets.GracesScripts.UI
             {
                 return;
             }
+
             button.PlayHighlightedSound();
         }
 

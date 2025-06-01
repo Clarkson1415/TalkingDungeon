@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.GracesScripts.ScriptableObjects;
+using UnityEngine;
 using UnityEngine.UI;
 #nullable enable
 
@@ -25,18 +26,7 @@ public class InventorySlot : DungeonButton
         spriteImageComponent.SetImage(item.image);
     }
 
-    /// <summary>
-    /// Should SPlit ITem into ability and item items classes as this is only for abilities.
-    /// </summary>
-    /// <param name="text"></param>
-    public void UpdateToolTip(string text)
-    {
-        var toolTip = this.GetComponentInParent<HasATooltip>();
-        MyGuard.IsNotNull(toolTip, "No has a tooltip component founnd in parent");
-        toolTip.ChangeToolTipText(text);
-    }
-
-    public void SetAbilityAndImage(Ability? ability)
+    public void SetAbilityAndImage(Ability? ability, Weapon weapon)
     {
         if (ability == null)
         {
@@ -49,7 +39,7 @@ public class InventorySlot : DungeonButton
 
         var spriteImageComponent = this.gameObject.GetComponentInChildren<InventorySlotImage>();
         spriteImageComponent.SetImage(Ability.image);
-        this.gameObject.GetComponent<AbilityButtonToolTip>().UpdateAbilityToolTip();
+        this.gameObject.GetComponent<AbilityButtonToolTip>().UpdateAbilityToolTip(weapon);
     }
 
     public void ReplaceSlotWithBlanks()
@@ -61,15 +51,9 @@ public class InventorySlot : DungeonButton
         spriteImageComponent.SetImage(unequippedGraphic);
     }
 
-    /// <summary>
-    /// Item Option Button applies equipped overlay to it.
-    /// </summary>
     public override void PlaySelectSound()
     {
-        if (this.Item != null)
-        {
-            base.PlaySelectSound();
-        }
+        base.PlaySelectSound();
     }
 
     public void ToggleEquipGraphic(bool isEquipped)
