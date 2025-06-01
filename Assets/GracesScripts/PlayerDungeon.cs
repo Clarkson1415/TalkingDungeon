@@ -105,6 +105,9 @@ public class PlayerDungeon : Unit
                 SaveGameUtility.LoadSaveNotPosition(this);
                 SaveGameUtility.LoadPlayerPosition(this);
                 break;
+            case GameState.StartedBattle:
+                SaveGameUtility.LoadSaveNotPosition(this);
+                break;
             default:
                 Debug.LogWarning("Game state not valid. If starting from a scene not Title screen than ignore this.");
                 break;

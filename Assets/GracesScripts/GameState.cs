@@ -13,6 +13,6 @@ namespace Assets.GracesScripts
         public const string BattleRunAwaySuccess = "BattleRunAwaySuccess";
         public const string StartedBattle = "StartedBattle";
 
-        public static List<string> GameStates => new() { NewGame, BattleLost, BattleWon, LoadingSave, RegularSceneChange, QuittingToTitle };
+        public static List<string> GameStates => new() { NewGame, BattleLost, BattleWon, LoadingSave, RegularSceneChange, QuittingToTitle, StartedBattle };
     }
 }

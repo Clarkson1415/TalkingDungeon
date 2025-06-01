@@ -98,6 +98,8 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 
     public override void Close()
     {
+        this.PageFlipper.SetActive(true);
+        this.flipPageAnimator.SetTrigger("Close");
         this.bookSlideInOutAnimator.SetTrigger("Close");
         StartCoroutine(DisableInventoryAfterBookAnim());
     }

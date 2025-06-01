@@ -18,7 +18,7 @@ public class BattleUI : MenuWithButtons
     [SerializeField] private GameObject PlayerHealthBarAndNameToShake;
     [SerializeField] private Image PlayerHealthFill;
     [HideInInspector] public bool IsPlayerHealthBarPlayingAnimation => player.healthBarFill.fillAmount > Mathf.Clamp((player.currentHealth / player.maxHealth), 0, 1);
-    [HideInInspector] public bool IsEnemyDamageAnimationPlaying => enemyYouFightin.healthBarFill.fillAmount > Mathf.Clamp((enemyYouFightin.currentHealth / enemyYouFightin.maxHealth), 0, 1);
+    [HideInInspector] public bool IsEnemyHealthAnimationPlaying => enemyYouFightin.healthBarFill.fillAmount > Mathf.Clamp((enemyYouFightin.currentHealth / enemyYouFightin.maxHealth), 0, 1);
 
     [Header("UI")]
     [SerializeField] TransitionSettings exitBattleTransition;
@@ -46,10 +46,11 @@ public class BattleUI : MenuWithButtons
 
     [Header("Dialogue Printing Stuff")]
     private const char pauseCharacterToNotPrint = '_';
-    [SerializeField] private float underscorePauseTime = 0.01f;
+    [SerializeField] private float underscorePauseTime = 0.05f;
     private AudioSource dialoguePrintAudio;
     [SerializeField] private TMP_Text TopSlideText;
     [SerializeField] private float timeBetweenLetters;
+    [SerializeField] private float AfterDialogueFinishedDelay = 3f;
 
     private bool actionClickedFlag;
     private bool abilityClickedFlag;
@@ -74,10 +75,9 @@ public class BattleUI : MenuWithButtons
     private IEnumerator TestDialogueBox(string text, Color color)
     {
         this.isDialoguePrinting = true;
-
-
         battleDialogBoxAboveText.text = text;
         battleDialogBoxAboveText.color = color;
+        this.TopSlideText.text = string.Empty;
 
         for (int i = 0; i < text.Length; i++)
         {
@@ -109,7 +109,8 @@ public class BattleUI : MenuWithButtons
             this.TopSlideText.text += text[i];
             yield return new WaitForSeconds(timeBetweenLetters);
         }
-        yield return new WaitForSeconds(2f);
+
+        yield return new WaitForSeconds(AfterDialogueFinishedDelay);
         this.isDialoguePrinting = false;
     }
 
@@ -150,9 +151,9 @@ public class BattleUI : MenuWithButtons
     {
         PlayerPickActionTurn,
         PlayerPickAbilityTurn,
-        ExecutingPlayerTurn,
+        ExecutingPlayersMove,
         EnemyTurn,
-        WaitForEnemyMoveToFinish,
+        ExecutingEnemiesMove,
         PlayerWon,
         PlayerLost,
         WaitOnDeathScreen,
@@ -280,20 +281,20 @@ public class BattleUI : MenuWithButtons
                     ShowAbilityUsedText(this.player, abilityUsed);
                     this.abilityButtonSceen.SetActive(false);
                     this.backButton.SetActive(false);
-                    this.state = Battle.ExecutingPlayerTurn;
+                    this.state = Battle.ExecutingPlayersMove;
                 }
                 if (this.backButtonClickedFlag)
                 {
                     BackCLickedGoBackToPlayerAction(this.abilityButtonSceen);
                 }
                 break;
-            case Battle.ExecutingPlayerTurn:
+            case Battle.ExecutingPlayersMove:
                 // wait until enemy health bar anim finished then take enemies turn
                 // when finished showing player move text go to enemy move
                 // also need to wait for player health bar anim for healing etc.
                 // also somehow will need to Wait for whatever effect animation is playing.
                 // maybe use animation state but need to make 1 anim override for effect animations then.
-                if (!IsEnemyDamageAnimationPlaying && !IsPlayerHealthBarPlayingAnimation && !isDialoguePrinting)
+                if (!IsEnemyHealthAnimationPlaying && !IsPlayerHealthBarPlayingAnimation && !isDialoguePrinting)
                 {
                     if (enemyYouFightin.currentHealth > 0)
                     {
@@ -326,12 +327,12 @@ public class BattleUI : MenuWithButtons
                 }
                 else
                 {
-                    state = Battle.WaitForEnemyMoveToFinish;
+                    state = Battle.ExecutingEnemiesMove;
                 }
                 break;
-            case Battle.WaitForEnemyMoveToFinish:
+            case Battle.ExecutingEnemiesMove:
                 // when dialogue not printing and player animation finished  
-                if (!this.IsPlayerHealthBarPlayingAnimation && !isDialoguePrinting)
+                if (!this.IsPlayerHealthBarPlayingAnimation && !this.IsEnemyHealthAnimationPlaying && !isDialoguePrinting)
                 {
                     this.actionButtonScreen.SetActive(true);
                     StartCoroutine(TestDialogueBox("Your Turn", Color.black));
