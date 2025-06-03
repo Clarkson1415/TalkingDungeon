@@ -23,17 +23,16 @@ public abstract class Unit : MonoBehaviour
     [HideInInspector] public GameObject HealthBarObject;
     [HideInInspector] public Image healthBarFill;
 
-    [SerializeField] private float basePower = 0;
-    public float powerModifier;
-    public float Power => powerModifier * (this.basePower + this.equippedWeapon.PowerStat);
+    [SerializeField] public int basePower = 0;
+    public int powerModifier;
 
-    [SerializeField] private float baseDefence = 0;
+    [SerializeField] public int baseDefence = 0;
 
     /// <summary>
     /// Will be changed from one off items to buffing abilities
     /// </summary>
-    public float defenceModifier = 0;
-    public float Defence => defenceModifier * (this.equippedWeapon.DefenceStat + baseDefence);
+    public int defenceModifier = 0;
+
     protected UseAnimatedLayers? animatedLayers;
     [SerializeField] private Material? whiteFlashMaterial;
     private List<SpriteRenderer> unitsSpriteLayers = new();

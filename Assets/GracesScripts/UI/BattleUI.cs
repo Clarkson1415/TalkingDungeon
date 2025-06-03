@@ -233,6 +233,7 @@ public class BattleUI : MenuWithButtons
                             this.state = Battle.PlayerPickAbilityTurn;
                             break;
                         case TurnBasedActions.Run:
+                            backButton.SetActive(false);
                             bool runSuccesss = true;
                             this.runScreen.SetActive(true);
                             if (player.currentHealth <= (enemyYouFightin.currentHealth))
@@ -253,7 +254,7 @@ public class BattleUI : MenuWithButtons
                             }
                             break;
                         case TurnBasedActions.Item:
-                            talkScreen.SetActive(true);
+                            itemScreen.SetActive(true);
                             backButton.SetActive(true);
                             state = Battle.inItemMenu;
                             Debug.Log("TODO will be able to use Item equipped or use a turn to equip an item.");
@@ -289,7 +290,7 @@ public class BattleUI : MenuWithButtons
                     var abilityUsed = evSys.currentSelectedGameObject.GetComponent<InventorySlot>().Ability;
                     MyGuard.IsNotNull(abilityUsed, "AbilityUsed battle Ui in playerPickAbilityTurn was null.");
                     Log.Print($"You used {abilityUsed.name} on {enemyYouFightin.unitName} To {abilityUsed.Effects}");
-                    abilityUsed.Apply(player.equippedWeapon.PowerStat, player, enemyYouFightin);
+                    abilityUsed.Apply(player.equippedWeapon, player, enemyYouFightin);
                     ShowAbilityUsedText(this.player, abilityUsed);
                     this.abilityButtonSceen.SetActive(false);
                     this.backButton.SetActive(false);
@@ -327,7 +328,7 @@ public class BattleUI : MenuWithButtons
                 // or enemy could use an item.
                 Debug.Log("not finished setup here. need to calculate damage based on units current defence stat also?");
                 var enemyAbility = PickRandomAbility(this.enemyYouFightin.Abilities);
-                enemyAbility.Apply(enemyYouFightin.equippedWeapon.PowerStat, enemyYouFightin, player);
+                enemyAbility.Apply(enemyYouFightin.equippedWeapon, enemyYouFightin, player);
                 ShowAbilityUsedText(this.enemyYouFightin, enemyAbility);
                 // TODO display damage turn text on screen
                 Log.Print("current wellbeing " + this.player.currentHealth);

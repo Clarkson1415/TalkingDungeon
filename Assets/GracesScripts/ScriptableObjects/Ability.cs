@@ -27,7 +27,12 @@ public class Ability : ScriptableObject
             throw new ArgumentException($"Ability Description string on {Name} is empty");
         }
 
-        return string.Format(this.Name + ": " + this._desc, this.Value * weapon.PowerStat);
+        return string.Format(this.Name + ": " + this._desc, RawDamageCalculated(weapon, player));
+    }
+
+    private int RawDamageCalculated(Weapon weapon, Unit user)
+    {
+        return this.Value * weapon.PowerStat * user.powerModifier * user.basePower;
     }
     
     /// <summary>
@@ -47,11 +52,11 @@ public class Ability : ScriptableObject
 
     public List<AbilityEffect> Effects;
 
-    public void Apply(int weaponUsedPower, Unit user, Unit target)
+    public void Apply(Weapon weapon, Unit user, Unit target)
     {
         foreach (var effect in this.Effects)
         {
-            effect.ApplyToUnit(user, target, this.Value * weaponUsedPower);
+            effect.ApplyToUnit(user, target, (RawDamageCalculated(weapon, user) - ((int)((target.baseDefence * target.defenceModifier * target.equippedWeapon.DefenceStat) /100) * RawDamageCalculated(weapon, user))));
         }
     }
 }

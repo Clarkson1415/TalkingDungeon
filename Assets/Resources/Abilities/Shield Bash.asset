@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Shield Bash
   m_EditorClassIdentifier: 
   Name: Shield Bash
-  _desc: Throw your weight against him deal {0} Damage
-  Value: 5
-  cooldown: 0
+  _desc: Throw your weight against him deal {0} Damage. 1 Turn of cooldown.
+  Value: 8
+  cooldown: 1
   image: {fileID: 21300000, guid: 5ab16ec06eabc524384f52229b708f7e, type: 3}
   Effects:
   - {fileID: 11400000, guid: 72f68dc6b2e90274791b1850290c9d74, type: 2}
