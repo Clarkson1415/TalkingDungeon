@@ -260,6 +260,16 @@ public class DialogueTextBox : MenuWithButtons
         DeactivateAllButtons();
         MyGuard.IsNotNull(this.CurrentSlide);
         MyGuard.IsNotNull(this.CurrentSlide.dialogue);
+
+        // get the autosized font size. then reprint the text at that size without autosize enabled so it doesnt change size while printing.
+        this.TMPTextBox.enableAutoSizing = true;
+        this.TMPTextBox.text = this.CurrentSlide.dialogue;
+        this.TMPTextBox.ForceMeshUpdate();
+        var fontSize = this.TMPTextBox.fontSize;
+        this.TMPTextBox.text = string.Empty;
+        this.TMPTextBox.enableAutoSizing = false;
+        this.TMPTextBox.fontSize = fontSize;
+
         for (int i = 0; i < this.CurrentSlide.dialogue.Length; i++)
         {
             // don't play sound for either the special pause text printing character, or spaces. 

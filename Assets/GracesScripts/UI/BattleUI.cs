@@ -28,6 +28,7 @@ public class BattleUI : MenuWithButtons
     [SerializeField] GameObject actionButtonScreen;
     [SerializeField] GameObject abilityButtonSceen;
     [SerializeField] GameObject itemScreen;
+    [SerializeField] GameObject runScreen;
     [SerializeField] GameObject talkScreen;
     [SerializeField] private GameObject battleDialogueBox;
     private TMP_Text battleDialogBoxAboveText;
@@ -50,7 +51,6 @@ public class BattleUI : MenuWithButtons
     private AudioSource dialoguePrintAudio;
     [SerializeField] private TMP_Text TopSlideText;
     [SerializeField] private float timeBetweenLetters;
-    [SerializeField] private float AfterDialogueFinishedDelay = 3f;
 
     private bool actionClickedFlag;
     private bool abilityClickedFlag;
@@ -74,10 +74,20 @@ public class BattleUI : MenuWithButtons
     
     private IEnumerator TestDialogueBox(string text, Color color)
     {
+        // get the autosized font size. then reprint the text at that size without autosize enabled so it doesnt change size while printing.
+        this.TopSlideText.enableAutoSizing = true;
+        this.TopSlideText.text = text;
+        this.TopSlideText.ForceMeshUpdate();
+        var fontSize = this.TopSlideText.fontSize;
+        this.TopSlideText.text = string.Empty;
+        this.TopSlideText.enableAutoSizing = false;
+        this.TopSlideText.fontSize = fontSize;
+        this.TopSlideText.ForceMeshUpdate();
+
+        var secondsToWait = text.Length / 25f;
         this.isDialoguePrinting = true;
         battleDialogBoxAboveText.text = text;
         battleDialogBoxAboveText.color = color;
-        this.TopSlideText.text = string.Empty;
 
         for (int i = 0; i < text.Length; i++)
         {
@@ -110,7 +120,7 @@ public class BattleUI : MenuWithButtons
             yield return new WaitForSeconds(timeBetweenLetters);
         }
 
-        yield return new WaitForSeconds(AfterDialogueFinishedDelay);
+        yield return new WaitForSeconds(secondsToWait);
         this.isDialoguePrinting = false;
     }
 
@@ -188,6 +198,11 @@ public class BattleUI : MenuWithButtons
     // Update is called once per frame 
     void Update()
     {
+        if (this.isDialoguePrinting)
+        {
+            return;
+        }
+
         switch (state)
         {
             case Battle.PlayerPickActionTurn:
@@ -218,6 +233,7 @@ public class BattleUI : MenuWithButtons
                             break;
                         case TurnBasedActions.Run:
                             bool runSuccesss = true;
+                            this.runScreen.SetActive(true);
                             if (player.currentHealth <= (enemyYouFightin.currentHealth))
                             {
                                 Debug.Log("Getaway based on if you have more wellbeing than enemy");
@@ -240,12 +256,7 @@ public class BattleUI : MenuWithButtons
                             backButton.SetActive(true);
                             state = Battle.inItemMenu;
                             Debug.Log("TODO will be able to use Item equipped or use a turn to equip an item.");
-                            // throw new NotImplementedException("not setup yet");
-                            //itemScreen.SetActive(true);
-                            //this.itemScreen.GetComponentInChildren<Button>().gameObject.SetActive(true);
-                            //itemScreen.GetComponent<ItemMenuBattle>().SlideIn();
-                            //this.evSys.SetSelectedGameObject(this.itemScreen.GetComponentInChildren<Button>().gameObject);
-                            //this.state = Battle.inItemMenu;
+                            // either use your equipped item or use a turn to change equipped item
                             break;
                         case TurnBasedActions.Talk:
                             // TODO 
@@ -334,9 +345,8 @@ public class BattleUI : MenuWithButtons
                 // when dialogue not printing and player animation finished  
                 if (!this.IsPlayerHealthBarPlayingAnimation && !this.IsEnemyHealthAnimationPlaying && !isDialoguePrinting)
                 {
-                    this.actionButtonScreen.SetActive(true);
                     StartCoroutine(TestDialogueBox("Your Turn", Color.black));
-                    this.state = Battle.PlayerPickActionTurn;
+                    BackCLickedGoBackToPlayerAction(this.runScreen);
                 }
                 break;
             case Battle.PlayerWon:

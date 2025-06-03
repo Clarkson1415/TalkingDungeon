@@ -8,6 +8,21 @@ namespace Assets.GracesScripts
 
         public string SceneAfterWin;
 
+        private void StartBattleIdleAnimation()
+        {
+            animatedLayers.SetTriggers("StartFight");
+        }
+
+        public void SetupUnitForBattle()
+        {
+            Debug.Log("EVERYTHING BELOW GETFIRSTDIALOGUE SLIDE TO GO IN UNITFORBATTEL.CS an extension of this class for the turn based battle. NAH maybe not? thogh animate enemy health in here is conveintint because dont have to setup UI on the new object when battle starts");
+            MyGuard.IsNotNull(this.healthBarFill);
+            MyGuard.IsNotNull(this.HealthBarObject);
+            this.healthBarFill.fillAmount = this.currentHealth / this.maxHealth;
+            this.StartBattleIdleAnimation();
+            this.transform.localScale = new Vector3(this.transform.localScale.x * -1, this.transform.localScale.y, this.transform.localScale.z);
+        }
+
         /// <summary>
         /// Used for not in battle scene.
         /// </summary>

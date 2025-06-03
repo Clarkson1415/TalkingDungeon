@@ -22,6 +22,14 @@ public class UseAnimatedLayers : MonoBehaviour
         }
     }
 
+    public void SetTriggers(string paramName)
+    {
+        foreach (var anim in this.animators)
+        {
+            anim.SetTrigger(paramName);
+        }
+    }
+
     public void SetFloats(string paramName, float value)
     {
         foreach (var anim in this.animators)

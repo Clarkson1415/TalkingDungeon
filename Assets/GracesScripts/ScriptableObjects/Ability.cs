@@ -27,7 +27,7 @@ public class Ability : ScriptableObject
             throw new ArgumentException($"Ability Description string on {Name} is empty");
         }
 
-        return string.Format(this._desc, this.Value * weapon.PowerStat);
+        return string.Format(this.Name + ": " + this._desc, this.Value * weapon.PowerStat);
     }
     
     /// <summary>

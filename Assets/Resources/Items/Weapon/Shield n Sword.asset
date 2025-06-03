@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36343564eacaf1242b12a77bfc501b4b, type: 3}
+  m_Name: Shield n Sword
+  m_EditorClassIdentifier: 
+  Name: Shield n Sword
+  description: Yes, that will work.
+  image: {fileID: 21300000, guid: e64f677e2eb21b64081fb1c3fd0dcb95, type: 3}
+  Abilities:
+  - {fileID: 11400000, guid: 7d83d747dc7009242aa210043e480e5d, type: 2}
+  - {fileID: 11400000, guid: b6e76820bcfa5164e920dae257ea32db, type: 2}
+  - {fileID: 11400000, guid: 992e684da5fe44d478df21fbd10e3bc7, type: 2}
+  PowerStat: 1
+  DefenceStat: 0

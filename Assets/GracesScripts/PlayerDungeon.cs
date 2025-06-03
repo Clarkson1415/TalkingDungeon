@@ -125,6 +125,12 @@ public class PlayerDungeon : Unit
         {
             throw new ArgumentException("canont have less than 1 ability at least would have push on hands.");
         }
+
+        if (this.startingState == KnightState.InTurnBased)
+        {
+            MyGuard.IsNotNull(animatedLayers);
+            animatedLayers.SetTriggers("StartFight");
+        }
     }
 
     /// <summary>
