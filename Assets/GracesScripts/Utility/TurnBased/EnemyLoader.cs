@@ -1,3 +1,4 @@
+using Assets.GracesScripts;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,6 +25,7 @@ public class EnemyLoader : MonoBehaviour
 
         var enemyStartBattleLocation = FindObjectOfType<EnemyLocationInTurnBased>();
         MyGuard.IsNotNull(enemyStartBattleLocation);
+        MyGuard.IsNotNull(enemyWasTalkingTo);
         enemyWasTalkingTo.transform.SetParent(enemyStartBattleLocation.transform);
         enemyWasTalkingTo.transform.localPosition = new Vector3(0, 0, 0);
 

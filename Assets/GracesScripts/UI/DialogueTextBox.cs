@@ -269,6 +269,7 @@ public class DialogueTextBox : MenuWithButtons
         this.TMPTextBox.text = string.Empty;
         this.TMPTextBox.enableAutoSizing = false;
         this.TMPTextBox.fontSize = fontSize;
+        this.TMPTextBox.ForceMeshUpdate();
 
         for (int i = 0; i < this.CurrentSlide.dialogue.Length; i++)
         {

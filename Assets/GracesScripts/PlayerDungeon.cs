@@ -485,8 +485,6 @@ public class PlayerDungeon : Unit
         if (context.started)
         {
             footstepsSound.Play();
-            this.animatedLayers.SetFloats("LastXDir", this.direction.x);
-            this.animatedLayers.SetFloats("LastYDir", this.direction.y);
         }
         else if (context.performed)
         {
@@ -495,7 +493,9 @@ public class PlayerDungeon : Unit
         else if (context.canceled)
         {
             footstepsSound.Stop();
-            Log.Print("on move cancelled");
+            this.animatedLayers.SetFloats("LastXDir", this.direction.x);
+            this.animatedLayers.SetFloats("LastYDir", this.direction.y);
+            //Log.Print("on move cancelled");
         }
 
         UpdateAnimationFloats();

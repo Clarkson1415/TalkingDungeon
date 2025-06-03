@@ -55,9 +55,12 @@ public abstract class Unit : MonoBehaviour
         _block = new MaterialPropertyBlock();
     }
 
-    IEnumerator FlashRoutine(float duration)
+    IEnumerator FlashRoutineAndHurtAnimation(float duration)
     {
+        yield return new WaitForSeconds(0.3f);
         var timeStart = Time.time;
+        MyGuard.IsNotNull(this.animatedLayers);
+        this.animatedLayers.SetTriggers("Hurt");
 
         while (Time.time < timeStart + duration)
         {
@@ -95,7 +98,7 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public void TakeDamage(float value)
     {
-        StartCoroutine(FlashRoutine(2f));
+        StartCoroutine(FlashRoutineAndHurtAnimation(2f));
         Debug.Log("Check how the timing of StartShake and damage bar reducing works i dont remember but rewrite it so its clearly aligned.");
         var objectToShake = this.HealthBarObject.GetComponent<ShakeObject>();
         objectToShake.StartShake(1f, 5f);

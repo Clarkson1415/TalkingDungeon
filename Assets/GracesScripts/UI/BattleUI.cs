@@ -139,6 +139,7 @@ public class BattleUI : MenuWithButtons
         this.backButton.SetActive(false);
         itemScreen.SetActive(false);
         talkScreen.SetActive(false);
+        runScreen.SetActive(false);
         StartCoroutine(TestDialogueBox("Your turn", Color.black));
     }
 
