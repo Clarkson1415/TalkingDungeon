@@ -13,10 +13,8 @@ public class Ability : ScriptableObject
     /// </summary>
     [SerializeField] string _desc;
 
-    public string FormatDescription(Weapon weapon)
+    public string FormatDescription(Weapon weapon, Unit user)
     {
-        var player = FindObjectOfType<PlayerDungeon>();
-        MyGuard.IsNotNull("Player not found.");
         if (!this._desc.Contains("{0}"))
         {
             throw new ArgumentException($"Does not have {{0}} in descriptino string on Ability: {Name} in inspector please add so correct damage is displayed.");
@@ -27,13 +25,9 @@ public class Ability : ScriptableObject
             throw new ArgumentException($"Ability Description string on {Name} is empty");
         }
 
-        return string.Format(this.Name + ": " + this._desc, RawDamageCalculated(weapon, player));
+        return string.Format(this.Name + ": " + this._desc, user.GetRawPower(weapon) * this.Value);
     }
 
-    private int RawDamageCalculated(Weapon weapon, Unit user)
-    {
-        return this.Value * weapon.PowerStat * user.powerModifier * user.basePower;
-    }
     
     /// <summary>
     /// Ability damage. multiplied by the weapons power.
@@ -52,11 +46,14 @@ public class Ability : ScriptableObject
 
     public List<AbilityEffect> Effects;
 
-    public void Apply(Weapon weapon, Unit user, Unit target)
+    public void Apply(Unit user, Unit target)
     {
         foreach (var effect in this.Effects)
         {
-            effect.ApplyToUnit(user, target, (RawDamageCalculated(weapon, user) - ((int)((target.baseDefence * target.defenceModifier * target.equippedWeapon.DefenceStat) /100) * RawDamageCalculated(weapon, user))));
+            var rawAmount = user.GetRawPower(user.equippedWeapon) * this.Value;
+            // Damage = Attack * (1 - (Defense / 100))
+            var calculated = rawAmount - (1 - (target.GetRawDefence(target.equippedWeapon) / 100));
+            effect.ApplyToUnit(user, target, calculated);
         }
     }
 }

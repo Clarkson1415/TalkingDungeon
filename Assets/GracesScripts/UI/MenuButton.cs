@@ -19,7 +19,7 @@ public class MenuButton : DungeonButton
     public void StartNewGame()
     {
         PlayerPrefs.DeleteAll();
-        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Intro, transition, GameState.NewGame);
+        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Intro, transition, SaveGameState.NewGame);
         Debug.Log($"loading scene: {TalkingDungeonScenes.Intro} from menuButton.cs");
     }
 
@@ -37,7 +37,7 @@ public class MenuButton : DungeonButton
     public void LoadGameFromSave()
     {
         var scenePlayerSavedIn = PlayerPrefs.GetString(SaveKeys.LastScene);
-        TalkingDungeonScenes.LoadScene(scenePlayerSavedIn, transition, GameState.LoadingSave);
+        TalkingDungeonScenes.LoadScene(scenePlayerSavedIn, transition, SaveGameState.LoadingSave);
     }
 
     public void SaveAndQuitToTitle()
@@ -48,7 +48,7 @@ public class MenuButton : DungeonButton
 
     public void QuitToTitle()
     {
-        TalkingDungeonScenes.LoadScene("TitleScreen", transition, GameState.QuittingToTitle);
+        TalkingDungeonScenes.LoadScene("TitleScreen", transition, SaveGameState.QuittingToTitle);
     }
 
     public void OpenFeedbackForm()

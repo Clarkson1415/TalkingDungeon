@@ -151,4 +151,14 @@ public abstract class Unit : MonoBehaviour
         // Ensure we end exactly at target
         this.healthBarFill.fillAmount = targetFillAmount;
     }
+
+    public int GetRawPower(Weapon weapon)
+    {
+        return weapon.PowerStat * this.powerModifier * this.basePower;
+    }
+
+    public int GetRawDefence(Weapon weapon)
+    {
+        return weapon.PowerStat * this.powerModifier * this.basePower;
+    }
 }

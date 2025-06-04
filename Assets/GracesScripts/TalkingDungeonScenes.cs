@@ -13,7 +13,7 @@ public class TalkingDungeonScenes
 
     public static void LoadScene(string scene, TransitionSettings transition, string gameState)
     {
-        if (!GameState.GameStates.Contains(gameState))
+        if (!SaveGameState.GameStates.Contains(gameState))
         {
             Debug.LogError("Game state string must belong to valid game states.");
         }
@@ -27,7 +27,7 @@ public class TalkingDungeonScenes
 
     public static void SaveNewGameState(string gameState)
     {
-        if (!GameState.GameStates.Contains(gameState))
+        if (!SaveGameState.GameStates.Contains(gameState))
         {
             Debug.LogError("Game state string must belong to valid game states.");
         }

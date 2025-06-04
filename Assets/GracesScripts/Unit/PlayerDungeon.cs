@@ -83,29 +83,29 @@ public class PlayerDungeon : Unit
 
         switch (PlayerPrefs.GetString(SaveKeys.GameState))
         {
-            case GameState.RegularSceneChange:
+            case SaveGameState.RegularSceneChange:
                 SaveGameUtility.LoadSaveNotPosition(this);
                 break;
-            case GameState.LoadingSave:
-                SaveGameUtility.LoadSaveNotPosition(this);
-                SaveGameUtility.LoadPlayerPosition(this);
-                break;
-            case GameState.BattleLost:
+            case SaveGameState.LoadingSave:
                 SaveGameUtility.LoadSaveNotPosition(this);
                 SaveGameUtility.LoadPlayerPosition(this);
                 break;
-            case GameState.QuittingToTitle:
-                break;
-            case GameState.BattleWon:
-                SaveGameUtility.LoadSaveNotPosition(this);
-                break;
-            case GameState.NewGame:
-                break;
-            case GameState.BattleRunAwaySuccess:
+            case SaveGameState.BattleLost:
                 SaveGameUtility.LoadSaveNotPosition(this);
                 SaveGameUtility.LoadPlayerPosition(this);
                 break;
-            case GameState.StartedBattle:
+            case SaveGameState.QuittingToTitle:
+                break;
+            case SaveGameState.BattleWon:
+                SaveGameUtility.LoadSaveNotPosition(this);
+                break;
+            case SaveGameState.NewGame:
+                break;
+            case SaveGameState.BattleRunAwaySuccess:
+                SaveGameUtility.LoadSaveNotPosition(this);
+                SaveGameUtility.LoadPlayerPosition(this);
+                break;
+            case SaveGameState.StartedBattle:
                 SaveGameUtility.LoadSaveNotPosition(this);
                 break;
             default:

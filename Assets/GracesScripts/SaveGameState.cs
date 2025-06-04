@@ -2,7 +2,7 @@
 
 namespace Assets.GracesScripts
 {
-    public static class GameState
+    public static class SaveGameState
     {
         public const string NewGame = "NewGame";
         public const string BattleLost = "BattleLost";

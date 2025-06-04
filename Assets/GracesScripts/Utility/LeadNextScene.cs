@@ -30,6 +30,6 @@ public class LeadNextScene : MonoBehaviour
         }
 
         SaveGameUtility.SaveGame(player);
-        TalkingDungeonScenes.LoadScene(nextScene, transition, GameState.RegularSceneChange);
+        TalkingDungeonScenes.LoadScene(nextScene, transition, SaveGameState.RegularSceneChange);
     }
 }

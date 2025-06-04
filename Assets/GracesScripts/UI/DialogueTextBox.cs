@@ -180,7 +180,7 @@ public class DialogueTextBox : MenuWithButtons
             DontDestroyOnLoad(enemy.gameObject);
         }
 
-        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Battle, this.transitionForGoingToBattleScene, GameState.StartedBattle);
+        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Battle, this.transitionForGoingToBattleScene, SaveGameState.StartedBattle);
         return;
     }
 

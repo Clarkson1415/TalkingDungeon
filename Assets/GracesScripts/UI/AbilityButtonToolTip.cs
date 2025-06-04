@@ -9,9 +9,13 @@ public class AbilityButtonToolTip : HasATooltip
         this.gameObject.SetActive(true);
         var ab = this.GetComponent<InventorySlot>().Ability;
         var text = "Empty Ability Slot";
+
+        var player = FindObjectOfType<PlayerDungeon>();
+        MyGuard.IsNotNull("Player not found.");
+
         if (ab != null)
         {
-            text = $"{ab.FormatDescription(weapon)}";
+            text = $"{ab.FormatDescription(weapon, player)}";
         }
 
         tmp.text = text;

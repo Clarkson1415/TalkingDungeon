@@ -28,7 +28,6 @@ public class SaveGameUtility : MonoBehaviour
 
         // save that we were in battle scene
         PlayerPrefs.SetString(SaveKeys.LastScene, SceneManager.GetActiveScene().name);
-
         PlayerPrefs.Save();
     }
 

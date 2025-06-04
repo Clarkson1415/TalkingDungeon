@@ -26,10 +26,11 @@ namespace Assets.GracesScripts.UI
         {
             this.player = FindObjectOfType<PlayerDungeon>();
         }
+
         public void UpdatePlayerStatsDisplay()
         {
-            this.playerPowerStatText.text = player.Power.ToString();
-            this.playerDefenceStatText.text = player.Defence.ToString();
+            this.playerPowerStatText.text = player.GetRawPower(player.equippedWeapon).ToString();
+            this.playerDefenceStatText.text = player.GetRawDefence(player.equippedWeapon).ToString();
             this.playerWellBeingText.text = player.currentHealth.ToString();
         }
 
