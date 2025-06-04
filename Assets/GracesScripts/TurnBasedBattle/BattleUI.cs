@@ -160,8 +160,6 @@ public class BattleUI : MenuWithButtons
 
     private void SetupAbilityButtons()
     {
-        // TODO setup ability buttons
-        // idk if this will change mid battle otherwise can do on start in an ability UI class on the ability UI object. or in here on start would be better maybe?
         if (player.Abilities.Count > 4)
         {
             throw new ArgumentException("abilities is more than supported in battle UI which is 4");
@@ -197,7 +195,7 @@ public class BattleUI : MenuWithButtons
         {
             action = turnBasedButton.Action;
         }
-
+        
         if (action == null)
         {
             throw new ArgumentNullException("Action was null in battle UI this is not meant to happen.");
@@ -205,7 +203,6 @@ public class BattleUI : MenuWithButtons
 
         this.actionButtonScreen.SetActive(false);
         backButton.SetActive(true);
-
         switch (action)
         {
             case TurnBasedActions.Attack:
