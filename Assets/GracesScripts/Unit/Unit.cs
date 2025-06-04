@@ -23,15 +23,15 @@ public abstract class Unit : MonoBehaviour
     [HideInInspector] public GameObject HealthBarObject;
     [HideInInspector] public Image healthBarFill;
 
-    [SerializeField] public int basePower = 0;
-    public int powerModifier;
+    [SerializeField] public int basePower = 1;
+    public int powerModifier = 1;
 
-    [SerializeField] public int baseDefence = 0;
+    [SerializeField] public int baseDefence = 1;
 
     /// <summary>
     /// Will be changed from one off items to buffing abilities
     /// </summary>
-    public int defenceModifier = 0;
+    public int defenceModifier = 1;
 
     protected UseAnimatedLayers? animatedLayers;
     [SerializeField] private Material? whiteFlashMaterial;

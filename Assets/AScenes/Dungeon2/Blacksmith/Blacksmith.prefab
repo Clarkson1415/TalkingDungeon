@@ -85,12 +85,13 @@ MonoBehaviour:
   Inventory: []
   HealthBarObject: {fileID: 0}
   healthBarFill: {fileID: 0}
-  basePower: 0
-  powerModifier: 0
-  baseDefence: 0
-  defenceModifier: 0
+  basePower: 1
+  powerModifier: 1
+  baseDefence: 1
+  defenceModifier: 1
   whiteFlashMaterial: {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   unitName: Vi
+  SceneAfterWin: 
   firstDialogueSlide: {fileID: 11400000, guid: 6316b138f6699914d96b3c0e1090fd86, type: 2}
   battleSceneDialogueSlide: {fileID: 0}
 --- !u!61 &3433705268411327916

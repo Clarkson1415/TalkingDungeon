@@ -37,6 +37,9 @@ public class BattleUI : MenuWithButtons
     private TMP_Text battleDialogBoxAboveText;
     [SerializeField] GameObject backButton;
 
+    private List<GameObject> ScreensNotAction => new() { this.itemScreen, this.runScreen, this.abilityButtonScreen, this.talkScreen };
+
+
     [Header("Enemy")]
     private Unit_NPC enemyYouFightin;
     [SerializeField] private TMP_Text enemyNameField;
@@ -53,17 +56,7 @@ public class BattleUI : MenuWithButtons
     [SerializeField] private TMP_Text TopSlideText;
     [SerializeField] private float timeBetweenLetters;
 
-    private bool actionClickedFlag;
-    private bool abilityClickedFlag;
-    private bool backButtonClickedFlag;
     private bool isDialoguePrinting;
-
-    private void ResetFlags()
-    {
-        actionClickedFlag = false;
-        abilityClickedFlag = false;
-        backButtonClickedFlag = false;
-    }
 
     private void Awake()
     {
@@ -78,7 +71,7 @@ public class BattleUI : MenuWithButtons
         MyGuard.IsNotNull(player, "could not find player");
         player.healthBarFill = this.PlayerHealthFill;
         player.HealthBarObject = this.PlayerHealthBarAndNameToShake;
-        state = Battle.PlayerPickActionTurn;
+        state = Battle.PlayerTurn;
         // TODO do i want the dialogue box to maybe say stuff on opening, like enemy approached...
         this.abilityButtonScreen.SetActive(false);
         this.actionButtonScreen.SetActive(true);
@@ -158,19 +151,11 @@ public class BattleUI : MenuWithButtons
 
     private enum Battle
     {
-        PlayerPickActionTurn,
-        PlayerPickAbilityTurn,
-        ExecutingPlayersMove,
+        PlayerTurn,
+        FinishedPLayerTurn,
         EnemyPickAbilityTurn,
-        ExecutingEnemiesMove,
-        PlayerWon,
-        PlayerLost,
-        WaitOnDeathScreen,
-        RunAwaySuccess,
-        TransitioningOutOfBattle,
-        Paused,
-        inItemMenu,
-        InTalkMenu,
+        FinishedEnemiesTurn,
+        WaitOnDeathScreenOrTransitioning,
     }
 
     private void SetupAbilityButtons()
@@ -197,14 +182,12 @@ public class BattleUI : MenuWithButtons
     // Update is called once per frame 
     void Update()
     {
-        if (this.AreAnimationsFinished)
+        if (!this.AreAnimationsFinished)
         {
             return;
         }
 
         HandleBattleState();
-
-        ResetFlags();
     }
 
     private void HandleActionButtonClicked()
@@ -228,7 +211,6 @@ public class BattleUI : MenuWithButtons
             case TurnBasedActions.Attack:
                 this.abilityButtonScreen.SetActive(true);
                 SetupAbilityButtons();
-                this.state = Battle.PlayerPickAbilityTurn;
                 break;
             case TurnBasedActions.Run:
                 backButton.SetActive(false);
@@ -243,7 +225,11 @@ public class BattleUI : MenuWithButtons
                 if (runSuccesss)
                 {
                     StartCoroutine(TestDialogueBox("you got away!", Color.black));
-                    this.state = Battle.RunAwaySuccess;
+                    // TODO play sound effect for running away
+                    SaveGameUtility.SaveStuffFromBattle(player);
+                    var scenePlayerSavedInLast = PlayerPrefs.GetString(SaveKeys.LastScene);
+                    TalkingDungeonScenes.LoadScene(scenePlayerSavedInLast, exitBattleTransition, SaveGameState.BattleRunAwaySuccess);
+                    this.state = Battle.WaitOnDeathScreenOrTransitioning;
                 }
                 else
                 {
@@ -254,7 +240,6 @@ public class BattleUI : MenuWithButtons
             case TurnBasedActions.Item:
                 itemScreen.SetActive(true);
                 backButton.SetActive(true);
-                state = Battle.inItemMenu;
                 Debug.Log("TODO will be able to use Item equipped or use a turn to equip an item.");
                 // either use your equipped item or use a turn to change equipped item
                 break;
@@ -262,7 +247,6 @@ public class BattleUI : MenuWithButtons
                 // TODO 
                 talkScreen.SetActive(true);
                 backButton.SetActive(true);
-                state = Battle.InTalkMenu;
                 // StartDialogue(this.enemyYouFightin.battleSceneDialogueSlide);
                 break;
             default:
@@ -274,41 +258,9 @@ public class BattleUI : MenuWithButtons
     {
         switch (state)
         {
-            case Battle.PlayerPickActionTurn:
-                if (this.actionClickedFlag)
-                {
-                    HandleActionButtonClicked();
-                }
+            case Battle.PlayerTurn:
                 break;
-            case Battle.inItemMenu:
-                if (this.backButtonClickedFlag)
-                {
-                    BackCLickedGoBackToPlayerAction(this.itemScreen);
-                }
-                break;
-            case Battle.InTalkMenu:
-                if (this.backButtonClickedFlag)
-                {
-                    BackCLickedGoBackToPlayerAction(this.talkScreen);
-                }
-                break;
-            case Battle.PlayerPickAbilityTurn:
-                if (this.backButtonClickedFlag)
-                {
-                    BackCLickedGoBackToPlayerAction(this.abilityButtonScreen);
-                }
-                else if (this.abilityClickedFlag)
-                {
-                    var abilityUsed = UIEventSystem.currentSelectedGameObject.GetComponent<InventorySlot>().Ability;
-                    MyGuard.IsNotNull(abilityUsed, "AbilityUsed battle Ui in playerPickAbilityTurn was null.");
-                    abilityUsed.Apply(player, enemyYouFightin);
-                    ShowAbilityUsedText(this.player, abilityUsed);
-                    this.abilityButtonScreen.SetActive(false);
-                    this.backButton.SetActive(false);
-                    this.state = Battle.ExecutingPlayersMove;
-                }
-                break;
-            case Battle.ExecutingPlayersMove:
+            case Battle.FinishedPLayerTurn:
                 if (enemyYouFightin.currentHealth > 0)
                 {
                     StartCoroutine(TestDialogueBox("Enemy Turn", Color.black));
@@ -319,7 +271,7 @@ public class BattleUI : MenuWithButtons
                     StartCoroutine(TestDialogueBox("You Won", Color.black));
                     var scene = enemyYouFightin.SceneAfterWin;
                     TalkingDungeonScenes.LoadScene(scene, exitBattleTransition, SaveGameState.BattleWon);
-                    this.state = Battle.PlayerWon;
+                    this.state = Battle.WaitOnDeathScreenOrTransitioning;
                 }
                 break;
             case Battle.EnemyPickAbilityTurn:
@@ -329,39 +281,17 @@ public class BattleUI : MenuWithButtons
                 enemyAbility.Apply(enemyYouFightin, player);
                 ShowAbilityUsedText(this.enemyYouFightin, enemyAbility);
                 // TODO display damage turn text on screen
-                state = this.player.currentHealth <= 0 ? Battle.PlayerLost : Battle.ExecutingEnemiesMove;
+                state = this.player.currentHealth <= 0 ? Battle.WaitOnDeathScreenOrTransitioning : Battle.FinishedEnemiesTurn;
                 break;
-            case Battle.ExecutingEnemiesMove:
+            case Battle.FinishedEnemiesTurn:
                 StartCoroutine(TestDialogueBox("Your Turn", Color.black));
-                BackCLickedGoBackToPlayerAction(this.runScreen);
+                OnBackButtonClicked();
                 break;
-            case Battle.PlayerWon:
-                break;
-            case Battle.PlayerLost:
-                state = Battle.WaitOnDeathScreen;
-                break;
-            case Battle.RunAwaySuccess:
-                // TODO play sound effect for running away
-                SaveGameUtility.SaveStuffFromBattle(player);
-                var scenePlayerSavedInLast = PlayerPrefs.GetString(SaveKeys.LastScene);
-                TalkingDungeonScenes.LoadScene(scenePlayerSavedInLast, exitBattleTransition, SaveGameState.BattleRunAwaySuccess);
-                this.state = Battle.TransitioningOutOfBattle;
-                break;
-            case Battle.WaitOnDeathScreen:
-                break;
-            case Battle.TransitioningOutOfBattle:
+            case Battle.WaitOnDeathScreenOrTransitioning:
                 break;
             default:
                 break;
         }
-    }
-
-    private void BackCLickedGoBackToPlayerAction(GameObject screenToDeactivate)
-    {
-        screenToDeactivate.SetActive(false);
-        this.actionButtonScreen.SetActive(true);
-        state = Battle.PlayerPickActionTurn;
-        backButton.SetActive(false);
     }
 
     private void ShowAbilityUsedText(Unit user, Ability abilityUsed)
@@ -393,19 +323,32 @@ public class BattleUI : MenuWithButtons
 
     public void OnActionButtonClicked()
     {
-        this.actionClickedFlag = true;
         buttonClickedAudioSource.Play();
+        HandleActionButtonClicked();
     }
 
     public void OnAbilityButtonClicked()
     {
-        this.abilityClickedFlag = true;
         buttonClickedAudioSource.Play();
+
+        var abilityUsed = UIEventSystem.currentSelectedGameObject.GetComponent<InventorySlot>().Ability;
+        MyGuard.IsNotNull(abilityUsed, "AbilityUsed battle Ui in playerPickAbilityTurn was null.");
+        abilityUsed.Apply(player, enemyYouFightin);
+        ShowAbilityUsedText(this.player, abilityUsed);
+        this.abilityButtonScreen.SetActive(false);
+        this.backButton.SetActive(false);
+        this.state = Battle.FinishedPLayerTurn;
     }
 
     public void OnBackButtonClicked()
     {
-        backButtonClickedFlag = true;
         buttonClickedAudioSource.Play();
+        foreach (var s in ScreensNotAction)
+        {
+            s.SetActive(false);
+        }
+        this.actionButtonScreen.SetActive(true);
+        backButton.SetActive(false);
+        this.state = Battle.PlayerTurn;
     }
 }

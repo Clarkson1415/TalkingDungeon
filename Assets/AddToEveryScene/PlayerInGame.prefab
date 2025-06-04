@@ -194,10 +194,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ed3c6cd5b0cb24347bce0075a4111204, type: 2}
   HealthBarObject: {fileID: 0}
   healthBarFill: {fileID: 0}
-  basePower: 0
-  powerModifier: 0
-  baseDefence: 0
-  defenceModifier: 0
+  basePower: 1
+  powerModifier: 1
+  baseDefence: 1
+  defenceModifier: 1
   whiteFlashMaterial: {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   movementSpeed: 3
   startingState: 1
@@ -486,7 +486,7 @@ MonoBehaviour:
   - {x: -0.000056147575, y: -0.3732252, z: 0.0000000121071935}
   m_ShapePathHash: -382328611
   m_Mesh: {fileID: 0}
-  m_InstanceId: -225004
+  m_InstanceId: -78572
   m_LocalBounds:
     m_Center: {x: 0.0012224317, y: 0.1249226, z: 0}
     m_Extent: {x: 0.21986264, y: 0.5010518, z: 0}
