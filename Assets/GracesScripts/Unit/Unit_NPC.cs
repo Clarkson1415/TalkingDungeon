@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Assets.GracesScripts
 {
@@ -24,14 +26,16 @@ namespace Assets.GracesScripts
         }
 
         /// <summary>
-        /// Used for not in battle scene.
+        /// Used for not in battle scene. Each is the first Dialogue slide for the start of a NEW conversation. i.e. when the player finished the interactino with the NPC then starts another conversation with him it will be the next conversation.
         /// </summary>
-        public DialogueSlide firstDialogueSlide;
+        public List<DialogueSlide> Conversations;
+
+        public DialogueSlide nextConversationDialogueSilde => Conversations.First();
 
         /// <summary>
         /// For talking in battle Scene TODO not setup yet
         /// </summary>
-        public DialogueSlide battleSceneDialogueSlide;
+        public List<DialogueSlide> battleConversations;
 
         private void Start()
         {
@@ -53,8 +57,8 @@ namespace Assets.GracesScripts
 
         public DialogueSlide GetFirstDialogueSlide()
         {
-            MyGuard.IsNotNull(this.firstDialogueSlide, $"Must assign dialogue slide to {this.unitName}");
-            return this.firstDialogueSlide;
+            MyGuard.IsNotNull(this.nextConversationDialogueSilde, $"Must assign dialogue slide to {this.unitName}");
+            return this.nextConversationDialogueSilde;
         }
     }
 }
