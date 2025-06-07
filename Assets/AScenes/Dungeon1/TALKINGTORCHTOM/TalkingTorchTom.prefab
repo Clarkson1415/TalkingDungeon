@@ -5234,8 +5234,10 @@ MonoBehaviour:
   whiteFlashMaterial: {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   unitName: Talking Torch Tom
   SceneAfterWin: 
-  firstDialogueSlide: {fileID: 11400000, guid: ce0874126930a344385392d1ec0e1e60, type: 2}
-  battleSceneDialogueSlide: {fileID: 0}
+  FlipBattleIdleAnimation: 0
+  Conversations:
+  - {fileID: 11400000, guid: ce0874126930a344385392d1ec0e1e60, type: 2}
+  battleConversations: []
 --- !u!114 &2875527238845843740
 MonoBehaviour:
   m_ObjectHideFlags: 0

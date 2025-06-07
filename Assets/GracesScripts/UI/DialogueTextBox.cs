@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 #nullable enable
 
 [RequireComponent(typeof(AudioSource))]
@@ -31,14 +32,14 @@ public class DialogueTextBox : MenuWithButtons
     /// for the player statemachine to recognise the interaction has finished.
     /// </summary>
     [HideInInspector] public bool finishedInteractionFlag;
-    [HideInInspector] public bool PlayerInteractFlagSet;
+    [HideInInspector] public bool InteractFlag;
     [HideInInspector] public bool ButtonClickedFlagSet;
     private bool newDialogueStartedFlag;
 
     private void ResetAllFlags()
     {
         finishedInteractionFlag = false;
-        PlayerInteractFlagSet = false;
+        InteractFlag = false;
         ButtonClickedFlagSet = false;
         newDialogueStartedFlag = false;
     }
@@ -107,9 +108,9 @@ public class DialogueTextBox : MenuWithButtons
                 }
                 break;
             case BoxState.WRITINGSLIDE:
-                if (this.PlayerInteractFlagSet)
+                if (this.InteractFlag)
                 {
-                    this.PlayerInteractFlagSet = false;
+                    this.InteractFlag = false;
                     this.SkipToEnd();
                     this.State = BoxState.WAITINGONSLIDE;
                     //Log.Print("state writing");
@@ -122,7 +123,7 @@ public class DialogueTextBox : MenuWithButtons
                 }
                 break;
             case BoxState.WAITINGONSLIDE:
-                if (this.PlayerInteractFlagSet)
+                if (this.InteractFlag)
                 {
                     MyGuard.IsNotNull(this.CurrentSlide);
                     // if no options on slide and player clicked then they want to go to the next slide or end dialogue.

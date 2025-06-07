@@ -10,6 +10,11 @@ namespace Assets.GracesScripts
 
         public string SceneAfterWin;
 
+        /// <summary>
+        /// Because Humanoid NPC needs to flip. but the mimic chests don't and probably others.
+        /// </summary>
+        [SerializeField] private bool FlipBattleIdleAnimation;
+
         private void StartBattleIdleAnimation()
         {
             animatedLayers.SetTriggers("StartFight");
@@ -22,7 +27,11 @@ namespace Assets.GracesScripts
             MyGuard.IsNotNull(this.HealthBarObject);
             this.healthBarFill.fillAmount = this.currentHealth / this.maxHealth;
             this.StartBattleIdleAnimation();
-            this.transform.localScale = new Vector3(this.transform.localScale.x * -1, this.transform.localScale.y, this.transform.localScale.z);
+
+            if (FlipBattleIdleAnimation)
+            {
+                this.transform.localScale = new Vector3(this.transform.localScale.x * -1, this.transform.localScale.y, this.transform.localScale.z);
+            }
         }
 
         /// <summary>

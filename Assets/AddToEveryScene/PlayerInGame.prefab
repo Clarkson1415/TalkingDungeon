@@ -281,6 +281,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: DialogueTextBox, Assembly-CSharp
+        m_MethodName: OnInteract
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 064be39a-af4a-4399-b929-1e8cc242aeda
     m_ActionName: Player/Fire[/Mouse/leftButton]
   - m_PersistentCalls:
@@ -323,6 +335,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 69a967fa-43b3-44a3-ba35-acd66d3a73b4
     m_ActionName: UI/Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 77b07048-8d4b-4fe7-8679-c08b814cb29e
+    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -486,7 +502,7 @@ MonoBehaviour:
   - {x: -0.000056147575, y: -0.3732252, z: 0.0000000121071935}
   m_ShapePathHash: -382328611
   m_Mesh: {fileID: 0}
-  m_InstanceId: -78572
+  m_InstanceId: -175206
   m_LocalBounds:
     m_Center: {x: 0.0012224317, y: 0.1249226, z: 0}
     m_Extent: {x: 0.21986264, y: 0.5010518, z: 0}

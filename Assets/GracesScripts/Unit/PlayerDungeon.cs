@@ -17,7 +17,7 @@ using static SaveGameUtility;
 public class PlayerDungeon : Unit
 {
     [SerializeField] private float movementSpeed = 1f;
-    private Rigidbody2D rb;
+    private Rigidbody2D? rb;
     private Vector2 direction;
     [SerializeField] private KnightState startingState = KnightState.PLAYERCANMOVE;
     [HideInInspector] private KnightState state;
@@ -213,39 +213,63 @@ public class PlayerDungeon : Unit
             return;
         }
 
+        this.HandleState();
+
+        ResetFlags();
+    }
+
+    private void OpenPauseMenu()
+    {
+        MyGuard.IsNotNull(this.pauseMenu);
+        this.pauseMenu.gameObject.SetActive(true);
+        this.pauseMenu.StartPauseMenu();
+        this.state = KnightState.INPAUSEMENU;
+        StopMovement();
+        this.menuToUseNext = this.pauseMenu;
+    }
+
+    private void OpenInventory()
+    {
+        MyGuard.IsNotNull(this.inventoryMenu);
+        iKeyFlag = false;
+        this.menuToUseNext = inventoryMenu;
+        this.menuToUseNext.gameObject.SetActive(true);
+        inventoryMenu.OpenInventory(Inventory, this.equippedWeapon, this.equippedSpecialItem);
+        StopMovement();
+        this.state = KnightState.ININVENTORY;
+    }
+
+    private void ExitChest()
+    {
+        MyGuard.IsNotNull(this.ContainerMenu);
+        this.ContainerMenu.Close();
+
+        if (this.InteractableInRange is ItemContainer chest && chest != null)
+        {
+            chest.PlayClosedSound();
+        }
+
+        this.state = KnightState.PLAYERCANMOVE;
+        MyGuard.IsNotNull(this.pauseMenu);
+        this.menuToUseNext = this.pauseMenu;
+    }
+
+    private void HandleState()
+    {
         switch (this.state)
         {
             case KnightState.PLAYERCANMOVE:
                 this.rb.velocity = direction * movementSpeed;
                 if (escKeyFlag)
                 {
-                    escKeyFlag = false;
-                    MyGuard.IsNotNull(this.pauseMenu);
-                    this.pauseMenu.gameObject.SetActive(true);
-                    this.pauseMenu.StartPauseMenu();
-                    this.state = KnightState.INPAUSEMENU;
-                    StopMovement();
-                    this.menuToUseNext = this.pauseMenu;
+                    OpenPauseMenu();
                 }
-                if (iKeyFlag)
+                else if (iKeyFlag)
                 {
-                    MyGuard.IsNotNull(this.inventoryMenu);
-                    iKeyFlag = false;
-                    this.menuToUseNext = inventoryMenu;
-                    this.menuToUseNext.gameObject.SetActive(true);
-                    inventoryMenu.OpenInventory(Inventory, this.equippedWeapon, this.equippedSpecialItem);
-                    StopMovement();
-                    this.state = KnightState.ININVENTORY;
+                    OpenInventory();
                 }
-                if (this.InteractFlagSet)
+                else if (this.InteractFlagSet && this.InteractableInRange != null)
                 {
-                    this.InteractFlagSet = false;
-
-                    if (this.InteractableInRange == null)
-                    {
-                        return;
-                    }
-
                     StartInteraction();
                 }
                 break;
@@ -253,7 +277,7 @@ public class PlayerDungeon : Unit
                 MyGuard.IsNotNull(dialogueBox);
                 if (this.InteractFlagSet)
                 {
-                    this.dialogueBox.PlayerInteractFlagSet = true;
+                    this.dialogueBox.InteractFlag = true;
                 }
                 else if (this.dialogueBox.finishedInteractionFlag)
                 {
@@ -262,20 +286,9 @@ public class PlayerDungeon : Unit
                 }
                 break;
             case KnightState.InItemContainer:
-                MyGuard.IsNotNull(this.ContainerMenu);
                 if (escKeyFlag)
                 {
-                    escKeyFlag = false;
-                    this.ContainerMenu.Close();
-
-                    if (this.InteractableInRange is ItemContainer chest && chest != null)
-                    {
-                        chest.PlayClosedSound();
-                    }
-
-                    this.state = KnightState.PLAYERCANMOVE;
-                    MyGuard.IsNotNull(this.pauseMenu);
-                    this.menuToUseNext = this.pauseMenu;
+                    ExitChest();
                 }
                 else if (this.ContainerMenu.TellPlayerContainerButtonClicked)
                 {
@@ -372,8 +385,6 @@ public class PlayerDungeon : Unit
                 this.state = KnightState.PLAYERCANMOVE;
                 break;
         }
-
-        ResetFlags();
     }
 
     private void RemoveFromPlayerEquipped(InventorySlot itemButton)

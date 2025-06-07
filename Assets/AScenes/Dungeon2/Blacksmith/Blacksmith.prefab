@@ -92,8 +92,10 @@ MonoBehaviour:
   whiteFlashMaterial: {fileID: 2100000, guid: dba566715006c6a4aa717800e77c5a02, type: 2}
   unitName: Vi
   SceneAfterWin: 
-  firstDialogueSlide: {fileID: 11400000, guid: 6316b138f6699914d96b3c0e1090fd86, type: 2}
-  battleSceneDialogueSlide: {fileID: 0}
+  FlipBattleIdleAnimation: 0
+  Conversations:
+  - {fileID: 11400000, guid: 6316b138f6699914d96b3c0e1090fd86, type: 2}
+  battleConversations: []
 --- !u!61 &3433705268411327916
 BoxCollider2D:
   m_ObjectHideFlags: 0
