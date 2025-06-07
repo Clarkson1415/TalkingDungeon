@@ -54,6 +54,7 @@ public class SaveGameUtility : MonoBehaviour
         // ItecmContainer.Save
         Debug.Log("At some point need to save containers contents so they dont reload");
         Debug.Log("at some point also need to save converstaions with NPCS? maybe? I won't have backtracking though so idk.");
+        Debug.Log("at some point also save if character has been battled and what conversation they are up to and remove SceneAfterWin on Unit_NPC.");
 
         PlayerPrefs.Save();
 
