@@ -26,6 +26,7 @@ public class ContainerMenu : MenuWithItemSlots
 
         MyGuard.IsNotNull(this.container, "Container is null in ContainerMenu.OnMenuCancel");
         this.container.EndInteract();
+        this.Close();
     }
 
     public void RemoveOldItem(InventorySlot itemToRemove)

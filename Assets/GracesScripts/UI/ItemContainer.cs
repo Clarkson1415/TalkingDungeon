@@ -61,8 +61,7 @@ public class ItemContainer : MonoBehaviour, IInteracble
 
     public virtual void EndInteract()
     {
-        _finishedInteraction = true;
-        this.ContainerMenu.Close();
         this.PlayClosedSound();
+        _finishedInteraction = true;
     }
 }

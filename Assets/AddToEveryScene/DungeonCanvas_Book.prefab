@@ -4533,6 +4533,7 @@ GameObject:
   - component: {fileID: 640052457302180547}
   - component: {fileID: 3263098772153234604}
   - component: {fileID: 3974754524441776529}
+  - component: {fileID: 6214876481105230645}
   m_Layer: 5
   m_Name: ContainerMenu
   m_TagString: Untagged
@@ -4680,6 +4681,81 @@ MonoBehaviour:
   - {fileID: 9042786685287458826}
   - {fileID: 6368781626249519902}
   TellPlayerContainerButtonClicked: 0
+--- !u!114 &6214876481105230645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3222306319570751383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 34b2bf5fedf30b74299f00eeccd4ac6e,
+    type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dafc65d2-a3a8-4f0f-b683-4dbfe6da8445
+    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 73b67743-fe20-4064-b282-afd013ca7ee5
+    m_ActionName: Player/Look
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 064be39a-af4a-4399-b929-1e8cc242aeda
+    m_ActionName: Player/Interact[/Keyboard/space,/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 91a16962-49fc-47e1-ae8b-6c2874de43c4
+    m_ActionName: Player/OpenInventory[/Keyboard/i]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3974754524441776529}
+        m_TargetAssemblyTypeName: ContainerMenu, Assembly-CSharp
+        m_MethodName: OnMenuCancel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: c20d4703-835f-4c17-bfaa-718c0f397f11
+    m_ActionName: Player/Escape[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 716f293e-0a08-406a-95a3-66c156dd32ab
+    m_ActionName: UI/Point[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 69a967fa-43b3-44a3-ba35-acd66d3a73b4
+    m_ActionName: UI/Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 77b07048-8d4b-4fe7-8679-c08b814cb29e
+    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &3276899264877318674
 GameObject:
   m_ObjectHideFlags: 0
@@ -8212,7 +8288,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6561703826755371831
 RectTransform:
   m_ObjectHideFlags: 0
