@@ -5106,6 +5106,7 @@ GameObject:
   - component: {fileID: 1912967461522423830}
   - component: {fileID: 1974318904907394840}
   - component: {fileID: 2875527238845843740}
+  - component: {fileID: 8023938936198010983}
   m_Layer: 0
   m_Name: TalkingTorchTom
   m_TagString: Untagged
@@ -5235,9 +5236,6 @@ MonoBehaviour:
   unitName: Talking Torch Tom
   SceneAfterWin: 
   FlipBattleIdleAnimation: 0
-  Conversations:
-  - {fileID: 11400000, guid: ce0874126930a344385392d1ec0e1e60, type: 2}
-  battleConversations: []
 --- !u!114 &2875527238845843740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5250,3 +5248,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 482b993c101a12e4f8df333c28753ca6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8023938936198010983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5846622229012021022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2c6b6ff43e5745afa0b2cadd81445, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstSlideOfEachConvo:
+  - {fileID: 11400000, guid: ce0874126930a344385392d1ec0e1e60, type: 2}

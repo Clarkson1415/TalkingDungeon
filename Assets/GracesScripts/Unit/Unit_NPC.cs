@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Assets.GracesScripts.Unit;
 using UnityEngine;
+#nullable enable
 
 namespace Assets.GracesScripts
 {
-    public class Unit_NPC : Unit, IInteracble, IHasDialogue
+    [RequireComponent(typeof(Conversations))]
+    public class Unit_NPC : DungeonUnit, IInteracble
     {
         public string unitName;
 
@@ -15,9 +16,17 @@ namespace Assets.GracesScripts
         /// </summary>
         [SerializeField] private bool FlipBattleIdleAnimation;
 
+        private DialogueTextBox? dialogueTextBox;
+        private Conversations conversations;
+
+        private bool _finishedInteraction;
+
+        public bool FinishedInteraction { get => _finishedInteraction; set => _finishedInteraction = value; }
+
         private void StartBattleIdleAnimation()
         {
-            animatedLayers.SetTriggers("StartFight");
+            MyGuard.IsNotNull(this.animatedLayers);
+            this.animatedLayers.SetTriggers("StartFight");
         }
 
         public void SetupUnitForBattle()
@@ -34,21 +43,14 @@ namespace Assets.GracesScripts
             }
         }
 
-        /// <summary>
-        /// Used for not in battle scene. Each is the first Dialogue slide for the start of a NEW conversation. i.e. when the player finished the interactino with the NPC then starts another conversation with him it will be the next conversation.
-        /// </summary>
-        public List<DialogueSlide> Conversations;
-
-        public DialogueSlide nextConversationDialogueSilde => Conversations.First();
-
-        /// <summary>
-        /// For talking in battle Scene TODO not setup yet
-        /// </summary>
-        public List<DialogueSlide> battleConversations;
+        ///// <summary>
+        ///// For talking in battle Scene TODO not setup yet
+        ///// </summary>
+        //public List<DialogueSlide> battleConversations;
 
         private void Start()
         {
-            if (this.unitName == null)
+            if (string.IsNullOrEmpty(unitName))
             {
                 Debug.LogError($"this guy {this.gameObject.name} cannot have no Unitname on Unit.cs");
             }
@@ -57,6 +59,10 @@ namespace Assets.GracesScripts
             {
                 Debug.LogError($"this guy: {this.gameObject.name} cannot have no abilities at least have default Push ability assign in inspector");
             }
+
+            conversations = this.GetComponent<Conversations>();
+            var menuReferences = FindObjectOfType<MenuReferences>();
+            this.dialogueTextBox = menuReferences.dialogueTextBox;
         }
 
         protected override void Die()
@@ -64,10 +70,17 @@ namespace Assets.GracesScripts
             Debug.Log("ENEmy dies play player win sound and visuals and exit turn based");
         }
 
-        public DialogueSlide GetFirstDialogueSlide()
+        public virtual void Interact()
         {
-            MyGuard.IsNotNull(this.nextConversationDialogueSilde, $"Must assign dialogue slide to {this.unitName}");
-            return this.nextConversationDialogueSilde;
+            this._finishedInteraction = false;
+            MyGuard.IsNotNull(this.dialogueTextBox, "DialogueTextBox is null in Unit_NPC.Interact()");
+            this.dialogueTextBox.gameObject.SetActive(true);
+            this.dialogueTextBox.BeginDialogue(conversations.nextConversationDialogueSilde, this);
+        }
+
+        public virtual void EndInteract()
+        {
+            this._finishedInteraction = true;
         }
     }
 }

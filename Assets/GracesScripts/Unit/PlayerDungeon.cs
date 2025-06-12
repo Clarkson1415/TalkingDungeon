@@ -14,7 +14,7 @@ using static SaveGameUtility;
 /// Player guy
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerDungeon : Unit
+public class PlayerDungeon : DungeonUnit
 {
     [SerializeField] private float movementSpeed = 1f;
     private Rigidbody2D? rb;
@@ -25,8 +25,6 @@ public class PlayerDungeon : Unit
 
     [Header("Menus")]
     [SerializeField] GameObject deathScreenPrefab;
-    private DialogueTextBox? dialogueBox;
-    private ContainerMenu? ContainerMenu;
     private PauseMenu? pauseMenu;
     private Menu? menuToUseNext;
     private InventoryMenu? inventoryMenu;
@@ -37,7 +35,7 @@ public class PlayerDungeon : Unit
 
     public List<string> scenesTraversed = new();
 
-    [HideInInspector] public IInteracble? InteractableInRange { get; private set; } = null;
+    [HideInInspector] public IInteracble? InteractableInRange;
 
     [Header("EnemyBattleLoader")]
     [SerializeField] private GameObject enemyLoaderPrefab;
@@ -59,12 +57,11 @@ public class PlayerDungeon : Unit
 
     private enum KnightState
     {
-        INDIALOGUE,
+        INTERACTING,
         PLAYERCANMOVE,
-        InItemContainer,
         INPAUSEMENU,
         ININVENTORY,
-        InTurnBased,
+        INTURNBASED,
     }
 
     private void Start()
@@ -126,7 +123,7 @@ public class PlayerDungeon : Unit
             throw new ArgumentException("canont have less than 1 ability at least would have push on hands.");
         }
 
-        if (this.startingState == KnightState.InTurnBased)
+        if (this.startingState == KnightState.INTURNBASED)
         {
             MyGuard.IsNotNull(animatedLayers);
             animatedLayers.SetTriggers("StartFight");
@@ -145,11 +142,10 @@ public class PlayerDungeon : Unit
     private void LoadPlayerComponents()
     {
         this.rb = GetComponent<Rigidbody2D>();
+        MyGuard.IsNotNull(this.rb, "Rigidbody2D null in PlayerDungeon.LoadPlayerComponents()");
         footstepsSound = GetComponentInChildren<AudioSource>();
         var menuReferences = FindObjectOfType<MenuReferences>();
-        this.dialogueBox = menuReferences.dialogueTextBox;
         this.pauseMenu = menuReferences.PauseMenu;
-        this.ContainerMenu = menuReferences.containerMenu;
         this.inventoryMenu = menuReferences.Inventory;
         MyGuard.IsNotNull(this.pauseMenu);
         this.menuToUseNext = this.pauseMenu;
@@ -161,35 +157,10 @@ public class PlayerDungeon : Unit
 
     private void StartInteraction()
     {
-        if (this.InteractableInRange is IHasDialogue interactableWithDialogue && interactableWithDialogue != null)
-        {
-            // if the object you start talking to is moving it can move out of range and causes on trigger exit player wont be able to spacebar out of dialogue.
-            // stop moving on start interaction and finish on end interaction
-            if (this.InteractableInRange is WalkingBackAndForthUnit movingNPC)
-            {
-                movingNPC.IsInDialogue = true;
-            }
-
-            menuToUseNext = this.dialogueBox;
-            var npc = interactableWithDialogue as Unit_NPC;
-            MyGuard.IsNotNull(npc);
-            MyGuard.IsNotNull(this.dialogueBox);
-            this.dialogueBox.gameObject.SetActive(true);
-            this.dialogueBox.BeginDialogue(interactableWithDialogue.GetFirstDialogueSlide(), npc);
-            this.state = KnightState.INDIALOGUE;
-            this.StopMovement();
-        }
-        else if (this.InteractableInRange is ItemContainer chest && chest != null)
-        {
-            MyGuard.IsNotNull(ContainerMenu);
-            menuToUseNext = this.ContainerMenu;
-            this.ContainerMenu.gameObject.SetActive(true);
-            chest.GetComponent<Animator>().SetTrigger("Opened");
-            chest.PlayOpenSound();
-            this.ContainerMenu.PopulateContainer(chest.Loot);
-            this.state = KnightState.InItemContainer;
-            this.StopMovement();
-        }
+        MyGuard.IsNotNull(this.InteractableInRange, "Interactable null in Start Interaction!");
+        this.InteractableInRange.Interact();
+        this.StopMovement();
+        this.state = KnightState.INTERACTING;
     }
 
     private void StopMovement()
@@ -200,9 +171,8 @@ public class PlayerDungeon : Unit
 
         // stop movement
         MyGuard.IsNotNull(footstepsSound);
-        MyGuard.IsNotNull(this.rb);
         footstepsSound.Stop();
-        this.rb.velocity = Vector2.zero;
+        this.rb!.velocity = Vector2.zero;
         this.direction = Vector2.zero;
     }
 
@@ -239,27 +209,12 @@ public class PlayerDungeon : Unit
         this.state = KnightState.ININVENTORY;
     }
 
-    private void ExitChest()
-    {
-        MyGuard.IsNotNull(this.ContainerMenu);
-        this.ContainerMenu.Close();
-
-        if (this.InteractableInRange is ItemContainer chest && chest != null)
-        {
-            chest.PlayClosedSound();
-        }
-
-        this.state = KnightState.PLAYERCANMOVE;
-        MyGuard.IsNotNull(this.pauseMenu);
-        this.menuToUseNext = this.pauseMenu;
-    }
-
     private void HandleState()
     {
         switch (this.state)
         {
             case KnightState.PLAYERCANMOVE:
-                this.rb.velocity = direction * movementSpeed;
+                this.rb!.velocity = direction * movementSpeed;
                 if (escKeyFlag)
                 {
                     OpenPauseMenu();
@@ -273,40 +228,10 @@ public class PlayerDungeon : Unit
                     StartInteraction();
                 }
                 break;
-            case KnightState.INDIALOGUE:
-                MyGuard.IsNotNull(dialogueBox);
-                if (this.InteractFlagSet)
+            case KnightState.INTERACTING:
+                if (this.InteractableInRange!.FinishedInteraction)
                 {
-                    this.dialogueBox.InteractFlag = true;
-                }
-                else if (this.dialogueBox.finishedInteractionFlag)
-                {
-                    this.dialogueBox.finishedInteractionFlag = false;
-                    EndDialogue();
-                }
-                break;
-            case KnightState.InItemContainer:
-                if (escKeyFlag)
-                {
-                    ExitChest();
-                }
-                else if (this.ContainerMenu.TellPlayerContainerButtonClicked)
-                {
-                    this.ContainerMenu.TellPlayerContainerButtonClicked = false;
-                    var selected = this.ContainerMenu.GetSelectedButton();
-                    var itemOpButton = selected.GetComponent<InventorySlot>();
-                    itemOpButton.PlaySelectSound();
-                    if (itemOpButton.Item == null)
-                    {
-                        return;
-                    }
-
-                    if (this.InteractableInRange is ItemContainer chest && chest != null)
-                    {
-                        chest.Loot.Remove(itemOpButton.Item);
-                        this.Inventory.Add(itemOpButton.Item);
-                        this.ContainerMenu.RemoveOldItem(itemOpButton);
-                    }
+                    this.state = KnightState.PLAYERCANMOVE;
                 }
                 break;
             case KnightState.INPAUSEMENU:
@@ -377,7 +302,7 @@ public class PlayerDungeon : Unit
                     }
                 }
                 break;
-            case KnightState.InTurnBased:
+            case KnightState.INTURNBASED:
                 // controlled by BattleUI and never exits.
                 // We change states next when battle is won and the new scene is loaded.
                 break;
@@ -468,14 +393,6 @@ public class PlayerDungeon : Unit
 
     private void EndDialogue()
     {
-        // if the object you start talking to also moves our and causes on trigger exit player wont be able to spacebar out of dialogue.
-        // this is to allow it to go back to moving state again.
-        if (this.InteractableInRange is WalkingBackAndForthUnit movingNPC)
-        {
-            movingNPC.IsInDialogue = false;
-        }
-
-        this.state = KnightState.PLAYERCANMOVE;
     }
 
     public void OnNavigateOrMove(InputAction.CallbackContext context)

@@ -16,8 +16,8 @@ public class BattleUI : MenuWithButtons
     private PlayerDungeon player;
     [SerializeField] private GameObject PlayerHealthBarAndNameToShake;
     [SerializeField] private Image PlayerHealthFill;
-    private bool IsPlayerHealthBarPlayingAnimation => player.healthBarFill.fillAmount > Mathf.Clamp((player.currentHealth / player.maxHealth), 0, 1);
-    private bool IsEnemyHealthAnimationPlaying => enemyYouFightin.healthBarFill.fillAmount > Mathf.Clamp((enemyYouFightin.currentHealth / enemyYouFightin.maxHealth), 0, 1);
+    private bool IsPlayerHealthBarPlayingAnimation => player.healthBarFill != null && player.healthBarFill.fillAmount > Mathf.Clamp((player.currentHealth / player.maxHealth), 0, 1);
+    private bool IsEnemyHealthAnimationPlaying => enemyYouFightin != null && enemyYouFightin.healthBarFill != null && enemyYouFightin.healthBarFill.fillAmount > Mathf.Clamp((enemyYouFightin.currentHealth / enemyYouFightin.maxHealth), 0, 1);
     private bool AreAnimationsFinished =>
     !IsPlayerHealthBarPlayingAnimation &&
     !IsEnemyHealthAnimationPlaying &&
@@ -41,13 +41,13 @@ public class BattleUI : MenuWithButtons
 
 
     [Header("Enemy")]
-    private Unit_NPC enemyYouFightin;
+    private Unit_NPC? enemyYouFightin;
     [SerializeField] private TMP_Text enemyNameField;
     [SerializeField] private GameObject enemyHealthBarAndNameToShake;
     [SerializeField] private Image enemyHealthFill;
 
     private Battle state;
-    private static Color positiveGreen = new Color(0, 0.7f, 0);
+    private static Color positiveGreen = new(0, 0.7f, 0);
 
     [Header("Dialogue Printing Stuff")]
     private const char pauseCharacterToNotPrint = '_';
@@ -137,11 +137,7 @@ public class BattleUI : MenuWithButtons
     public void SetupEnemyAfterSpawned()
     {
         enemyYouFightin = FindObjectOfType<Unit_NPC>();
-        if (enemyYouFightin == null)
-        {
-            throw new ArgumentNullException("enemy cannot be null in battle scene.");
-        }
-
+        MyGuard.IsNotNull(enemyYouFightin, "enemy cannot be null in fight scene.");
         enemyNameField.text = this.enemyYouFightin.unitName;
         enemyYouFightin.HealthBarObject = this.enemyHealthBarAndNameToShake;
         enemyYouFightin.healthBarFill = this.enemyHealthFill;
@@ -213,6 +209,7 @@ public class BattleUI : MenuWithButtons
                 backButton.SetActive(false);
                 this.runScreen.SetActive(true);
                 bool runSuccesss = true;
+                MyGuard.IsNotNull(enemyYouFightin, "enemyYouFightin is null.");
                 if (player.currentHealth <= (enemyYouFightin.currentHealth))
                 {
                     Debug.Log("Getaway based on if you have more wellbeing than enemy");
@@ -258,6 +255,7 @@ public class BattleUI : MenuWithButtons
             case Battle.PlayerTurn:
                 break;
             case Battle.FinishedPLayerTurn:
+                MyGuard.IsNotNull(enemyYouFightin, "enemyYouFightin is null.");
                 if (enemyYouFightin.currentHealth > 0)
                 {
                     StartCoroutine(TestDialogueBox("Enemy Turn", Color.black));
@@ -274,6 +272,7 @@ public class BattleUI : MenuWithButtons
             case Battle.EnemyPickAbilityTurn:
                 // or enemy could use an item.
                 Debug.Log("not finished setup here. need to calculate damage based on units current defence stat also?");
+                MyGuard.IsNotNull(enemyYouFightin, "enemyYouFightin is null.");
                 var enemyAbility = PickRandomAbility(this.enemyYouFightin.Abilities);
                 enemyAbility.Apply(enemyYouFightin, player);
                 ShowAbilityUsedText(this.enemyYouFightin, enemyAbility);
@@ -291,13 +290,14 @@ public class BattleUI : MenuWithButtons
         }
     }
 
-    private void ShowAbilityUsedText(Unit user, Ability abilityUsed)
+    private void ShowAbilityUsedText(DungeonUnit user, Ability abilityUsed)
     {
         var color = positiveGreen;
         var person = "Player";
         if (user is Unit_NPC)
         {
             color = Color.red;
+            MyGuard.IsNotNull(enemyYouFightin, "enemyYouFightin is null.");
             person = enemyYouFightin.unitName;
         }
 
@@ -309,6 +309,7 @@ public class BattleUI : MenuWithButtons
 
     private Ability PickRandomAbility(List<Ability> abilities)
     {
+        MyGuard.IsNotNull(enemyYouFightin, "enemyYouFightin is null.");
         var abilityIndex = Random.Next(0, this.enemyYouFightin.Abilities.Count);
         return abilities[abilityIndex];
     }

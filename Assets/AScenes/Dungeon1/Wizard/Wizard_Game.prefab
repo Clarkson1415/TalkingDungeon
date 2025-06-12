@@ -346,6 +346,7 @@ GameObject:
   - component: {fileID: 7749395479087807780}
   - component: {fileID: 6504909780687110282}
   - component: {fileID: 7094155758257430172}
+  - component: {fileID: 1145350810936092659}
   m_Layer: 0
   m_Name: Wizard_Game
   m_TagString: Untagged
@@ -498,7 +499,7 @@ MonoBehaviour:
   - {x: 0.20956945, y: -0.33007544, z: 0}
   m_ShapePathHash: -1879964053
   m_Mesh: {fileID: 0}
-  m_InstanceId: -791566
+  m_InstanceId: -8700
   m_LocalBounds:
     m_Center: {x: 0.0034968853, y: 0.12459642, z: 0}
     m_Extent: {x: 0.26178432, y: 0.5010983, z: 0}
@@ -529,9 +530,20 @@ MonoBehaviour:
   unitName: Wizard
   SceneAfterWin: 
   FlipBattleIdleAnimation: 0
-  Conversations:
+--- !u!114 &1145350810936092659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5190782993713469610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2c6b6ff43e5745afa0b2cadd81445, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstSlideOfEachConvo:
   - {fileID: 11400000, guid: cbca8f77676b1bd4885d3b5d6a678d71, type: 2}
-  battleConversations: []
 --- !u!1 &5313784825674970246
 GameObject:
   m_ObjectHideFlags: 0

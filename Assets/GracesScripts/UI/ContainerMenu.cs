@@ -1,6 +1,7 @@
 using Assets.GracesScripts.UI;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 #nullable enable
 
 public class ContainerMenu : MenuWithItemSlots
@@ -9,6 +10,23 @@ public class ContainerMenu : MenuWithItemSlots
     [SerializeField] private ItemView itemView;
     [SerializeField] private List<InventorySlot> slots = new();
     [HideInInspector] public bool TellPlayerContainerButtonClicked;
+    private ItemContainer? container;
+    private PlayerDungeon? player;
+    
+    /// <summary>
+    /// When esc key is pressed.
+    /// </summary>
+    /// <param name="context"></param>
+    public void OnMenuCancel(InputAction.CallbackContext context)
+    {
+        if (!context.started)
+        {
+            return;
+        }
+
+        MyGuard.IsNotNull(this.container, "Container is null in ContainerMenu.OnMenuCancel");
+        this.container.EndInteract();
+    }
 
     public void RemoveOldItem(InventorySlot itemToRemove)
     {
@@ -19,6 +37,20 @@ public class ContainerMenu : MenuWithItemSlots
     public void OnContainerButtonClicked()
     {
         TellPlayerContainerButtonClicked = true;
+
+        var selected = this.GetSelectedButton();
+        var itemOpButton = selected.GetComponent<InventorySlot>();
+        itemOpButton.PlaySelectSound();
+        if (itemOpButton.Item == null)
+        {
+            return;
+        }
+
+        MyGuard.IsNotNull(this.container, "Container is null");
+        MyGuard.IsNotNull(this.player, "player is null");
+        container.Loot.Remove(itemOpButton.Item);
+        player.Inventory.Add(itemOpButton.Item);
+        this.RemoveOldItem(itemOpButton);
     }
 
     protected override void UpdateItemView(InventorySlot slot)
@@ -26,8 +58,11 @@ public class ContainerMenu : MenuWithItemSlots
         this.itemView.UpdateItemView(slot);
     }
 
-    public void PopulateContainer(List<DungeonItem> items)
+    public void SetupMenu(ItemContainer container)
     {
+        player = FindObjectOfType<PlayerDungeon>();
+        this.container = container;
+        List<DungeonItem> items = container.Loot;
         // Could optimise this and FillItemSlots
         this.slots.ForEach(slot => slot.ReplaceSlotWithBlanks());
         slots.ForEach(slot => slot.ToggleEquipGraphic(false));

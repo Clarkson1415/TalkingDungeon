@@ -16,7 +16,6 @@ public class WalkingBackAndForthUnit : Unit_NPC
     [SerializeField] int idleWaitTime = 2;
     private Vector2 velocity = new(1, 0);
     MovingDialogueNPCState state;
-    public bool IsInDialogue { get; set; } = false;
     private Rigidbody2D rb;
     private float runStartTime;
     private float idleStartTime;
@@ -64,7 +63,7 @@ public class WalkingBackAndForthUnit : Unit_NPC
         {
             case MovingDialogueNPCState.INTERACTING:
                 this.rb.velocity = Vector2.zero;
-                if (!IsInDialogue)
+                if (!this.FinishedInteraction)
                 {
                     velocity = new Vector2(1, 0);
                     this.animatedLayers.SetBools("Running", true);
@@ -75,7 +74,7 @@ public class WalkingBackAndForthUnit : Unit_NPC
                 break;
             case MovingDialogueNPCState.MOVING:
                 this.rb.velocity = runSpeed * velocity;
-                if (IsInDialogue)
+                if (this.FinishedInteraction)
                 {
                     Log.Print("Moving changed to stationary");
                     this.animatedLayers.SetBools("Running", false);
@@ -90,7 +89,7 @@ public class WalkingBackAndForthUnit : Unit_NPC
                 break;
             case MovingDialogueNPCState.IDLEING:
                 this.rb.velocity = Vector2.zero;
-                if (IsInDialogue)
+                if (this.FinishedInteraction)
                 {
                     Log.Print("Moving changed to stationary");
                     this.idleStartTime = Time.time;

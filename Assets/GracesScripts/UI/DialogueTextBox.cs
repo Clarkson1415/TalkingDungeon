@@ -14,8 +14,8 @@ public class DialogueTextBox : MenuWithButtons
 {
     [Header("Battle Stuff")]
     public TransitionSettings transitionForGoingToBattleScene;
-    public DialogueSlide? CurrentSlide { get; private set; }
-    public BoxState State { get; private set; } = BoxState.WAITINGFORINTERACTION;
+    private DialogueSlide? CurrentSlide { get; set; }
+    private BoxState State { get; set; } = BoxState.WAITINGFORINTERACTION;
     [SerializeField] private float textspeed = 0.1f;
     [SerializeField] private float underscorePauseTime = 0.01f;
     [SerializeField] AudioSource audioSource;
@@ -26,13 +26,13 @@ public class DialogueTextBox : MenuWithButtons
     private const char pauseCharacterToNotPrint = '_';
     private TMP_Text TMPTextBox;
     public TMP_Text speakerNameText;
-    private Unit_NPC currentSpeaker;
+    private Unit_NPC? currentSpeaker;
 
     /// <summary>
     /// for the player statemachine to recognise the interaction has finished.
     /// </summary>
     [HideInInspector] public bool finishedInteractionFlag;
-    [HideInInspector] public bool InteractFlag;
+    [HideInInspector] private bool InteractFlag;
     [HideInInspector] public bool ButtonClickedFlagSet;
     private bool newDialogueStartedFlag;
 
@@ -63,7 +63,7 @@ public class DialogueTextBox : MenuWithButtons
     public void BeginDialogue(DialogueSlide firstSlide, Unit_NPC speaker)
     {
         this.newDialogueStartedFlag = true;
-        currentSpeaker = speaker;
+        this.currentSpeaker = speaker;
         this.UpdateCurrentSlide(firstSlide);
     }
 
@@ -80,6 +80,18 @@ public class DialogueTextBox : MenuWithButtons
         this.audioSource.loop = false;
     }
 
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (!context.started)
+        {
+            return;
+        }
+
+        Log.Print("Interact flag set");
+
+        this.InteractFlag = true;
+    }
+
     private void UpdateCurrentSlide(DialogueSlide? newSlide)
     {
         if (newSlide == null)
@@ -90,7 +102,7 @@ public class DialogueTextBox : MenuWithButtons
         {
             this.CurrentSlide = newSlide;
         }
-
+        MyGuard.IsNotNull(currentSpeaker);
         speakerNameText.text = currentSpeaker.unitName;
     }
 
@@ -165,6 +177,9 @@ public class DialogueTextBox : MenuWithButtons
         finishedInteractionFlag = true;
         this.State = BoxState.WAITINGFORINTERACTION;
         this.gameObject.SetActive(false);
+        MyGuard.IsNotNull(currentSpeaker);
+        currentSpeaker.EndInteract();
+        this.currentSpeaker = null;
     }
 
     private void StartFight()

@@ -17,7 +17,7 @@ namespace Assets.GracesScripts.ScriptableObjects
         /// </summary>
         public bool ShouldBeFlippedWhenPlayerIsTarget;
 
-        public void ApplyToUnit(Unit user, Unit opponent, int value)
+        public void ApplyToUnit(DungeonUnit user, DungeonUnit opponent, int value)
         {
             var target = TargetUser ? user : opponent;
             ApplyEffect(target, value);
@@ -52,6 +52,6 @@ namespace Assets.GracesScripts.ScriptableObjects
             }
         }
 
-        protected abstract void ApplyEffect(Unit target, int value);
+        protected abstract void ApplyEffect(DungeonUnit target, int value);
     }
 }

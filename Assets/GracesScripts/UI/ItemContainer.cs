@@ -1,3 +1,4 @@
+using Assets.GracesScripts.Unit;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,10 +19,18 @@ public class ItemContainer : MonoBehaviour, IInteracble
     [SerializeField] private AudioClip chestClosedSound;
     private AudioSource AudioSource;
     private Guid chestID;
+    private Animator animator;
+    private ContainerMenu ContainerMenu;
+    private bool _finishedInteraction;
+    public bool FinishedInteraction { get => _finishedInteraction; set => _finishedInteraction = value; }
 
     private void Awake()
     {
         AudioSource = this.GetComponent<AudioSource>();
+        this.animator = this.GetComponent<Animator>();
+
+        var menuReferences = FindObjectOfType<MenuReferences>();
+        this.ContainerMenu = menuReferences.containerMenu;
     }
 
     public void SaveContents()
@@ -41,9 +50,19 @@ public class ItemContainer : MonoBehaviour, IInteracble
         this.AudioSource.Play();
     }
 
-    // Update is called once per frame
-    void Update()
+    public virtual void Interact()
     {
+        _finishedInteraction = false;
+        this.ContainerMenu.gameObject.SetActive(true);
+        this.animator.SetTrigger("Opened");
+        this.PlayOpenSound();
+        this.ContainerMenu.SetupMenu(this);
+    }
 
+    public virtual void EndInteract()
+    {
+        _finishedInteraction = true;
+        this.ContainerMenu.Close();
+        this.PlayClosedSound();
     }
 }

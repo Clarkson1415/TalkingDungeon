@@ -9,7 +9,7 @@ using UnityEngine.UI;
 /// Unit class, Player and NPCs both have abilities an equipped weapon and item and health.
 /// </summary>
 [RequireComponent(typeof(UseAnimatedLayers))]
-public abstract class Unit : MonoBehaviour
+public abstract class DungeonUnit : MonoBehaviour
 {
     public float currentHealth = 100;
     public float maxHealth = 100;
@@ -20,22 +20,21 @@ public abstract class Unit : MonoBehaviour
     public SpecialItem? equippedSpecialItem;
     public List<DungeonItem> Inventory = new();
     // this to go in Unit in a battle
-    [HideInInspector] public GameObject HealthBarObject;
-    [HideInInspector] public Image healthBarFill;
+    [HideInInspector] public GameObject? HealthBarObject;
+    [HideInInspector] public Image? healthBarFill;
 
-    [SerializeField] public int basePower = 1;
+    public int basePower = 1;
     public int powerModifier = 1;
-
-    [SerializeField] public int baseDefence = 1;
+    public int baseDefence = 1;
 
     /// <summary>
-    /// Will be changed from one off items to buffing abilities
+    /// Will be changed from one off use items or debugging / buffing abilities.
     /// </summary>
     public int defenceModifier = 1;
 
     protected UseAnimatedLayers? animatedLayers;
     [SerializeField] private Material? whiteFlashMaterial;
-    private List<SpriteRenderer> unitsSpriteLayers = new();
+    private readonly List<SpriteRenderer> unitsSpriteLayers = new();
     private MaterialPropertyBlock _block;
     private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
 
@@ -98,19 +97,20 @@ public abstract class Unit : MonoBehaviour
     public void TakeDamage(float value)
     {
         StartCoroutine(FlashRoutineAndHurtAnimation(2f));
-        Debug.Log("Check how the timing of StartShake and damage bar reducing works i dont remember but rewrite it so its clearly aligned.");
+        Debug.Log("Check how the timing of StartShake and damage bar reducing works i dont remember but rewrite it so its clearly aligned to end at the same time.");
+        MyGuard.IsNotNull(this.HealthBarObject);
         var objectToShake = this.HealthBarObject.GetComponent<ShakeObject>();
         objectToShake.StartShake(1f, 5f);
         this.currentHealth -= value;
         // if current damage will kill Unit make it go down faster
         if (this.currentHealth <= 0)
         {
-            StartCoroutine(AnimateHealthBarFill(0.1f, -value));
+            StartCoroutine(AnimateHealthBarFill(0.1f));
             this.Die();
         }
         else
         {
-            StartCoroutine(AnimateHealthBarFill(0.5f, -value));
+            StartCoroutine(AnimateHealthBarFill(0.5f));
         }
     }
 
@@ -122,7 +122,7 @@ public abstract class Unit : MonoBehaviour
     {
         Debug.Log("Heal play heal animation");
         this.currentHealth += healAmount;
-        StartCoroutine(AnimateHealthBarFill(0.5f, healAmount));
+        StartCoroutine(AnimateHealthBarFill(0.5f));
     }
 
     protected abstract void Die();
@@ -131,10 +131,10 @@ public abstract class Unit : MonoBehaviour
     /// 
     /// </summary>
     /// <param name="animationLength">seconds time for health bar to go to where after damage puts it</param>
-    /// <param name="healthChange">positive value for healing negative for damaging.</param>
     /// <returns></returns>
-    private IEnumerator AnimateHealthBarFill(float animationLength, float healthChange)
+    private IEnumerator AnimateHealthBarFill(float animationLength)
     {
+        MyGuard.IsNotNull(this.healthBarFill);
         float startFillAmount = this.healthBarFill.fillAmount;
         float targetFillAmount = Mathf.Clamp((this.currentHealth / this.maxHealth), 0, 1);
 

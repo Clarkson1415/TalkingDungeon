@@ -13,7 +13,7 @@ public class Ability : ScriptableObject
     /// </summary>
     [SerializeField] string _desc;
 
-    public string FormatDescription(Weapon weapon, Unit user)
+    public string FormatDescription(Weapon weapon, DungeonUnit user)
     {
         if (!this._desc.Contains("{0}"))
         {
@@ -46,7 +46,7 @@ public class Ability : ScriptableObject
 
     public List<AbilityEffect> Effects;
 
-    public void Apply(Unit user, Unit target)
+    public void Apply(DungeonUnit user, DungeonUnit target)
     {
         foreach (var effect in this.Effects)
         {

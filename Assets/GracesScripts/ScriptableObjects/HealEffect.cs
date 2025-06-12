@@ -8,7 +8,7 @@ namespace Assets.GracesScripts.ScriptableObjects
     [CreateAssetMenu(menuName = "Ability Effects/Heal Effect")]
     public class HealEffect : AbilityEffect
     {
-        protected override void ApplyEffect(Unit target, int value)
+        protected override void ApplyEffect(DungeonUnit target, int value)
         {
             target.Heal(value);
         }
