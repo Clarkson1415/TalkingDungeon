@@ -13,9 +13,9 @@ public abstract class DungeonUnit : MonoBehaviour
 {
     public float currentHealth = 100;
     public float maxHealth = 100;
-    protected Weapon DefaultWeaponHands => GetDefaultHands();
+    protected Weapon DefaultWeaponHands => SaveGameUtility.GetDefaultHands();
     public List<Ability> Abilities => this.equippedWeapon == null ? DefaultWeaponHands.Abilities : this.equippedWeapon.Abilities;
-    protected List<DungeonItem?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
+    [HideInInspector] public List<DungeonItem?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
     public Weapon equippedWeapon;
     public SpecialItem? equippedSpecialItem;
     public List<DungeonItem> Inventory = new();
@@ -82,13 +82,6 @@ public abstract class DungeonUnit : MonoBehaviour
             _block.SetFloat(FlashAmount, flashValue);
             layer.SetPropertyBlock(_block);
         }
-    }
-
-    private Weapon GetDefaultHands()
-    {
-        var hands = Resources.Load<Weapon>("Items/Weapon/Hands");
-        MyGuard.IsNotNull(hands);
-        return hands;
     }
 
     /// <summary>

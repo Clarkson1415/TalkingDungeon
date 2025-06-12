@@ -31,6 +31,13 @@ public class SaveGameUtility : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public static Weapon GetDefaultHands()
+    {
+        var hands = Resources.Load<Weapon>("Items/Weapon/Hands");
+        MyGuard.IsNotNull(hands);
+        return hands;
+    }
+
     public static void SaveGame(PlayerDungeon player)
     {
         PlayerPrefs.SetString(SaveKeys.LastScene, SceneManager.GetActiveScene().name);

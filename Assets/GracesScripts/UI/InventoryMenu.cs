@@ -14,12 +14,12 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 {
     [Header("InventoryMenu")]
     private List<DungeonItem> AllInventoryItems = new();
-    private BookTab selectedTab;
+    private BookTab? selectedTab;
     [SerializeField] BookTab OnFirstOpenInventorySelectedTab;
     [SerializeField] GameObject BookInOutAnimator;
     [SerializeField] private GameObject BookBackGround;
-    private Image bookBackgroundImage;
-    private Animator bookSlideInOutAnimator;
+    private Image? bookBackgroundImage;
+    private Animator? bookSlideInOutAnimator;
 
     [Header("Menu Sections")]
     [SerializeField] private GearPages gearPages;
@@ -28,15 +28,23 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     [SerializeField] private SettingsPages settingsMenuPages;
     private List<BookPage> Pages => new() { gearPages, ItemPages, saveMenuPages, settingsMenuPages };
     [SerializeField] GameObject PageFlipper;
-    private Animator flipPageAnimator;
+    private Animator? flipPageAnimator;
 
     [Header("Player")]
-    private Weapon playerEquippedWeapon;
+    private Weapon? _playerEquippedWeapon;
+    private Weapon PlayerEquippedWeapon 
+    {
+        get => _playerEquippedWeapon != null ? _playerEquippedWeapon : DefaultWeaponHands; 
+        set => _playerEquippedWeapon = value;
+    }
+
     private SpecialItem? playerEquippedItem;
-    private Weapon HandsWeapon;
+    protected Weapon DefaultWeaponHands => SaveGameUtility.GetDefaultHands();
+
 
     protected override void UpdateItemView(InventorySlot slot)
     {
+        MyGuard.IsNotNull(this.selectedTab);
         if (this.selectedTab.tabType == BookTab.TabType.Gear)
         {
             this.gearPages.UpdateItemView(slot);
@@ -56,9 +64,9 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     {
         AllInventoryItems = playerItems;
 
-        this.playerEquippedWeapon = playerEquippedWeapon;
+        this.PlayerEquippedWeapon = playerEquippedWeapon;
         this.playerEquippedItem = playerEquippedItem;
-
+        MyGuard.IsNotNull(this.bookSlideInOutAnimator);
         this.bookSlideInOutAnimator.SetTrigger("Open");
         Debug.Log("todo add book slide and open sound effect. then close then slide sfx also");
 
@@ -77,13 +85,51 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
         StartCoroutine(PageFlip(1));
     }
 
+    public void OnInventorySlotClicked()
+    {
+        var buttonGameObject = this.GetSelectedButton();
+        var player = FindObjectOfType<PlayerDungeon>();
+        MyGuard.IsNotNull(player, "PlayerDungeon is null in InventoryMenu.OnInventorySlotClicked");
+
+        if (buttonGameObject == null)
+        {
+            Debug.Log("clicked on nothing");
+            return;
+        }
+        if (!buttonGameObject.TryGetComponent<InventorySlot>(out var selectedItemOp))
+        {
+            // clicked on something else
+            return;
+        }
+
+        if (selectedItemOp.Item == null)
+        {
+            return;
+        }
+        else if (player.EquippedItems.Contains(selectedItemOp.Item))
+        {
+            // if want to unequip hands it does not. so we do not play select sound.
+            if (selectedItemOp.Item != DefaultWeaponHands)
+            {
+                selectedItemOp.PlaySelectSound();
+            }
+
+            player.RemoveFromPlayerEquipped(selectedItemOp);
+            this.RemoveFromPlayerEquipped(selectedItemOp);
+        }
+        else
+        {
+            selectedItemOp.PlaySelectSound();
+            this.ChangePlayerEquippedSLot(selectedItemOp);
+            player.AddToPlayerEquipped(selectedItemOp.Item);
+        }
+    }
+
     private void Awake()
     {
         this.bookSlideInOutAnimator = this.BookInOutAnimator.GetComponent<Animator>();
         this.bookBackgroundImage = this.BookBackGround.GetComponent<Image>();
         this.flipPageAnimator = this.PageFlipper.GetComponent<Animator>();
-        this.HandsWeapon = Resources.Load<Weapon>("Items/Weapon/Hands");
-        MyGuard.IsNotNull(this.HandsWeapon);
         DeactivateAllPages();
     }
 
@@ -99,6 +145,8 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     public override void Close()
     {
         this.PageFlipper.SetActive(true);
+        MyGuard.IsNotNull(this.flipPageAnimator);
+        MyGuard.IsNotNull(this.bookSlideInOutAnimator);
         this.flipPageAnimator.SetTrigger("Close");
         this.bookSlideInOutAnimator.SetTrigger("Close");
         StartCoroutine(DisableInventoryAfterBookAnim());
@@ -109,6 +157,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
         this.PageFlipper.SetActive(true);
         for (int i = 0; i < numberOfFlips; i++)
         {
+            MyGuard.IsNotNull(this.flipPageAnimator);
             this.flipPageAnimator.SetTrigger("Open");
             yield return new WaitForSeconds(0.22f);
         }
@@ -122,6 +171,8 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
     /// <exception cref="NotImplementedException"></exception>
     private void EnableBookPage()
     {
+        MyGuard.IsNotNull(this.bookBackgroundImage);
+        MyGuard.IsNotNull(this.selectedTab);
         this.bookBackgroundImage.sprite = this.selectedTab.SelectedSprite;
         var Page = GetCurrentPage();
         Page.gameObject.SetActive(true);
@@ -129,12 +180,14 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 
         if (Page is PageWithSlots pageWithSlots)
         {
-            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.GetType() == pageWithSlots.TypeInPageSlots).ToList(), this.playerEquippedWeapon, this.playerEquippedItem, this.HandsWeapon);
+            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.GetType() == pageWithSlots.TypeInPageSlots).ToList(), this.PlayerEquippedWeapon, this.playerEquippedItem, this.DefaultWeaponHands);
         }
     }
 
     private BookPage GetCurrentPage()
     {
+        MyGuard.IsNotNull(this.selectedTab);
+
         if (this.selectedTab.tabType == BookTab.TabType.Gear)
         {
             return this.gearPages;
@@ -159,6 +212,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
         this.BookBackGround.SetActive(false);
         Debug.Log("TODO Make the flip right page animation. and make the page with stuff on it on the right transparent so looks like its closing it over the actual book contents.");
 
+        MyGuard.IsNotNull(this.bookSlideInOutAnimator);
         while (!this.bookSlideInOutAnimator.GetCurrentAnimatorStateInfo(0).IsName("OffscreenClosed"))
         {
             yield return null;
@@ -169,6 +223,8 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 
     private IEnumerator WaitForBookAnimThenSetup()
     {
+        MyGuard.IsNotNull(this.bookSlideInOutAnimator);
+
         // wait for slide in anim to finish then flip page and tabs open at the same time
         while (!this.bookSlideInOutAnimator.GetCurrentAnimatorStateInfo(0).IsName("Open"))
         {
@@ -187,14 +243,14 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
         StartCoroutine(PageFlip(1));
     }
 
-    public void AddToPlayerEquipped(InventorySlot selectedSlot)
+    public void ChangePlayerEquippedSLot(InventorySlot selectedSlot)
     {
         MyGuard.IsNotNull(selectedSlot.Item);
 
         if (selectedSlot.Item is Weapon weapon)
         {
-            this.gearPages.RemoveEquippedWeapon(this.playerEquippedWeapon, HandsWeapon);
-            this.playerEquippedWeapon = weapon;
+            this.gearPages.RemoveEquippedWeapon(this.PlayerEquippedWeapon, DefaultWeaponHands);
+            this.PlayerEquippedWeapon = weapon;
             this.gearPages.EquipWeapon(weapon);
         }
         else if (selectedSlot.Item is SpecialItem special)
@@ -215,9 +271,9 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 
         if (selectedSlot.Item is Weapon weapon)
         {
-            this.playerEquippedWeapon = this.HandsWeapon;
+            this.PlayerEquippedWeapon = this.DefaultWeaponHands;
             Debug.Log("make sure to update player weapon also am i doing that?");
-            this.gearPages.RemoveEquippedWeapon(weapon, this.HandsWeapon);
+            this.gearPages.RemoveEquippedWeapon(weapon, this.DefaultWeaponHands);
         }
         else
         {

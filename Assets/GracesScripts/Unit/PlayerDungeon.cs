@@ -260,46 +260,7 @@ public class PlayerDungeon : DungeonUnit
                 }
                 if (this.InteractFlagSet)
                 {
-                    this.InteractFlagSet = false;
-                    MyGuard.IsNotNull(this.inventoryMenu);
-                    var buttonGameObject = this.inventoryMenu.GetSelectedButton();
-
-                    if (buttonGameObject == null)
-                    {
-                        Debug.Log("clicked on nothing");
-                        return;
-                    }
-                    if (!buttonGameObject.TryGetComponent<InventorySlot>(out var selectedItemOp))
-                    {
-                        // clicked on something else
-                        return;
-                    }
-
-                    if (selectedItemOp.Item == null)
-                    {
-                        return;
-                    }
-                    else if (this.EquippedItems.Contains(selectedItemOp.Item))
-                    {
-                        // if want to unequip hands it does not. so we do not play select sound.
-                        if (selectedItemOp.Item != DefaultWeaponHands)
-                        {
-                            selectedItemOp.PlaySelectSound();
-                        }
-
-                        RemoveFromPlayerEquipped(selectedItemOp);
-                        this.inventoryMenu.RemoveFromPlayerEquipped(selectedItemOp);
-                    }
-                    else if (IsValidEquip(selectedItemOp.Item))
-                    {
-                        selectedItemOp.PlaySelectSound();
-                        this.inventoryMenu.AddToPlayerEquipped(selectedItemOp);
-                        AddToPlayerEquipped(selectedItemOp.Item);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Item invalid??");
-                    }
+                    
                 }
                 break;
             case KnightState.INTURNBASED:
@@ -312,7 +273,7 @@ public class PlayerDungeon : DungeonUnit
         }
     }
 
-    private void RemoveFromPlayerEquipped(InventorySlot itemButton)
+    public void RemoveFromPlayerEquipped(InventorySlot itemButton)
     {
         var itemToRemove = itemButton.Item;
         MyGuard.IsNotNull(itemToRemove);
@@ -332,8 +293,7 @@ public class PlayerDungeon : DungeonUnit
     /// TODO a better way for using this equipped items and inventory have a looksie
     /// </summary>
     /// <param name="itemToEquip"></param>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
-    private void AddToPlayerEquipped(DungeonItem itemToEquip)
+    public void AddToPlayerEquipped(DungeonItem itemToEquip)
     {
         MyGuard.IsNotNull(this.inventoryMenu);
 
@@ -345,18 +305,6 @@ public class PlayerDungeon : DungeonUnit
         {
             this.equippedSpecialItem = special;
         }
-    }
-
-    /// <summary>
-    /// TODO, was thinkging of having player stat /level blocks for items but now probs not
-    /// </summary>
-    /// <param name="item"></param>
-    /// <returns></returns>
-    private bool IsValidEquip(DungeonItem item)
-    {
-        MyGuard.IsNotNull(item);
-        bool isValid = true;
-        return isValid;
     }
 
     protected override void Die()
@@ -389,10 +337,6 @@ public class PlayerDungeon : DungeonUnit
         }
 
         escKeyFlag = true;
-    }
-
-    private void EndDialogue()
-    {
     }
 
     public void OnNavigateOrMove(InputAction.CallbackContext context)
