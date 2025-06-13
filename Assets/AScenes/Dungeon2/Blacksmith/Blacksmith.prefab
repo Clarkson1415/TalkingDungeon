@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7210101364107326755}
   - component: {fileID: 5700893944048325786}
   - component: {fileID: 3433705268411327916}
+  - component: {fileID: 3762482243707136230}
   m_Layer: 0
   m_Name: Blacksmith
   m_TagString: Untagged
@@ -93,9 +94,6 @@ MonoBehaviour:
   unitName: Vi
   SceneAfterWin: 
   FlipBattleIdleAnimation: 0
-  Conversations:
-  - {fileID: 11400000, guid: 6316b138f6699914d96b3c0e1090fd86, type: 2}
-  battleConversations: []
 --- !u!61 &3433705268411327916
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -141,6 +139,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.636158, y: 1.5010282}
   m_EdgeRadius: 0
+--- !u!114 &3762482243707136230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168719532165355208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2c6b6ff43e5745afa0b2cadd81445, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstSlideOfEachConvo:
+  - {fileID: 11400000, guid: 6316b138f6699914d96b3c0e1090fd86, type: 2}
 --- !u!1 &1304709209259640177
 GameObject:
   m_ObjectHideFlags: 0
