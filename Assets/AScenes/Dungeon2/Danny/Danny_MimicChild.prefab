@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 1633542116942645301}
   - component: {fileID: 6260262951404811550}
   - component: {fileID: 3930628686927413501}
+  - component: {fileID: 2169656465774953316}
   m_Layer: 0
   m_Name: Danny_MimicChild
   m_TagString: Untagged
@@ -227,9 +228,6 @@ MonoBehaviour:
   unitName: Danny
   SceneAfterWin: 
   FlipBattleIdleAnimation: 0
-  Conversations:
-  - {fileID: 11400000, guid: 1fbe622996533764b9ef05365f456305, type: 2}
-  battleConversations: []
 --- !u!61 &3930628686927413501
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -275,3 +273,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.3027855, y: 1.3390138}
   m_EdgeRadius: 0
+--- !u!114 &2169656465774953316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345300832022061615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2c6b6ff43e5745afa0b2cadd81445, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstSlideOfEachConvo:
+  - {fileID: 11400000, guid: 1fbe622996533764b9ef05365f456305, type: 2}
