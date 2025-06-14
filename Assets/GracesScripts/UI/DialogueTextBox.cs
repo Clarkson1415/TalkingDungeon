@@ -9,40 +9,64 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #nullable enable
 
+/// <summary>
+/// Represents a text box class that does the dialogue options and prints text.
+/// </summary>
 [RequireComponent(typeof(AudioSource))]
-public class DialogueTextBox : MenuWithButtons
+public class DialogueTextBox : Textbox
 {
-    [Header("Battle Stuff")]
     public TransitionSettings transitionForGoingToBattleScene;
-    private DialogueSlide? CurrentSlide { get; set; }
-    private BoxState State { get; set; } = BoxState.WAITINGFORINTERACTION;
-    [SerializeField] private float textspeed = 0.1f;
-    [SerializeField] private float underscorePauseTime = 0.01f;
-    [SerializeField] AudioSource audioSource;
-    [SerializeField] AudioClip dialoguePrintingAudio;
     [SerializeField] private List<DialogueOptionButton> buttons;
-    private Coroutine? writeSlidesOverTimeCoroutine = null;
-    private bool FinishedWritingSlideOverTime;
-    private const char pauseCharacterToNotPrint = '_';
-    private TMP_Text TMPTextBox;
     public TMP_Text speakerNameText;
-    private Unit_NPC? currentSpeaker;
+    protected DialogueSlide? CurrentSlide { get; set; }
+    protected Unit_NPC? currentSpeaker;
 
-    /// <summary>
-    /// for the player statemachine to recognise the interaction has finished.
-    /// </summary>
-    [HideInInspector] public bool finishedInteractionFlag;
-    [HideInInspector] private bool InteractFlag;
-    [HideInInspector] public bool ButtonClickedFlagSet;
-    private bool newDialogueStartedFlag;
-
-    private void ResetAllFlags()
+    protected override void ResetAllFlags()
     {
-        finishedInteractionFlag = false;
-        InteractFlag = false;
         ButtonClickedFlagSet = false;
-        newDialogueStartedFlag = false;
     }
+
+    private void Update()
+    {
+        switch (State)
+        {
+            case BoxState.INACTIVE:
+                break;
+            case BoxState.WRITINGSLIDE:
+                if (this.InteractFlag)
+                {
+                    this.SkipToEnd();
+                }
+                if (this.finishedWritingSlide)
+                {
+                    DrawButtons();
+                    this.State = BoxState.WAITINGONSLIDE;
+                }
+                break;
+            case BoxState.WAITINGONSLIDE:
+                if (this.InteractFlag && this.CurrentSlide != null && !this.CurrentSlide.dialogueOptions.Any())
+                {
+                    MyGuard.IsNotNull(this.CurrentSlide);
+                    // if no options on slide and player clicked then they want to go to the next slide or end dialogue.
+                    FinishedWaitingOnSlide(this.CurrentSlide.nextSlide);
+                    return;
+                }
+                else if (this.ButtonClickedFlagSet)
+                {
+                    MyGuard.IsNotNull(this.CurrentSlide);
+                    var buttonOption = lastHighlightedItem.GetComponentInParent<DialogueOptionButton>();
+                    MyGuard.IsNotNull(buttonOption, "Button clicked flag set cannot have no button clicked");
+                    FinishedWaitingOnSlide(buttonOption.NextDialogueSlide);
+                }
+                break;
+            default:
+                State = BoxState.INACTIVE;
+                break;
+        }
+
+        ResetAllFlags();
+    }
+
 
     public void OnDialogueButtonSelected()
     {
@@ -50,46 +74,11 @@ public class DialogueTextBox : MenuWithButtons
         lastHighlightedItem = this.UIEventSystem.currentSelectedGameObject;
     }
 
-    private void PlayDialoguePrintAudio()
-    {
-        if (this.audioSource.clip != this.dialoguePrintingAudio)
-        {
-            this.audioSource.clip = this.dialoguePrintingAudio;
-        }
-
-        this.audioSource.Play();
-    }
-
     public void BeginDialogue(DialogueSlide firstSlide, Unit_NPC speaker)
     {
-        this.newDialogueStartedFlag = true;
         this.currentSpeaker = speaker;
         this.UpdateCurrentSlide(firstSlide);
-    }
-
-    public enum BoxState
-    {
-        WAITINGFORINTERACTION,
-        WRITINGSLIDE,
-        WAITINGONSLIDE,
-    }
-
-    private void Awake()
-    {
-        TMPTextBox = this.GetComponentInChildren<TMP_Text>();
-        this.audioSource.loop = false;
-    }
-
-    public void OnInteract(InputAction.CallbackContext context)
-    {
-        if (!context.started)
-        {
-            return;
-        }
-
-        Log.Print("Interact flag set");
-
-        this.InteractFlag = true;
+        this.State = BoxState.WRITINGSLIDE;
     }
 
     private void UpdateCurrentSlide(DialogueSlide? newSlide)
@@ -106,76 +95,18 @@ public class DialogueTextBox : MenuWithButtons
         speakerNameText.text = currentSpeaker.unitName;
     }
 
-    private void Update()
-    {
-        switch (State)
-        {
-            case BoxState.WAITINGFORINTERACTION:
-                if (this.newDialogueStartedFlag)
-                {
-                    DeactivateAllButtons();
-                    this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
-                    this.FinishedWritingSlideOverTime = false;
-                    this.State = BoxState.WRITINGSLIDE;
-                }
-                break;
-            case BoxState.WRITINGSLIDE:
-                if (this.InteractFlag)
-                {
-                    this.InteractFlag = false;
-                    this.SkipToEnd();
-                    this.State = BoxState.WAITINGONSLIDE;
-                    //Log.Print("state writing");
-                }
-                if (this.FinishedWritingSlideOverTime)
-                {
-                    this.FinishedWritingSlideOverTime = false;
-                    this.State = BoxState.WAITINGONSLIDE;
-                    //Log.Print("state waitingOnSlide");
-                }
-                break;
-            case BoxState.WAITINGONSLIDE:
-                if (this.InteractFlag)
-                {
-                    MyGuard.IsNotNull(this.CurrentSlide);
-                    // if no options on slide and player clicked then they want to go to the next slide or end dialogue.
-                    if (!this.CurrentSlide.dialogueOptions.Any())
-                    {
-                        FinishedWithSlide(this.CurrentSlide.nextSlide);
-                        return;
-                    }
-                }
-                else if (this.ButtonClickedFlagSet)
-                {
-                    MyGuard.IsNotNull(this.CurrentSlide);
-                    var buttonOption = lastHighlightedItem.GetComponentInParent<DialogueOptionButton>();
-                    MyGuard.IsNotNull(buttonOption, "Button clicked flag set cannot have no button clicked");
-                    FinishedWithSlide(buttonOption.NextDialogueSlide);
-                }
-                break;
-            default:
-                State = BoxState.WAITINGFORINTERACTION;
-                break;
-        }
 
-        ResetAllFlags();
-    }
-
-    private void StartNextSlide(DialogueSlide nextSlide)
+    private void GotoNextSlide(DialogueSlide nextSlide)
     {
-        // var selectedDiaOption = this.buttons.First(x => x.GetComponent<DialogueOptionButton>().isSelected);
+        DeactivateAllButtons();
         this.UpdateCurrentSlide(nextSlide);
-        this.writeSlidesOverTimeCoroutine = StartCoroutine(WriteSlideOverTime());
-        //Log.Print("state writing after waiting");
-        this.State = BoxState.WRITINGSLIDE;
+        this.StartWriting(nextSlide.dialogue, Color.black);
     }
 
     private void EndConversation()
     {
         UpdateCurrentSlide(null);
-        //Log.Print("state INVIS INACTIVE");
-        finishedInteractionFlag = true;
-        this.State = BoxState.WAITINGFORINTERACTION;
+        this.State = BoxState.INACTIVE;
         this.gameObject.SetActive(false);
         MyGuard.IsNotNull(currentSpeaker);
         currentSpeaker.EndInteract();
@@ -205,7 +136,7 @@ public class DialogueTextBox : MenuWithButtons
     /// Or when clicked on an option the potential slide = button option slide.
     /// </summary>
     /// <param name="potentialNextSlide"></param>
-    private void FinishedWithSlide(DialogueSlide? potentialNextSlide)
+    private void FinishedWaitingOnSlide(DialogueSlide? potentialNextSlide)
     {
         MyGuard.IsNotNull(CurrentSlide);
         Debug.Log("If i want only a specific dialogue option to start a fight add that here");
@@ -215,31 +146,12 @@ public class DialogueTextBox : MenuWithButtons
         }
         else if (potentialNextSlide != null)
         {
-            StartNextSlide(potentialNextSlide);
+            GotoNextSlide(potentialNextSlide);
         }
         else
         {
             EndConversation();
         }
-    }
-
-    private void SkipToEnd()
-    {
-        // In more recent versions of Unity (at least 5.3 onwards) you can keep a reference to the IEnumerator or returned Coroutine object and start and stop that directly, rather than use the method name. These are preferred over using the method name as they are type safe and more performant. See the StopCoroutine docs for details https://docs.unity3d.com/ScriptReference/MonoBehaviour.StopCoroutine.html
-        StopCoroutine(writeSlidesOverTimeCoroutine);
-        DrawButtons();
-        string parsedString = "";
-        MyGuard.IsNotNull(CurrentSlide);
-        MyGuard.IsNotNull(CurrentSlide.dialogue);
-        foreach (var item in CurrentSlide.dialogue)
-        {
-            if (item != pauseCharacterToNotPrint)
-            {
-                parsedString += item;
-            }
-        }
-
-        this.TMPTextBox.text = parsedString;
     }
 
     /// <summary>
@@ -269,57 +181,5 @@ public class DialogueTextBox : MenuWithButtons
         {
             button.gameObject.SetActive(false);
         }
-    }
-
-    private IEnumerator WriteSlideOverTime()
-    {
-        DeactivateAllButtons();
-        MyGuard.IsNotNull(this.CurrentSlide);
-        MyGuard.IsNotNull(this.CurrentSlide.dialogue);
-
-        // get the autosized font size. then reprint the text at that size without autosize enabled so it doesnt change size while printing.
-        this.TMPTextBox.enableAutoSizing = true;
-        this.TMPTextBox.text = this.CurrentSlide.dialogue;
-        this.TMPTextBox.ForceMeshUpdate();
-        var fontSize = this.TMPTextBox.fontSize;
-        this.TMPTextBox.text = string.Empty;
-        this.TMPTextBox.enableAutoSizing = false;
-        this.TMPTextBox.fontSize = fontSize;
-        this.TMPTextBox.ForceMeshUpdate();
-
-        for (int i = 0; i < this.CurrentSlide.dialogue.Length; i++)
-        {
-            // don't play sound for either the special pause text printing character, or spaces. 
-            if (this.CurrentSlide.dialogue[i] == pauseCharacterToNotPrint)
-            {
-                yield return new WaitForSeconds(underscorePauseTime);
-                this.audioSource.Pause();
-                continue;
-            }
-
-            // dont play a sound but do print a space empty char
-            if (this.CurrentSlide.dialogue[i] == ' ')
-            {
-                this.TMPTextBox.text += this.CurrentSlide.dialogue[i];
-                this.audioSource.Pause();
-                yield return new WaitForSeconds(textspeed);
-                continue;
-            }
-
-            this.PlayDialoguePrintAudio();
-            if (i == 0) // set first letter if this is the first letter.
-            {
-                this.TMPTextBox.SetText(this.CurrentSlide.dialogue[0].ToString());
-                continue;
-            }
-
-            // do the rest of the letters
-            this.TMPTextBox.text += this.CurrentSlide.dialogue[i];
-            yield return new WaitForSeconds(textspeed);
-        }
-
-        this.audioSource.Stop();
-        DrawButtons();
-        this.FinishedWritingSlideOverTime = true;
     }
 }

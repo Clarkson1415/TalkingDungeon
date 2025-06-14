@@ -2,7 +2,6 @@ using Assets.GracesScripts;
 using Assets.GracesScripts.UI;
 using EasyTransition;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -21,7 +20,7 @@ public class BattleUI : MenuWithButtons
     private bool AreAnimationsFinished =>
     !IsPlayerHealthBarPlayingAnimation &&
     !IsEnemyHealthAnimationPlaying &&
-    !isDialoguePrinting;
+    !battleDialogBoxAboveText.IsNotWritingOrOnSlide;
 
     [Header("UI")]
     [SerializeField] TransitionSettings exitBattleTransition;
@@ -33,12 +32,12 @@ public class BattleUI : MenuWithButtons
     [SerializeField] GameObject itemScreen;
     [SerializeField] GameObject runScreen;
     [SerializeField] GameObject talkScreen;
-    [SerializeField] private GameObject battleDialogueBox;
-    private TMP_Text battleDialogBoxAboveText;
+
+    private BattleTextBox battleDialogBoxAboveText;
+
     [SerializeField] GameObject backButton;
 
     private List<GameObject> ScreensNotAction => new() { this.itemScreen, this.runScreen, this.abilityButtonScreen, this.talkScreen };
-
 
     [Header("Enemy")]
     private Unit_NPC? enemyYouFightin;
@@ -48,22 +47,6 @@ public class BattleUI : MenuWithButtons
 
     private Battle state;
     private static Color positiveGreen = new(0, 0.7f, 0);
-
-    [Header("Dialogue Printing Stuff")]
-    private const char pauseCharacterToNotPrint = '_';
-    [SerializeField] private float underscorePauseTime = 0.05f;
-    private AudioSource dialoguePrintAudio;
-    [SerializeField] private TMP_Text TopSlideText;
-    [SerializeField] private float timeBetweenLetters;
-
-    private bool isDialoguePrinting;
-
-    private void Awake()
-    {
-        battleDialogueBox.SetActive(true);
-        battleDialogBoxAboveText = this.battleDialogueBox.GetComponentInChildren<TMP_Text>();
-        dialoguePrintAudio = this.gameObject.GetComponent<AudioSource>();
-    }
 
     void Start()
     {
@@ -79,59 +62,7 @@ public class BattleUI : MenuWithButtons
         itemScreen.SetActive(false);
         talkScreen.SetActive(false);
         runScreen.SetActive(false);
-        StartCoroutine(TestDialogueBox("Your turn", Color.black));
-    }
-
-    private IEnumerator TestDialogueBox(string text, Color color)
-    {
-        // get the autosized font size. then reprint the text at that size without autosize enabled so it doesnt change size while printing.
-        this.TopSlideText.enableAutoSizing = true;
-        this.TopSlideText.text = text;
-        this.TopSlideText.ForceMeshUpdate();
-        var fontSize = this.TopSlideText.fontSize;
-        this.TopSlideText.text = string.Empty;
-        this.TopSlideText.enableAutoSizing = false;
-        this.TopSlideText.fontSize = fontSize;
-        this.TopSlideText.ForceMeshUpdate();
-
-        var secondsToWait = text.Length / 25f;
-        this.isDialoguePrinting = true;
-        battleDialogBoxAboveText.text = text;
-        battleDialogBoxAboveText.color = color;
-
-        for (int i = 0; i < text.Length; i++)
-        {
-            // don't play sound for either the special pause text printing character, or spaces. 
-            if (text[i] == pauseCharacterToNotPrint)
-            {
-                yield return new WaitForSeconds(underscorePauseTime);
-                this.dialoguePrintAudio.Pause();
-                continue;
-            }
-
-            // dont play a sound but do print a space empty char
-            if (text[i] == ' ')
-            {
-                this.TopSlideText.text += text[i];
-                this.dialoguePrintAudio.Pause();
-                yield return new WaitForSeconds(timeBetweenLetters);
-                continue;
-            }
-
-            this.dialoguePrintAudio.Play();
-            if (i == 0) // set first letter if this is the first letter.
-            {
-                this.TopSlideText.SetText(text[0].ToString());
-                continue;
-            }
-
-            // do the rest of the letters
-            this.TopSlideText.text += text[i];
-            yield return new WaitForSeconds(timeBetweenLetters);
-        }
-
-        yield return new WaitForSeconds(secondsToWait);
-        this.isDialoguePrinting = false;
+        this.battleDialogBoxAboveText.StartWriting("Your turn", Color.black);
     }
 
     public void SetupEnemyAfterSpawned()
@@ -191,7 +122,7 @@ public class BattleUI : MenuWithButtons
         {
             action = turnBasedButton.Action;
         }
-        
+
         if (action == null)
         {
             throw new ArgumentNullException("Action was null in battle UI this is not meant to happen.");
@@ -218,7 +149,8 @@ public class BattleUI : MenuWithButtons
 
                 if (runSuccesss)
                 {
-                    StartCoroutine(TestDialogueBox("you got away!", Color.black));
+                    this.battleDialogBoxAboveText.StartWriting("you got away!", Color.black);
+
                     // TODO play sound effect for running away
                     SaveGameUtility.SaveStuffFromBattle(player);
                     var scenePlayerSavedInLast = PlayerPrefs.GetString(SaveKeys.LastScene);
@@ -227,7 +159,7 @@ public class BattleUI : MenuWithButtons
                 }
                 else
                 {
-                    StartCoroutine(TestDialogueBox("Failed to get away.", Color.red));
+                    this.battleDialogBoxAboveText.StartWriting("Failed to get away.", Color.red);
                     this.state = Battle.EnemyPickAbilityTurn;
                 }
                 break;
@@ -258,12 +190,13 @@ public class BattleUI : MenuWithButtons
                 MyGuard.IsNotNull(enemyYouFightin, "enemyYouFightin is null.");
                 if (enemyYouFightin.currentHealth > 0)
                 {
-                    StartCoroutine(TestDialogueBox("Enemy Turn", Color.black));
+                    this.battleDialogBoxAboveText.StartWriting("Enemy Turn", Color.black);
                     this.state = Battle.EnemyPickAbilityTurn;
                 }
                 else
                 {
-                    StartCoroutine(TestDialogueBox("You Won", Color.black));
+                    this.battleDialogBoxAboveText.StartWriting("You Won", Color.black);
+
                     var scene = enemyYouFightin.SceneAfterWin;
                     TalkingDungeonScenes.LoadScene(scene, exitBattleTransition, SaveGameState.BattleWon);
                     this.state = Battle.WaitOnDeathScreenOrTransitioning;
@@ -280,8 +213,8 @@ public class BattleUI : MenuWithButtons
                 state = this.player.currentHealth <= 0 ? Battle.WaitOnDeathScreenOrTransitioning : Battle.FinishedEnemiesTurn;
                 break;
             case Battle.FinishedEnemiesTurn:
-                StartCoroutine(TestDialogueBox("Your Turn", Color.black));
-                OnBackButtonClicked();
+                this.battleDialogBoxAboveText.StartWriting("Your Turn", Color.black);
+                GotoPlayerActionTurn();
                 break;
             case Battle.WaitOnDeathScreenOrTransitioning:
                 break;
@@ -302,7 +235,7 @@ public class BattleUI : MenuWithButtons
         }
 
         var turnInfoString = $"{person} used {user.equippedWeapon.Name} to {abilityUsed.Name} to {abilityUsed.FormatDescription(user.equippedWeapon, user)}";
-        StartCoroutine(TestDialogueBox(turnInfoString, color));
+        this.battleDialogBoxAboveText.StartWriting(turnInfoString, color);
     }
 
     private static readonly System.Random Random = new();
@@ -314,6 +247,11 @@ public class BattleUI : MenuWithButtons
         return abilities[abilityIndex];
     }
 
+    /// <summary>
+    /// To Start the Talk Option in the battle.
+    /// </summary>
+    /// <param name="dialogue"></param>
+    /// <exception cref="NotImplementedException"></exception>
     private void StartDialogue(DialogueSlide dialogue)
     {
         throw new NotImplementedException();
@@ -338,7 +276,7 @@ public class BattleUI : MenuWithButtons
         this.state = Battle.FinishedPLayerTurn;
     }
 
-    public void OnBackButtonClicked()
+    public void GotoPlayerActionTurn()
     {
         buttonClickedAudioSource.Play();
         foreach (var s in ScreensNotAction)
