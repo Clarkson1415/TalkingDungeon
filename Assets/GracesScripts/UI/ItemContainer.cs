@@ -1,4 +1,4 @@
-using Assets.GracesScripts.Unit;
+using Assets.GracesScripts.Data;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,10 +6,29 @@ using UnityEngine;
 /// <summary>
 /// eg like a chest or something
 /// </summary>
-/// 
 [RequireComponent(typeof(AudioSource))]
-public class ItemContainer : MonoBehaviour, IInteracble
+public class ItemContainer : MonoBehaviour, IInteracble, ISaveable
 {
+    public string UniqueId => this.name;
+
+    public object CaptureState()
+    {
+        var data = new ItemContainerData()
+        {
+            Loot = this.Loot,
+            animatorStateName = this.animator.GetCurrentAnimatorClipInfo(0)[0].clip.name,
+        };
+
+        return data;
+    }
+
+    public void RestoreState(object state)
+    {
+        ItemContainerData data = (ItemContainerData)state;
+        this.Loot = data.Loot;
+        this.animator.Play(data.animatorStateName);
+    }
+
     /// <summary>
     /// Loot chest starts out with, after it's been saved, loot is then loaded from player prefs
     /// </summary>

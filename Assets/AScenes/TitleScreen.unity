@@ -6134,7 +6134,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ff0e3bb5b9d5e24e99a59b63c93062a, type: 3}
---- !u!43 &851940969
+--- !u!43 &771205143
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7984,7 +7984,7 @@ MonoBehaviour:
   LoadSaveButton: {fileID: 4896313686783713366, guid: 64648a1dad3ea464cb23fe9c5ee58806,
     type: 3}
   ContinueButtonLocation: {fileID: 1501105820}
-  PretendFirstTimeBootDeleteSave: 1
+  PretendFirstTimeBootDeleteSave: 0
   sceneToLoad: Intro
 --- !u!114 &33385899835009936
 MonoBehaviour:
@@ -8339,8 +8339,8 @@ MonoBehaviour:
   - {x: 0.18037367, y: -0.098816544, z: 0}
   - {x: 0.20983553, y: -0.3487284, z: 0}
   m_ShapePathHash: 1112366633
-  m_Mesh: {fileID: 851940969}
-  m_InstanceId: 164290
+  m_Mesh: {fileID: 771205143}
+  m_InstanceId: 100758
   m_LocalBounds:
     m_Center: {x: -0.008348465, y: 0.12563252, z: 0}
     m_Extent: {x: 0.22360897, y: 0.49217469, z: 0}
@@ -9552,6 +9552,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 69a967fa-43b3-44a3-ba35-acd66d3a73b4
     m_ActionName: UI/Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 77b07048-8d4b-4fe7-8679-c08b814cb29e
+    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player

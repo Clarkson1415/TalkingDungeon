@@ -187,11 +187,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
-  equippedWeapon: {fileID: 11400000, guid: ed3c6cd5b0cb24347bce0075a4111204, type: 2}
+  equippedWeapon: {fileID: 11400000, guid: 2bbbf6774d36fc241bb3ac0b3aec955e, type: 2}
   equippedSpecialItem: {fileID: 0}
   Inventory:
   - {fileID: 11400000, guid: 2bbbf6774d36fc241bb3ac0b3aec955e, type: 2}
-  - {fileID: 11400000, guid: ed3c6cd5b0cb24347bce0075a4111204, type: 2}
   HealthBarObject: {fileID: 0}
   healthBarFill: {fileID: 0}
   basePower: 1
@@ -208,7 +207,7 @@ MonoBehaviour:
   scenesTraversed: []
   enemyLoaderPrefab: {fileID: 5959426843505071393, guid: 08760dcc72a011a4299b2bb0c92e1f5d,
     type: 3}
-  enemyLoader: {fileID: 0}
+  sceneLoadEvents: {fileID: 0}
 --- !u!114 &3267450824328115795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -502,7 +501,7 @@ MonoBehaviour:
   - {x: -0.000056147575, y: -0.3732252, z: 0.0000000121071935}
   m_ShapePathHash: -382328611
   m_Mesh: {fileID: 0}
-  m_InstanceId: -175206
+  m_InstanceId: -213792
   m_LocalBounds:
     m_Center: {x: 0.0012224317, y: 0.1249226, z: 0}
     m_Extent: {x: 0.21986264, y: 0.5010518, z: 0}

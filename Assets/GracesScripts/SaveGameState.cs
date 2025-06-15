@@ -8,11 +8,11 @@ namespace Assets.GracesScripts
         public const string BattleLost = "BattleLost";
         public const string BattleWon = "BattleWon";
         public const string LoadingSave = "LoadingSave";
-        public const string RegularSceneChange = "RegularSceneChange";
+        public const string LoadIntoNewScene = "RegularSceneChange";
         public const string QuittingToTitle = "QuittingToTitle";
-        public const string BattleRunAwaySuccess = "BattleRunAwaySuccess";
+        public const string BattleRanAway = "BattleRunAwaySuccess";
         public const string StartedBattle = "StartedBattle";
 
-        public static List<string> GameStates => new() { NewGame, BattleLost, BattleWon, LoadingSave, RegularSceneChange, QuittingToTitle, StartedBattle };
+        public static List<string> GameStates => new() { NewGame, BattleLost, BattleWon, LoadingSave, LoadIntoNewScene, QuittingToTitle, StartedBattle };
     }
 }

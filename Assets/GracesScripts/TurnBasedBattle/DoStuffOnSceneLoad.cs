@@ -1,11 +1,12 @@
 using Assets.GracesScripts;
+using EasyTransition;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Is used to store the Enemy talking to in dialogue and instaiate enemy prefab in the battle scene. Singleton, Instantiated in PlayerDungeon.Awake().
+/// Is used to save the enemy to use in battle and spawn it. singleton, Instantiated in PlayerDungeon.Start() if it does not exist.
 /// </summary>
-public class EnemyLoader : MonoBehaviour
+public class DoStuffOnSceneLoad : MonoBehaviour
 {
     [HideInInspector] public GameObject enemyWasTalkingTo;
 
@@ -13,13 +14,20 @@ public class EnemyLoader : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
-        SceneManager.sceneLoaded += OnBattleSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnBattleSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnEnable()
+    {
+        // called in OnEnable as the first time this guy is instantaited it also needs to restore data and OnSceneLoaded event may have already happened.
+        this.OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name != TalkingDungeonScenes.Battle)
         {
+            SaveGameUtility.Load();
             return;
         }
 
