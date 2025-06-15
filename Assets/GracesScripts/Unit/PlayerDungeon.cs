@@ -1,4 +1,5 @@
 using Assets.GracesScripts;
+using Assets.GracesScripts.Data;
 using Assets.GracesScripts.ScriptableObjects;
 using Assets.GracesScripts.UI;
 using System;
@@ -39,7 +40,7 @@ public class PlayerDungeon : DungeonUnit
 
     [Header("EnemyBattleLoader")]
     [SerializeField] private GameObject enemyLoaderPrefab;
-    [HideInInspector] public EnemyLoader enemyLoader;
+    [HideInInspector] public DoStuffOnSceneLoad sceneLoadEvents;
 
     /// <summary>
     /// Flag Set to true ONLY WHEN there is an interactable in range. <see cref="OnInteract(InputAction.CallbackContext)"/>
@@ -64,58 +65,99 @@ public class PlayerDungeon : DungeonUnit
         INTURNBASED,
     }
 
-    private void Start()
+    private PlayerDungeonData LastSavedData;
+
+    public override object CaptureState()
     {
-        var enemyLoaders = FindObjectsByType<EnemyLoader>(FindObjectsSortMode.None);
-        if (enemyLoaders.Length == 0)
+        var newPlayerData = new PlayerDungeonData()
         {
-            enemyLoader = Instantiate(enemyLoaderPrefab).GetComponent<EnemyLoader>();
+            CurrentHealth = this.currentHealth,
+            MaxHealth = this.maxHealth,
+            EquippedWeapon = this.equippedWeapon,
+            EquippedItem = this.equippedSpecialItem,
+            Inventory = this.Inventory,
+            Position = this.transform.position,
+            LastSavedData = this.LastSavedData,
+        };
+
+        // If saving in battle scene to transition out of we want to NOT save position.
+        // becuase last saved position from the scene before battle needs to be loaded instead.
+        if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
+        {
+            // dont save position in battle just resave the last saved pos from previous not battle scene
+            // Or if last saved data is empty (first time saving) then save current position.
+            newPlayerData.Position = LastSavedData == null ? this.transform.position : LastSavedData.Position;
+        }
+
+        this.LastSavedData = newPlayerData;
+        return newPlayerData;
+    }
+
+    private void RestoreState(string state, bool restorePosition)
+    {
+        Debug.Log("Restoring state from JSON: " + state);
+        var data = JsonUtility.FromJson<PlayerDungeonData>(state);
+
+        this.currentHealth = data.CurrentHealth;
+        this.maxHealth = data.MaxHealth;
+        this.equippedWeapon = data.EquippedWeapon;
+        this.equippedSpecialItem = data.EquippedItem;
+        this.Inventory = data.Inventory;
+        this.LastSavedData = data.LastSavedData;
+
+        if (restorePosition)
+        {
+            this.transform.position = data.Position;
+        }
+    }
+
+    /// <summary>
+    /// Restores Players State not position. When entering battle scene we dont want to.
+    /// </summary>
+    /// <param name="state"></param>
+    public override void RestoreState(string state)
+    {
+        // if we are restoring in a scene the same as last saved in then we are loading save and should load position
+        if (SceneManager.GetActiveScene().name == PlayerPrefs.GetString(SaveKeys.LastScene))
+        {
+            this.RestoreState(state, true);
+        }
+        // if we are restoring in a battle scene dont load position.
+        else if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
+        {
+            this.RestoreState(state, false);
+        }
+        // if we are restoring in a scene different from last dont load position its a new scene.
+        else if (SceneManager.GetActiveScene().name != PlayerPrefs.GetString(SaveKeys.LastScene))
+        {
+            this.RestoreState(state, false);
+        }
+        // if restoring in a scene after a battle scene load position.
+        else if (PlayerPrefs.GetString(SaveKeys.LastScene) == TalkingDungeonScenes.Battle)
+        {
+            this.RestoreState(state, false);
         }
         else
         {
-            this.enemyLoader = enemyLoaders[0];
+            this.RestoreState(state, true);
+        }
+    }
+
+    private void Start()
+    {
+        var enemyLoaders = FindObjectsByType<DoStuffOnSceneLoad>(FindObjectsSortMode.None);
+        if (enemyLoaders.Length == 0)
+        {
+            sceneLoadEvents = Instantiate(enemyLoaderPrefab).GetComponent<DoStuffOnSceneLoad>();
+        }
+        else
+        {
+            this.sceneLoadEvents = enemyLoaders[0];
         }
 
         this.state = startingState;
 
-        switch (PlayerPrefs.GetString(SaveKeys.GameState))
-        {
-            case SaveGameState.RegularSceneChange:
-                SaveGameUtility.LoadSaveNotPosition(this);
-                break;
-            case SaveGameState.LoadingSave:
-                SaveGameUtility.LoadSaveNotPosition(this);
-                SaveGameUtility.LoadPlayerPosition(this);
-                break;
-            case SaveGameState.BattleLost:
-                SaveGameUtility.LoadSaveNotPosition(this);
-                SaveGameUtility.LoadPlayerPosition(this);
-                break;
-            case SaveGameState.QuittingToTitle:
-                break;
-            case SaveGameState.BattleWon:
-                SaveGameUtility.LoadSaveNotPosition(this);
-                break;
-            case SaveGameState.NewGame:
-                break;
-            case SaveGameState.BattleRunAwaySuccess:
-                SaveGameUtility.LoadSaveNotPosition(this);
-                SaveGameUtility.LoadPlayerPosition(this);
-                break;
-            case SaveGameState.StartedBattle:
-                SaveGameUtility.LoadSaveNotPosition(this);
-                break;
-            default:
-                Debug.LogWarning("Game state not valid. If starting from a scene not Title screen than ignore this.");
-                break;
-        }
-
-        // Save upon entering new scene do not save if in battle scene though
-        if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
-        {
-            SaveGameUtility.SaveGame(this);
-        }
-
+        // This should be happening after DostuffOnSceneLoad.OnSceneLoaded
         this.LoadPlayerComponents();
 
         if (Abilities.Count < 1)
@@ -357,6 +399,9 @@ public class PlayerDungeon : DungeonUnit
         if (context.started)
         {
             footstepsSound.Play();
+
+            this.animatedLayers.SetFloats("LastXDir", this.direction.x);
+            this.animatedLayers.SetFloats("LastYDir", this.direction.y);
         }
         else if (context.performed)
         {
@@ -365,8 +410,6 @@ public class PlayerDungeon : DungeonUnit
         else if (context.canceled)
         {
             footstepsSound.Stop();
-            this.animatedLayers.SetFloats("LastXDir", this.direction.x);
-            this.animatedLayers.SetFloats("LastYDir", this.direction.y);
             //Log.Print("on move cancelled");
         }
 

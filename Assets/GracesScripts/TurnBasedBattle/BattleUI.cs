@@ -33,7 +33,7 @@ public class BattleUI : MenuWithButtons
     [SerializeField] GameObject runScreen;
     [SerializeField] GameObject talkScreen;
 
-    private BattleTextBox battleDialogBoxAboveText;
+    [SerializeField] private BattleTextBox battleDialogBoxAboveText;
 
     [SerializeField] GameObject backButton;
 
@@ -152,9 +152,9 @@ public class BattleUI : MenuWithButtons
                     this.battleDialogBoxAboveText.StartWriting("you got away!", Color.black);
 
                     // TODO play sound effect for running away
-                    SaveGameUtility.SaveStuffFromBattle(player);
                     var scenePlayerSavedInLast = PlayerPrefs.GetString(SaveKeys.LastScene);
-                    TalkingDungeonScenes.LoadScene(scenePlayerSavedInLast, exitBattleTransition, SaveGameState.BattleRunAwaySuccess);
+                    SaveGameUtility.SaveGame();
+                    TalkingDungeonScenes.ChangeScene(scenePlayerSavedInLast, exitBattleTransition);
                     this.state = Battle.WaitOnDeathScreenOrTransitioning;
                 }
                 else
@@ -198,7 +198,8 @@ public class BattleUI : MenuWithButtons
                     this.battleDialogBoxAboveText.StartWriting("You Won", Color.black);
 
                     var scene = enemyYouFightin.SceneAfterWin;
-                    TalkingDungeonScenes.LoadScene(scene, exitBattleTransition, SaveGameState.BattleWon);
+                    SaveGameUtility.SaveGame();
+                    TalkingDungeonScenes.ChangeScene(scene, exitBattleTransition);
                     this.state = Battle.WaitOnDeathScreenOrTransitioning;
                 }
                 break;

@@ -117,17 +117,17 @@ public class DialogueTextBox : Textbox
     {
         var player = FindObjectOfType<PlayerDungeon>();
         MyGuard.IsNotNull(player);
-        SaveGameUtility.SaveGame(player);
-
+        
         if (player.InteractableInRange is Unit_NPC enemy)
         {
             MyGuard.IsNotNull(enemy);
-            MyGuard.IsNotNull(player.enemyLoader);
-            player.enemyLoader.enemyWasTalkingTo = enemy.gameObject;
+            MyGuard.IsNotNull(player.sceneLoadEvents);
+            player.sceneLoadEvents.enemyWasTalkingTo = enemy.gameObject;
             DontDestroyOnLoad(enemy.gameObject);
         }
 
-        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Battle, this.transitionForGoingToBattleScene, SaveGameState.StartedBattle);
+        SaveGameUtility.SaveGame();
+        TalkingDungeonScenes.ChangeScene(TalkingDungeonScenes.Battle, this.transitionForGoingToBattleScene);
         return;
     }
 

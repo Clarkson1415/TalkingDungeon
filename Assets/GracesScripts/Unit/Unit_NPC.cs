@@ -1,4 +1,5 @@
-﻿using Assets.GracesScripts.Unit;
+﻿using Assets.GracesScripts.Data;
+using Assets.GracesScripts.Unit;
 using UnityEngine;
 #nullable enable
 
@@ -43,10 +44,22 @@ namespace Assets.GracesScripts
             }
         }
 
-        ///// <summary>
-        ///// For talking in battle Scene TODO not setup yet
-        ///// </summary>
-        //public List<DialogueSlide> battleConversations;
+        public override object CaptureState()
+        {
+            return new NPC_Data()
+            {
+                CurrentConversationIndex = this.conversations.ConversationIndex,
+                Position = this.transform.position,
+            };
+        }
+
+        public override void RestoreState(string state)
+        {
+            var data = JsonUtility.FromJson<NPC_Data>(state);
+
+            this.conversations.ConversationIndex = data.CurrentConversationIndex;
+            this.transform.position = data.Position;
+        }
 
         private void Start()
         {
@@ -75,7 +88,7 @@ namespace Assets.GracesScripts
             this._finishedInteraction = false;
             MyGuard.IsNotNull(this.dialogueTextBox, "DialogueTextBox is null in Unit_NPC.Interact()");
             this.dialogueTextBox.gameObject.SetActive(true);
-            this.dialogueTextBox.BeginDialogue(conversations.nextConversationDialogueSilde, this);
+            this.dialogueTextBox.BeginDialogue(conversations.GetConversationStart(), this);
         }
 
         public virtual void EndInteract()

@@ -19,7 +19,7 @@ public class MenuButton : DungeonButton
     public void StartNewGame()
     {
         PlayerPrefs.DeleteAll();
-        TalkingDungeonScenes.LoadScene(TalkingDungeonScenes.Intro, transition, SaveGameState.NewGame);
+        TalkingDungeonScenes.ChangeScene(TalkingDungeonScenes.Intro, transition);
         Debug.Log($"loading scene: {TalkingDungeonScenes.Intro} from menuButton.cs");
     }
 
@@ -31,13 +31,13 @@ public class MenuButton : DungeonButton
             throw new ArgumentNullException("player not found cannot save");
         }
 
-        SaveGameUtility.SaveGame(player);
+        SaveGameUtility.SaveGame();
     }
 
     public void LoadGameFromSave()
     {
         var scenePlayerSavedIn = PlayerPrefs.GetString(SaveKeys.LastScene);
-        TalkingDungeonScenes.LoadScene(scenePlayerSavedIn, transition, SaveGameState.LoadingSave);
+        TalkingDungeonScenes.ChangeScene(scenePlayerSavedIn, transition);
     }
 
     public void SaveAndQuitToTitle()
@@ -48,7 +48,7 @@ public class MenuButton : DungeonButton
 
     public void QuitToTitle()
     {
-        TalkingDungeonScenes.LoadScene("TitleScreen", transition, SaveGameState.QuittingToTitle);
+        TalkingDungeonScenes.ChangeScene("TitleScreen", transition);
     }
 
     public void OpenFeedbackForm()

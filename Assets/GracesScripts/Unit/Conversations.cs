@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Assets.GracesScripts.Unit
@@ -11,9 +10,13 @@ namespace Assets.GracesScripts.Unit
         /// </summary>
         [SerializeField] private List<DialogueSlide> firstSlideOfEachConvo;
 
-        /// <summary>
-        /// Gets the next conversation dialogue slide.
-        /// </summary>
-        public DialogueSlide nextConversationDialogueSilde => this.firstSlideOfEachConvo.First();
+        public DialogueSlide GetConversationStart()
+        {
+            var slide = this.firstSlideOfEachConvo[ConversationIndex];
+            ConversationIndex++;
+            return slide;
+        }
+
+        public int ConversationIndex = 0;
     }
 }

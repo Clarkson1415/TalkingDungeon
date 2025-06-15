@@ -1,4 +1,5 @@
 using Assets.GracesScripts.ScriptableObjects;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,10 +10,16 @@ using UnityEngine.UI;
 /// Unit class, Player and NPCs both have abilities an equipped weapon and item and health.
 /// </summary>
 [RequireComponent(typeof(UseAnimatedLayers))]
-public abstract class DungeonUnit : MonoBehaviour
+public abstract class DungeonUnit : MonoBehaviour, ISaveable
 {
-    public float currentHealth = 100;
-    public float maxHealth = 100;
+    public string UniqueId => this.name;
+
+    public abstract object CaptureState();
+
+    public abstract void RestoreState(string json);
+
+    public int currentHealth = 100;
+    public int maxHealth = 100;
     protected Weapon DefaultWeaponHands => SaveGameUtility.GetDefaultHands();
     public List<Ability> Abilities => this.equippedWeapon == null ? DefaultWeaponHands.Abilities : this.equippedWeapon.Abilities;
     [HideInInspector] public List<DungeonItem?> EquippedItems => new() { this.equippedWeapon, this.equippedSpecialItem };
@@ -87,7 +94,7 @@ public abstract class DungeonUnit : MonoBehaviour
     /// <summary>
     /// Shake health bar and animate health bar fill.
     /// </summary>
-    public void TakeDamage(float value)
+    public void TakeDamage(int value)
     {
         StartCoroutine(FlashRoutineAndHurtAnimation(2f));
         Debug.Log("Check how the timing of StartShake and damage bar reducing works i dont remember but rewrite it so its clearly aligned to end at the same time.");
@@ -111,7 +118,7 @@ public abstract class DungeonUnit : MonoBehaviour
     /// Add health to this unit and animate health bar fill increasing.
     /// </summary>
     /// <param name="healAmount"></param>
-    public void Heal(float healAmount)
+    public void Heal(int healAmount)
     {
         Debug.Log("Heal play heal animation");
         this.currentHealth += healAmount;

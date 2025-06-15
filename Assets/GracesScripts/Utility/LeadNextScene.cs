@@ -29,7 +29,6 @@ public class LeadNextScene : MonoBehaviour
             throw new ArgumentNullException("player not found cannot save");
         }
 
-        SaveGameUtility.SaveGame(player);
-        TalkingDungeonScenes.LoadScene(nextScene, transition, SaveGameState.RegularSceneChange);
+        TalkingDungeonScenes.ChangeScene(nextScene, transition);
     }
 }

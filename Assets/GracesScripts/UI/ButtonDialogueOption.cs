@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-[System.Serializable]
 
 public class DialogueOptionButton : DungeonButton
 {
