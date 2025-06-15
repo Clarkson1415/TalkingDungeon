@@ -399,6 +399,7 @@ public class PlayerDungeon : DungeonUnit
         if (context.started)
         {
             footstepsSound.Play();
+
             this.animatedLayers.SetFloats("LastXDir", this.direction.x);
             this.animatedLayers.SetFloats("LastYDir", this.direction.y);
         }
