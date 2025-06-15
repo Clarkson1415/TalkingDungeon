@@ -16,15 +16,16 @@ public class ItemContainer : MonoBehaviour, IInteracble, ISaveable
         var data = new ItemContainerData()
         {
             Loot = this.Loot,
-            animatorStateName = this.animator.GetCurrentAnimatorClipInfo(0)[0].clip.name,
+            animatorStateName = this.animator.GetCurrentAnimatorStateInfo(0).IsName("Closed") ? "Closed" : "Open",
         };
 
         return data;
     }
 
-    public void RestoreState(object state)
+    public void RestoreState(string json)
     {
-        ItemContainerData data = (ItemContainerData)state;
+        var data = JsonUtility.FromJson<ItemContainerData>(json);
+
         this.Loot = data.Loot;
         this.animator.Play(data.animatorStateName);
     }

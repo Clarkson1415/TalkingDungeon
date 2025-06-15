@@ -93,9 +93,10 @@ public class PlayerDungeon : DungeonUnit
         return newPlayerData;
     }
 
-    private void RestoreState(object state, bool restorePosition)
+    private void RestoreState(string state, bool restorePosition)
     {
-        PlayerDungeonData data = (PlayerDungeonData)state;
+        Debug.Log("Restoring state from JSON: " + state);
+        var data = JsonUtility.FromJson<PlayerDungeonData>(state);
 
         this.currentHealth = data.CurrentHealth;
         this.maxHealth = data.MaxHealth;
@@ -114,10 +115,15 @@ public class PlayerDungeon : DungeonUnit
     /// Restores Players State not position. When entering battle scene we dont want to.
     /// </summary>
     /// <param name="state"></param>
-    public override void RestoreState(object state)
+    public override void RestoreState(string state)
     {
+        // if we are restoring in a scene the same as last saved in then we are loading save and should load position
+        if (SceneManager.GetActiveScene().name == PlayerPrefs.GetString(SaveKeys.LastScene))
+        {
+            this.RestoreState(state, true);
+        }
         // if we are restoring in a battle scene dont load position.
-        if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
+        else if (SceneManager.GetActiveScene().name != TalkingDungeonScenes.Battle)
         {
             this.RestoreState(state, false);
         }
@@ -151,6 +157,7 @@ public class PlayerDungeon : DungeonUnit
 
         this.state = startingState;
 
+        // This should be happening after DostuffOnSceneLoad.OnSceneLoaded
         this.LoadPlayerComponents();
 
         if (Abilities.Count < 1)
@@ -392,6 +399,8 @@ public class PlayerDungeon : DungeonUnit
         if (context.started)
         {
             footstepsSound.Play();
+            this.animatedLayers.SetFloats("LastXDir", this.direction.x);
+            this.animatedLayers.SetFloats("LastYDir", this.direction.y);
         }
         else if (context.performed)
         {
@@ -400,8 +409,6 @@ public class PlayerDungeon : DungeonUnit
         else if (context.canceled)
         {
             footstepsSound.Stop();
-            this.animatedLayers.SetFloats("LastXDir", this.direction.x);
-            this.animatedLayers.SetFloats("LastYDir", this.direction.y);
             //Log.Print("on move cancelled");
         }
 

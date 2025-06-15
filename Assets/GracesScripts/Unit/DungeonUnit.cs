@@ -16,7 +16,7 @@ public abstract class DungeonUnit : MonoBehaviour, ISaveable
 
     public abstract object CaptureState();
 
-    public abstract void RestoreState(object state);
+    public abstract void RestoreState(string json);
 
     public int currentHealth = 100;
     public int maxHealth = 100;

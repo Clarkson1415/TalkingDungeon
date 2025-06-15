@@ -25,9 +25,11 @@ public class DoStuffOnSceneLoad : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        SaveGameUtility.Load();
+
         if (scene.name != TalkingDungeonScenes.Battle)
         {
-            SaveGameUtility.Load();
+            SaveGameUtility.SaveGame();
             return;
         }
 

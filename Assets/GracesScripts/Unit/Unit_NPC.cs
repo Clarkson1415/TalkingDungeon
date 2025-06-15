@@ -53,9 +53,10 @@ namespace Assets.GracesScripts
             };
         }
 
-        public override void RestoreState(object state)
+        public override void RestoreState(string state)
         {
-            NPC_Data data = (NPC_Data)state;
+            var data = JsonUtility.FromJson<NPC_Data>(state);
+
             this.conversations.ConversationIndex = data.CurrentConversationIndex;
             this.transform.position = data.Position;
         }
