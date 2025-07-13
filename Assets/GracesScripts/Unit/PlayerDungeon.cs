@@ -1,5 +1,4 @@
 using Assets.GracesScripts;
-using Assets.GracesScripts.Data;
 using Assets.GracesScripts.ScriptableObjects;
 using Assets.GracesScripts.UI;
 using System;
@@ -302,7 +301,7 @@ public class PlayerDungeon : DungeonUnit
                 }
                 if (this.InteractFlagSet)
                 {
-                    
+
                 }
                 break;
             case KnightState.INTURNBASED:

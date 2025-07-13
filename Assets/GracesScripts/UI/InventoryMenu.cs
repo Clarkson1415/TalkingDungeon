@@ -180,7 +180,7 @@ public class InventoryMenu : MenuWithItemSlots, IPointerEnterHandler
 
         if (Page is PageWithSlots pageWithSlots)
         {
-            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x.GetType() == pageWithSlots.TypeInPageSlots).ToList(), this.PlayerEquippedWeapon, this.playerEquippedItem, this.DefaultWeaponHands);
+            pageWithSlots.FillItemSlots(this.AllInventoryItems.Where(x => x != null).Where(x => x.GetType() == pageWithSlots.TypeInPageSlots).ToList(), this.PlayerEquippedWeapon, this.playerEquippedItem, this.DefaultWeaponHands);
         }
     }
 

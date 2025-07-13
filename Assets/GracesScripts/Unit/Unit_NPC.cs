@@ -61,6 +61,12 @@ namespace Assets.GracesScripts
             this.transform.position = data.Position;
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            conversations = this.GetComponent<Conversations>();
+        }
+
         private void Start()
         {
             if (string.IsNullOrEmpty(unitName))
@@ -73,7 +79,6 @@ namespace Assets.GracesScripts
                 Debug.LogError($"this guy: {this.gameObject.name} cannot have no abilities at least have default Push ability assign in inspector");
             }
 
-            conversations = this.GetComponent<Conversations>();
             var menuReferences = FindObjectOfType<MenuReferences>();
             this.dialogueTextBox = menuReferences.dialogueTextBox;
         }

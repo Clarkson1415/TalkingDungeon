@@ -45,7 +45,7 @@ public abstract class DungeonUnit : MonoBehaviour, ISaveable
     private MaterialPropertyBlock _block;
     private static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
 
-    private void Awake()
+    protected virtual void Awake()
     {
         animatedLayers = this.gameObject.GetComponent<UseAnimatedLayers>();
         MyGuard.IsNotNull(animatedLayers, $"null animated layers {this.name}");

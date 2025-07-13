@@ -1319,21 +1319,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIEventSystem: {fileID: 996770724043691549}
-  transitionForGoingToBattleScene: {fileID: 11400000, guid: 57d2dee28715fc6499379ee5905b3caf,
-    type: 2}
   textspeed: 0.1
   underscorePauseTime: 0.01
-  audioSource: {fileID: 6763336173184477896}
-  dialoguePrintingAudio: {fileID: 8300000, guid: 47612784f0af61c4db6d912510390fc5,
-    type: 3}
+  transitionForGoingToBattleScene: {fileID: 11400000, guid: 57d2dee28715fc6499379ee5905b3caf,
+    type: 2}
   buttons:
   - {fileID: 7790745672424055687}
   - {fileID: 5091415607105682835}
   - {fileID: 955916478937888981}
   - {fileID: 6504003617806475515}
   speakerNameText: {fileID: 9169113723736511982}
-  finishedInteractionFlag: 0
-  ButtonClickedFlagSet: 0
 --- !u!114 &3431970644410228413
 MonoBehaviour:
   m_ObjectHideFlags: 0

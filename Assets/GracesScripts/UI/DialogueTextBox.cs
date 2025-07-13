@@ -1,12 +1,9 @@
 using Assets.GracesScripts;
-using Assets.GracesScripts.UI;
 using EasyTransition;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 #nullable enable
 
 /// <summary>
@@ -36,11 +33,13 @@ public class DialogueTextBox : Textbox
                 if (this.InteractFlag)
                 {
                     this.SkipToEnd();
+                    this.InteractFlag = false;
                 }
-                if (this.finishedWritingSlide)
+                else if (this.finishedWritingSlide)
                 {
                     DrawButtons();
                     this.State = BoxState.WAITINGONSLIDE;
+                    this.finishedWritingSlide = false;
                 }
                 break;
             case BoxState.WAITINGONSLIDE:
@@ -49,7 +48,6 @@ public class DialogueTextBox : Textbox
                     MyGuard.IsNotNull(this.CurrentSlide);
                     // if no options on slide and player clicked then they want to go to the next slide or end dialogue.
                     FinishedWaitingOnSlide(this.CurrentSlide.nextSlide);
-                    return;
                 }
                 else if (this.ButtonClickedFlagSet)
                 {
@@ -77,22 +75,20 @@ public class DialogueTextBox : Textbox
     public void BeginDialogue(DialogueSlide firstSlide, Unit_NPC speaker)
     {
         this.currentSpeaker = speaker;
+        DeactivateAllButtons();
         this.UpdateCurrentSlide(firstSlide);
         this.State = BoxState.WRITINGSLIDE;
     }
 
-    private void UpdateCurrentSlide(DialogueSlide? newSlide)
+    private void UpdateCurrentSlide(DialogueSlide newSlide)
     {
-        if (newSlide == null)
-        {
-            this.CurrentSlide = null;
-        }
-        else
-        {
-            this.CurrentSlide = newSlide;
-        }
+        MyGuard.IsNotNull(newSlide);
+
+        this.CurrentSlide = newSlide;
+
         MyGuard.IsNotNull(currentSpeaker);
         speakerNameText.text = currentSpeaker.unitName;
+        this.StartWriting(CurrentSlide.dialogue, Color.black);
     }
 
 
@@ -100,12 +96,11 @@ public class DialogueTextBox : Textbox
     {
         DeactivateAllButtons();
         this.UpdateCurrentSlide(nextSlide);
-        this.StartWriting(nextSlide.dialogue, Color.black);
     }
 
     private void EndConversation()
     {
-        UpdateCurrentSlide(null);
+        this.CurrentSlide = null;
         this.State = BoxState.INACTIVE;
         this.gameObject.SetActive(false);
         MyGuard.IsNotNull(currentSpeaker);
@@ -117,7 +112,7 @@ public class DialogueTextBox : Textbox
     {
         var player = FindObjectOfType<PlayerDungeon>();
         MyGuard.IsNotNull(player);
-        
+
         if (player.InteractableInRange is Unit_NPC enemy)
         {
             MyGuard.IsNotNull(enemy);

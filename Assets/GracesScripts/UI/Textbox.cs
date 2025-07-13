@@ -9,19 +9,19 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// Represents a class that prints text.
 /// </summary>
-[RequireComponent(typeof(PlayerInput))]
+[RequireComponent(typeof(AudioSource))]
 public abstract class Textbox : MenuWithButtons
 {
     public bool IsNotWritingOrOnSlide => this.State == BoxState.INACTIVE;
 
     protected TMP_Text TMPTextBox;
-    [SerializeField] protected AudioSource dialoguePrintAudio;
+    protected AudioSource dialoguePrintAudio;
 
     protected BoxState State { get; set; } = BoxState.INACTIVE;
     [SerializeField] protected float textspeed = 0.1f;
     [SerializeField] protected float underscorePauseTime = 0.01f;
     protected const char pauseCharacterToNotPrint = '_';
-    protected Coroutine writingSlide;
+    protected Coroutine? writingSlide;
     protected bool finishedWritingSlide;
     protected bool InteractFlag;
     protected bool ButtonClickedFlagSet;
@@ -30,6 +30,7 @@ public abstract class Textbox : MenuWithButtons
     private void Awake()
     {
         TMPTextBox = this.GetComponentInChildren<TMP_Text>();
+        this.dialoguePrintAudio = GetComponent<AudioSource>();
         this.dialoguePrintAudio.loop = false;
     }
 
@@ -37,7 +38,7 @@ public abstract class Textbox : MenuWithButtons
     {
         this.textBeingWritten = text;
         this.State = BoxState.WRITINGSLIDE;
-        this.StartCoroutine(this.WriteSlideOverTime(text, colour));
+        writingSlide = this.StartCoroutine(this.WriteSlideOverTime(text, colour));
     }
 
     protected virtual void ResetAllFlags()
@@ -56,7 +57,6 @@ public abstract class Textbox : MenuWithButtons
     protected void SkipToEnd()
     {
         // In more recent versions of Unity (at least 5.3 onwards) you can keep a reference to the IEnumerator or returned Coroutine object and start and stop that directly, rather than use the method name. These are preferred over using the method name as they are type safe and more performant. See the StopCoroutine docs for details https://docs.unity3d.com/ScriptReference/MonoBehaviour.StopCoroutine.html
-        StopCoroutine(writingSlide);
         string stringWithoutUnderscores = "";
         foreach (var item in textBeingWritten)
         {
@@ -64,6 +64,11 @@ public abstract class Textbox : MenuWithButtons
             {
                 stringWithoutUnderscores += item;
             }
+        }
+
+        if (writingSlide != null)
+        {
+            StopCoroutine(writingSlide);
         }
 
         this.TMPTextBox.text = stringWithoutUnderscores;
@@ -115,6 +120,7 @@ public abstract class Textbox : MenuWithButtons
         }
 
         this.finishedWritingSlide = true;
+        writingSlide = null;
     }
 
     public void OnInteract(InputAction.CallbackContext context)
